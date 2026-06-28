@@ -4507,6 +4507,14 @@ function initHistoryDrawer() {
   document.getElementById('histDrawerClose')?.addEventListener('click', closeHistoryDrawer);
   scrim.addEventListener('click', closeHistoryDrawer);
 
+  // Delegated handler for history reload buttons (avoids inline onclick + JSON.stringify quote issues)
+  document.getElementById('hdList')?.addEventListener('click', e => {
+    const btn = e.target.closest('.hd-reload');
+    if (!btn) return;
+    const q = btn.dataset.query;
+    if (q) { closeHistoryDrawer(); window.generateSurface && window.generateSurface(q); }
+  });
+
   // Load existing history
   try {
     _surfaceHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
@@ -4540,7 +4548,7 @@ function renderHistoryList() {
     <div class="hd-item">
       <div class="hd-q">${escHtml(item.query)}</div>
       <div class="hd-ts">${ago}</div>
-      <button class="hd-reload" onclick="(function(){closeHistoryDrawer&&closeHistoryDrawer();window.generateSurface&&window.generateSurface(${JSON.stringify(item.query)})})()">↩ Reload surface</button>
+      <button class="hd-reload" data-query="${escHtml(item.query)}">↩ Reload surface</button>
     </div>`;
   }).join('');
 }
