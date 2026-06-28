@@ -11,367 +11,7 @@
 <title>AdaptiveAI Moirakis — Generative UI Command Center</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<style>/* cyrillic-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("c6142eac-200b-4488-89c6-543cd9324379") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("c0efe713-b8d1-43c3-88e2-1e4f1c40f4c0") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("73aaac52-643d-4d5b-9741-3128c661a7da") format('woff2');
-  unicode-range: U+1F00-1FFF;
-}
-/* greek */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("24bf2627-21dd-40b8-b981-b9a08e8f363f") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("67755901-07c5-4497-8f83-433a498586b6") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("a6853864-783a-464d-94f2-0dbde0a25828") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("4fb1a760-ed8e-4897-b5e4-1f554c47d286") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("c6142eac-200b-4488-89c6-543cd9324379") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("c0efe713-b8d1-43c3-88e2-1e4f1c40f4c0") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("73aaac52-643d-4d5b-9741-3128c661a7da") format('woff2');
-  unicode-range: U+1F00-1FFF;
-}
-/* greek */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("24bf2627-21dd-40b8-b981-b9a08e8f363f") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("67755901-07c5-4497-8f83-433a498586b6") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("a6853864-783a-464d-94f2-0dbde0a25828") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("4fb1a760-ed8e-4897-b5e4-1f554c47d286") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("c6142eac-200b-4488-89c6-543cd9324379") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("c0efe713-b8d1-43c3-88e2-1e4f1c40f4c0") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("73aaac52-643d-4d5b-9741-3128c661a7da") format('woff2');
-  unicode-range: U+1F00-1FFF;
-}
-/* greek */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("24bf2627-21dd-40b8-b981-b9a08e8f363f") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("67755901-07c5-4497-8f83-433a498586b6") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("a6853864-783a-464d-94f2-0dbde0a25828") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("4fb1a760-ed8e-4897-b5e4-1f554c47d286") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("c6142eac-200b-4488-89c6-543cd9324379") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("c0efe713-b8d1-43c3-88e2-1e4f1c40f4c0") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("73aaac52-643d-4d5b-9741-3128c661a7da") format('woff2');
-  unicode-range: U+1F00-1FFF;
-}
-/* greek */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("24bf2627-21dd-40b8-b981-b9a08e8f363f") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("67755901-07c5-4497-8f83-433a498586b6") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("a6853864-783a-464d-94f2-0dbde0a25828") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("4fb1a760-ed8e-4897-b5e4-1f554c47d286") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("cd70dd6d-01f2-4000-8e97-8a37695dea8e") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("ab77bc3a-8c27-49c0-be09-9f725ef3907c") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("c690fd6c-3825-44a8-a7ee-a8184591ce9c") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("a460235e-398f-43fb-94e4-e164c784654e") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("c2c4eb95-ce3e-4636-b650-37ce14790750") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("23980345-b188-4965-b0b8-fd7defc4e43f") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("cd70dd6d-01f2-4000-8e97-8a37695dea8e") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("ab77bc3a-8c27-49c0-be09-9f725ef3907c") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("c690fd6c-3825-44a8-a7ee-a8184591ce9c") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("a460235e-398f-43fb-94e4-e164c784654e") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("c2c4eb95-ce3e-4636-b650-37ce14790750") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("23980345-b188-4965-b0b8-fd7defc4e43f") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
 <style>/* Open Claw AI — pixel-faithful token set */
 :root{
   --bg:#050505;
@@ -1511,6 +1151,11 @@ table.data tr:last-child td{border-bottom:0}
   #pulseBtn .live-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 0 rgba(52,211,153,0.6);animation:livePulse 2s infinite}
   #pulseBtn.on{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent)}
 </style>
+<!-- CDN: Leaflet maps -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- CDN: Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -1930,8 +1575,7 @@ table.data tr:last-child td{border-bottom:0}
 
 <div class="toasts" id="toasts"></div>
 
-<script src="c3c0af1c-6a1d-404f-997e-3ff19b109117"></script>
-<script src="fe0c36b7-9fbb-4a50-af0b-0946d10edc54"></script>
+
 
 
 
@@ -1950,6 +1594,7 @@ function show(el) { if (el) el.style.display = ''; }
 function hide(el) { if (el) el.style.display = 'none'; }
 function addClass(el, cls) { if (el) el.classList.add(cls); }
 function removeClass(el, cls) { if (el) el.classList.remove(cls); }
+function safeRun(fn) { try { fn(); } catch(e) { console.error('[AdaptiveAI] Error in', fn.name || '?', e); } }
 
 function toast(msg, type) {
   const box = $('toasts');
@@ -2098,19 +1743,31 @@ const NAV_MAP = {
   navIntegrations: 'intBg',
 };
 
+function closeAllPanels() {
+  $$('.bigpanel-bg').forEach(bg => bg.classList.remove('open'));
+  $$('.nav-item').forEach(n => n.classList.remove('active'));
+}
+
 function wireNav() {
   Object.entries(NAV_MAP).forEach(([navId, panelId]) => {
     const btn = $(navId);
     if (!btn) return;
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation(); // prevent wireEventDelegation double-handling
       const panel = $(panelId);
-      if (panel) panel.classList.add('open');
-      // Populate panel on open
-      if (panelId === 'assetBg') populateAssets();
-      if (panelId === 'autoBg') populateAutomations();
-      if (panelId === 'reportBg') populateReports();
-      if (panelId === 'qualityBg') populateQuality();
-      if (panelId === 'intBg') populateIntegrations();
+      const alreadyOpen = panel && panel.classList.contains('open');
+      // Close all panels first, then open the target (toggle if same)
+      closeAllPanels();
+      if (!alreadyOpen && panel) {
+        panel.classList.add('open');
+        $$('.nav-item').forEach(n => n.classList.remove('active'));
+        btn.classList.add('active');
+        if (panelId === 'assetBg') safeRun(populateAssets);
+        if (panelId === 'autoBg') safeRun(populateAutomations);
+        if (panelId === 'reportBg') safeRun(populateReports);
+        if (panelId === 'qualityBg') safeRun(populateQuality);
+        if (panelId === 'intBg') safeRun(populateIntegrations);
+      }
     });
   });
 
@@ -2121,17 +1778,32 @@ function wireNav() {
   };
   Object.entries(closes).forEach(([btnId, panelId]) => {
     const btn = $(btnId);
-    if (btn) btn.addEventListener('click', () => {
-      const panel = $(panelId);
-      if (panel) panel.classList.remove('open');
-    });
+    if (btn) btn.addEventListener('click', () => closeAllPanels());
   });
 
   // Background click closes
   $$('.bigpanel-bg').forEach(bg => {
     bg.addEventListener('click', (e) => {
-      if (e.target === bg) bg.classList.remove('open');
+      if (e.target === bg) closeAllPanels();
     });
+  });
+
+  // Escape key closes all panels and modals
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    closeAllPanels();
+    const notifCenter = $('notifCenter');
+    if (notifCenter) notifCenter.classList.remove('open');
+    const pulsePanel = $('pulsePanel');
+    if (pulsePanel) pulsePanel.classList.remove('open');
+    const activityPanel = $('activityPanel');
+    if (activityPanel) activityPanel.classList.remove('open');
+    const drillDrawer = $('drillDrawer');
+    if (drillDrawer) drillDrawer.classList.remove('open');
+    const settingsPop = $('settingsPop');
+    if (settingsPop) settingsPop.classList.remove('open');
+    const historyDrawer = document.getElementById('historyDrawer');
+    if (historyDrawer) historyDrawer.classList.remove('open');
   });
 }
 
@@ -2190,7 +1862,7 @@ function wireCmdk() {
         closeCmdk();
         const promptEl = $('prompt');
         if (promptEl) { promptEl.value = q; promptEl.focus(); }
-        setTimeout(() => generateSurface(q), 200);
+        setTimeout(() => (window.generateSurface||generateSurface)(q), 200);
       });
     });
   }
@@ -2202,7 +1874,7 @@ function wireCmdk() {
     if (e.key === 'Escape') closeCmdk();
     if (e.key === 'Enter') {
       const q = input.value.trim();
-      if (q) { closeCmdk(); setTimeout(() => generateSurface(q), 200); }
+      if (q) { closeCmdk(); setTimeout(() => (window.generateSurface||generateSurface)(q), 200); }
     }
   });
 
@@ -2942,7 +2614,7 @@ function wirePrompt() {
   function doSend() {
     const q = promptEl.value.trim();
     if (!q) { toast('Type a query first', 'warn'); return; }
-    generateSurface(q);
+    (window.generateSurface||generateSurface)(q);
   }
 
   if (sendBtn) sendBtn.addEventListener('click', doSend);
@@ -2950,22 +2622,23 @@ function wirePrompt() {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doSend(); }
   });
 
-  // Suggestion cards
-  $$('[data-q].gx-sug').forEach(btn => {
+  // Suggestion cards — wire by class OR data-q in .gx-suggest
+  $$('.gx-sug, .gx-suggest [data-q]').forEach(btn => {
     btn.addEventListener('click', () => {
       const q = btn.dataset.q;
+      if (!q) return;
       promptEl.value = q;
-      generateSurface(q);
+      (window.generateSurface||generateSurface)(q);
     });
   });
 
-  // Saved surface cards
-  $$('[data-q].gx-saved').forEach(card => {
-    card.addEventListener('click', () => {
-      const q = card.dataset.q;
-      generateSurface(q);
-    });
-    card.style.cursor = 'pointer';
+  // Saved surface rail cards
+  $$('.gx-saved').forEach(card => {
+    const q = card.dataset.q;
+    if (q) {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', () => (window.generateSurface||generateSurface)(q));
+    }
   });
 }
 
@@ -3003,11 +2676,18 @@ function startStatusBarAnimation() {
    HEADER BUTTONS
    ============================================================ */
 function wireHeaderButtons() {
-  // Hamburger
+  // Hamburger — toggle sidebar
   const ham = $('hamburger');
   if (ham) ham.addEventListener('click', () => {
-    const sidebar = document.querySelector('nav') || document.querySelector('.sidebar') || document.querySelector('aside.sidebar');
-    toast('Sidebar toggle');
+    const sb = document.querySelector('.sidebar');
+    const scrim = $('scrim');
+    if (!sb) { toast('Sidebar toggled'); return; }
+    const isOpen = sb.classList.toggle('open');
+    if (scrim) {
+      scrim.style.cssText = isOpen
+        ? 'display:block;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;cursor:pointer'
+        : 'display:none';
+    }
   });
 
   // Edit mode btn
@@ -3071,7 +2751,7 @@ function wireHeaderButtons() {
             if (prompt) prompt.value = item.dataset.q;
             gsearchInput.value = '';
             if (gsearchDrop) gsearchDrop.style.display = 'none';
-            generateSurface(item.dataset.q);
+            (window.generateSurface||generateSurface)(item.dataset.q);
           });
         });
       }
@@ -3192,6 +2872,19 @@ function populateAssets() {
     grid.style.gridTemplateColumns = listView ? '1fr' : '';
     toast(listView ? 'Switched to list view' : 'Switched to grid view');
   });
+
+  // Search filter
+  const search = $('assetSearch');
+  if (search) {
+    search.addEventListener('input', () => {
+      const q = search.value.toLowerCase();
+      $$('.asset-card', grid).forEach((card, i) => {
+        const name = assets[i] ? assets[i].name.toLowerCase() : card.textContent.toLowerCase();
+        card.style.display = name.includes(q) ? '' : 'none';
+      });
+    });
+    search.placeholder = 'Search assets…';
+  }
 }
 
 function populateAutomations() {
@@ -3455,6 +3148,8 @@ function populatePremium() {
 function injectCSS() {
   const style = document.createElement('style');
   style.textContent = `
+    /* Sidebar always above bigpanels so nav buttons stay clickable */
+    .sidebar { position:relative; z-index:90; }
     /* Panels open state */
     .bigpanel-bg.open { display:flex !important; }
     .notif-center.open { display:flex !important; }
@@ -3533,6 +3228,26 @@ function injectCSS() {
 
     /* Stage needs overflow */
     .gx-stage { overflow:hidden; }
+
+    /* Sidebar mobile open state */
+    .sidebar.open { transform:translateX(0) !important; display:flex !important; }
+
+    /* Active nav item */
+    .nav-item.active { color:var(--accent) !important; background:var(--accent-soft) !important; border-color:var(--accent-line) !important; }
+
+    /* Ensure gx-sug and gx-saved are pointer-interactive */
+    .gx-sug, .gx-saved { cursor:pointer !important; pointer-events:auto !important; }
+
+    /* gx-tool-btn inside generated surfaces */
+    .gx-tool-btn { background:var(--glass); border:1px solid var(--border); border-radius:7px; padding:5px 12px; font-size:12px; color:var(--muted); cursor:pointer; transition:all 0.15s; }
+    .gx-tool-btn:hover { color:var(--text); border-color:var(--border-strong); }
+
+    /* Surface pill */
+    .gx-surface-pill { padding:4px 12px; border-radius:6px; background:var(--glass); border:1px solid var(--border); font-size:12px; cursor:pointer; transition:all 0.15s; color:var(--muted); }
+    .gx-surface-pill.active { background:var(--accent-soft); border-color:var(--accent-line); color:var(--accent); }
+
+    /* Fix notif-center position */
+    #notifCenter { right:0; }
   `;
   document.head.appendChild(style);
 }
@@ -3541,19 +3256,25 @@ function injectCSS() {
    INIT
    ============================================================ */
 function init() {
-  injectCSS();
-  wireSettings();
-  wireRoleSwitcher();
-  wireNav();
-  wireCmdk();
-  wireNotifications();
-  wireActivityPanel();
-  wirePulsePanel();
-  wirePrompt();
-  wireHeaderButtons();
-  wireDrillDrawer();
-  wireModalCloseButtons();
-  startStatusBarAnimation();
+  // Expose globals first so onclick attributes work
+  window.generateSurface = generateSurface;
+  window._toast = toast;
+
+  safeRun(injectCSS);
+  safeRun(wireSettings);
+  safeRun(wireRoleSwitcher);
+  safeRun(wireNav);
+  safeRun(wireCmdk);
+  safeRun(wireNotifications);
+  safeRun(wireActivityPanel);
+  safeRun(wirePulsePanel);
+  safeRun(wirePrompt);
+  safeRun(wireHeaderButtons);
+  safeRun(wireDrillDrawer);
+  safeRun(wireModalCloseButtons);
+  safeRun(wireEventDelegation);
+  safeRun(wireSidebarScrim);
+  safeRun(startStatusBarAnimation);
 
   // Animate status bar on load
   const agent = $('sbAgent');
@@ -3562,9 +3283,9 @@ function init() {
     setTimeout(() => { agent.textContent = '● online'; toast('AdaptiveAI connected — Moirakis Rentals'); }, 1200);
   }
 
-  // Offline banner
+  // Hide offline banner
   const banner = $('offlineBanner');
-  if (banner) { banner.style.display = 'none'; }
+  if (banner) banner.style.display = 'none';
 
   // Connection pill
   const connPill = $('connPill');
@@ -3576,6 +3297,78 @@ function init() {
   console.log('[AdaptiveAI] Interaction layer initialized — Moirakis Rentals');
 }
 
+/* ============================================================
+   EVENT DELEGATION — catches all interactive elements robustly
+   ============================================================ */
+function wireEventDelegation() {
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+
+    // Nav items → open big panels
+    const navBtn = t.closest('#navAssets,#navAutomations,#navReports,#navQuality,#navIntegrations');
+    if (navBtn) {
+      const map = { navAssets:'assetBg', navAutomations:'autoBg', navReports:'reportBg', navQuality:'qualityBg', navIntegrations:'intBg' };
+      const panelId = map[navBtn.id];
+      if (panelId) {
+        const panel = $(panelId);
+        const alreadyOpen = panel && panel.classList.contains('open');
+        closeAllPanels();
+        if (!alreadyOpen && panel) {
+          panel.classList.add('open');
+          navBtn.classList.add('active');
+          if (panelId === 'assetBg') safeRun(populateAssets);
+          if (panelId === 'autoBg') safeRun(populateAutomations);
+          if (panelId === 'reportBg') safeRun(populateReports);
+          if (panelId === 'qualityBg') safeRun(populateQuality);
+          if (panelId === 'intBg') safeRun(populateIntegrations);
+        }
+      }
+      return;
+    }
+
+    // Suggestion cards
+    const sug = t.closest('.gx-sug[data-q]');
+    if (sug) {
+      const q = sug.dataset.q;
+      const prompt = $('prompt');
+      if (prompt) prompt.value = q;
+      (window.generateSurface||generateSurface)(q);
+      return;
+    }
+
+    // Saved surface rail cards
+    const saved = t.closest('.gx-saved[data-q]');
+    if (saved) {
+      (window.generateSurface||generateSurface)(saved.dataset.q);
+      return;
+    }
+
+    // Dock items
+    const dockBtn = t.closest('.dock-item, .dock-btn');
+    if (dockBtn) {
+      toast('Opening ' + (dockBtn.title || dockBtn.textContent.trim() || 'surface') + '…');
+      return;
+    }
+
+    // Status bar → show agent info
+    if (t.closest('#statusbar')) {
+      toast('Agent: Dashboard Agent · 99.98% SLA · 189 vehicles tracked · Moirakis Rentals');
+      return;
+    }
+  });
+}
+
+/* ============================================================
+   SIDEBAR SCRIM CLOSE
+   ============================================================ */
+function wireSidebarScrim() {
+  const scrim = $('scrim');
+  if (scrim) scrim.addEventListener('click', () => {
+    document.querySelector('.sidebar')?.classList.remove('open');
+    scrim.style.display = 'none';
+  });
+}
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
@@ -3584,5 +3377,1496 @@ if (document.readyState === 'loading') {
 
 })();
 
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     ADAPTIVEAI MODULES — v2: Maps · Charts · Kanban · Agents · Tour
+     ═══════════════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+'use strict';
+
+/* ─────────────────────────────────────────────
+   SHARED HELPERS
+   ───────────────────────────────────────────── */
+function qs(sel, ctx) { return (ctx || document).querySelector(sel); }
+function qsa(sel, ctx) { return Array.from((ctx || document).querySelectorAll(sel)); }
+function uid() { return 'id-' + Math.random().toString(36).slice(2, 9); }
+function toast(msg) { if (window._toast) window._toast(msg); }
+
+/* ─────────────────────────────────────────────
+   MODULE 0 — CSS INJECTION
+   ───────────────────────────────────────────── */
+function injectModuleCSS() {
+  const style = document.createElement('style');
+  style.id = 'adaptiveai-module-css';
+  style.textContent = `
+    /* ── Skeleton animations ── */
+    @keyframes skeletonPulse {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.35; }
+    }
+    @keyframes pulseDot {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50%      { transform: scale(1.5); opacity: 0.5; }
+    }
+
+    /* ── History Drawer ── */
+    #historyDrawer {
+      position: fixed; right: 0; top: 0; bottom: 0; width: 320px;
+      background: var(--surface-solid, #16132b); border-left: 1px solid var(--border, rgba(255,255,255,0.08));
+      z-index: 800; transform: translateX(100%); transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    #historyDrawer.open { transform: translateX(0); }
+    #historyDrawer .hd-head {
+      padding: 18px 20px 14px; border-bottom: 1px solid var(--border, rgba(255,255,255,0.08));
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 14px; font-weight: 600; color: var(--text, #e8e6f0);
+    }
+    #historyDrawer .hd-close {
+      background: var(--glass, rgba(255,255,255,0.05)); border: 1px solid var(--border, rgba(255,255,255,0.08));
+      border-radius: 7px; padding: 5px 10px; font-size: 12px; color: var(--muted, #7a7a9a);
+      cursor: pointer; transition: all 0.15s;
+    }
+    #historyDrawer .hd-close:hover { color: var(--text, #e8e6f0); }
+    #historyDrawer .hd-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .hd-item {
+      background: var(--glass, rgba(255,255,255,0.05)); border: 1px solid var(--border, rgba(255,255,255,0.08));
+      border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: all 0.15s;
+    }
+    .hd-item:hover { border-color: var(--accent-line, rgba(249,115,22,0.3)); background: var(--accent-soft, rgba(249,115,22,0.07)); }
+    .hd-item .hd-q { font-size: 13px; color: var(--text, #e8e6f0); margin-bottom: 4px; font-weight: 500; }
+    .hd-item .hd-ts { font-size: 11px; color: var(--muted, #7a7a9a); }
+    .hd-item .hd-reload {
+      margin-top: 8px; padding: 4px 10px; border-radius: 6px; font-size: 11px;
+      background: var(--accent-soft, rgba(249,115,22,0.1)); border: 1px solid var(--accent-line, rgba(249,115,22,0.25));
+      color: var(--accent, #F97316); cursor: pointer; transition: all 0.15s;
+    }
+    .hd-item .hd-reload:hover { background: var(--accent, #F97316); color: #fff; }
+    #histDrawerScrim {
+      display: none; position: fixed; inset: 0; z-index: 799;
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(2px);
+    }
+
+    /* ── Onboarding Tour ── */
+    #tourOverlay {
+      position: fixed; inset: 0; z-index: 2000; pointer-events: none;
+    }
+    #tourBackdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(2px);
+      z-index: 1999; transition: opacity 0.3s; pointer-events: none; display: none;
+    }
+    #tourTooltip {
+      position: fixed; z-index: 2001; width: 300px;
+      background: var(--surface-solid, #16132b); border: 1px solid var(--accent-line, rgba(249,115,22,0.3));
+      border-radius: 14px; padding: 20px 22px; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      transition: all 0.25s cubic-bezier(.4,0,.2,1); pointer-events: all;
+    }
+    #tourTooltip .tt-step { font-size: 11px; color: var(--accent, #F97316); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    #tourTooltip .tt-title { font-size: 15px; font-weight: 700; color: var(--text, #e8e6f0); margin-bottom: 6px; }
+    #tourTooltip .tt-body { font-size: 13px; color: var(--muted, #7a7a9a); line-height: 1.5; margin-bottom: 16px; }
+    #tourTooltip .tt-foot { display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
+    #tourTooltip .tt-skip { font-size: 12px; color: var(--muted, #7a7a9a); cursor: pointer; margin-right: auto; background: none; border: none; padding: 0; }
+    #tourTooltip .tt-skip:hover { color: var(--text, #e8e6f0); }
+    #tourTooltip .tt-next {
+      padding: 7px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      background: var(--accent, #F97316); color: #fff; border: none; cursor: pointer; transition: all 0.15s;
+    }
+    #tourTooltip .tt-next:hover { opacity: 0.88; }
+    #tourTooltip .tt-dots { display: flex; gap: 5px; align-items: center; }
+    #tourTooltip .tt-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border, rgba(255,255,255,0.08)); transition: all 0.2s;
+    }
+    #tourTooltip .tt-dot.active { background: var(--accent, #F97316); width: 18px; border-radius: 3px; }
+    #tourHighlight {
+      position: fixed; z-index: 2000; border-radius: 10px;
+      box-shadow: 0 0 0 4px var(--accent, #F97316), 0 0 0 8px rgba(249,115,22,0.2);
+      transition: all 0.3s cubic-bezier(.4,0,.2,1); pointer-events: none;
+    }
+
+    /* ── Agent status cards ── */
+    .agent-card {
+      background: var(--glass, rgba(255,255,255,0.05)); border: 1px solid var(--border, rgba(255,255,255,0.08));
+      border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .agent-card .ac-head { display: flex; align-items: center; gap: 10px; }
+    .agent-card .ac-icon {
+      width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .agent-card .ac-name { font-size: 13px; font-weight: 600; color: var(--text, #e8e6f0); }
+    .agent-card .ac-role { font-size: 11px; color: var(--muted, #7a7a9a); margin-top: 1px; }
+    .agent-badge {
+      display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .agent-badge.running { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .agent-badge.idle    { background: rgba(160,160,176,0.12); color: #a0a0b0; }
+    .agent-badge.waiting { background: rgba(234,179,8,0.12); color: #eab308; }
+    .agent-badge.error   { background: rgba(239,68,68,0.12); color: #ef4444; }
+    .agent-card .ac-last { font-size: 12px; color: var(--muted, #7a7a9a); }
+    .agent-card .ac-foot { display: flex; gap: 8px; }
+    .ac-approve {
+      padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 600;
+      background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #22c55e;
+      cursor: pointer; transition: all 0.15s; flex: 1;
+    }
+    .ac-approve:hover { background: rgba(34,197,94,0.25); }
+    .ac-reject {
+      padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 600;
+      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); color: #ef4444;
+      cursor: pointer; transition: all 0.15s; flex: 1;
+    }
+    .ac-reject:hover { background: rgba(239,68,68,0.2); }
+    .ac-run {
+      padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 600;
+      background: var(--accent-soft, rgba(249,115,22,0.1)); border: 1px solid var(--accent-line, rgba(249,115,22,0.25));
+      color: var(--accent, #F97316); cursor: pointer; transition: all 0.15s; flex: 1;
+    }
+    .ac-run:hover { background: rgba(249,115,22,0.2); }
+
+    /* ── Kanban ── */
+    .kn-board {
+      display: grid; grid-template-columns: repeat(5, minmax(200px, 1fr)); gap: 12px;
+      overflow-x: auto; height: 100%; align-items: start;
+    }
+    .kn-col {
+      background: var(--glass, rgba(255,255,255,0.03)); border: 1px solid var(--border, rgba(255,255,255,0.08));
+      border-radius: 12px; display: flex; flex-direction: column; min-height: 200px;
+    }
+    .kn-col-head {
+      padding: 12px 14px 10px; font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; border-bottom: 1px solid var(--border, rgba(255,255,255,0.08));
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .kn-badge {
+      background: var(--glass, rgba(255,255,255,0.08)); border-radius: 20px;
+      padding: 2px 8px; font-size: 10px; font-weight: 700;
+    }
+    .kn-col-body {
+      padding: 10px; display: flex; flex-direction: column; gap: 8px; flex: 1;
+      transition: background 0.15s; border-radius: 0 0 12px 12px;
+    }
+    .kn-card {
+      background: var(--surface, rgba(255,255,255,0.06)); border: 1px solid var(--border, rgba(255,255,255,0.08));
+      border-radius: 9px; padding: 10px 12px; cursor: grab; transition: all 0.15s; user-select: none;
+    }
+    .kn-card:hover { border-color: var(--accent-line, rgba(249,115,22,0.3)); transform: translateY(-1px); }
+    .kn-card:active { cursor: grabbing; }
+    .kn-card .kc-title { font-size: 12px; font-weight: 600; color: var(--text, #e8e6f0); margin-bottom: 5px; }
+    .kn-card .kc-meta  { font-size: 11px; color: var(--muted, #7a7a9a); display: flex; flex-direction: column; gap: 2px; }
+    .kn-card .kc-tag   {
+      display: inline-flex; margin-top: 6px; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 600;
+    }
+
+    /* ── Mobile Responsive ── */
+    @media (max-width: 767px) {
+      .sidebar {
+        position: fixed !important; left: 0 !important; top: 0 !important; bottom: 0 !important;
+        z-index: 700 !important; transform: translateX(-100%) !important; width: 240px !important;
+        transition: transform 0.3s cubic-bezier(.4,0,.2,1) !important;
+      }
+      .sidebar.open { transform: translateX(0) !important; }
+      .main { margin-left: 0 !important; width: 100% !important; }
+      .toolbar {
+        flex-wrap: wrap !important; gap: 6px !important; padding: 8px !important;
+        height: auto !important; min-height: 48px !important;
+      }
+      .prompt-wrap {
+        position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important;
+        background: var(--surface-solid, #16132b) !important;
+        border-top: 1px solid var(--border, rgba(255,255,255,0.08)) !important;
+        border-radius: 0 !important; padding: 10px 12px !important; z-index: 600 !important;
+      }
+      .gx-stage { padding-bottom: 80px !important; }
+      .gx-surface table { display: block; overflow-x: auto; }
+      #historyDrawer { width: 100% !important; }
+    }
+
+    /* ── CMDK preview card ── */
+    #cmdkPreview {
+      border-top: 1px solid var(--border, rgba(255,255,255,0.08));
+      padding: 14px 16px; background: var(--glass, rgba(255,255,255,0.03));
+      display: none;
+    }
+    #cmdkPreview.visible { display: block; }
+    .cmdk-preview-title { font-size: 13px; font-weight: 600; color: var(--text, #e8e6f0); margin-bottom: 4px; }
+    .cmdk-preview-desc { font-size: 12px; color: var(--muted, #7a7a9a); line-height: 1.5; }
+
+    /* ── History trigger button ── */
+    #histBtn {
+      background: var(--glass, rgba(255,255,255,0.05)); border: 1px solid var(--border, rgba(255,255,255,0.08));
+      border-radius: 8px; padding: 6px 12px; font-size: 12px; color: var(--muted, #7a7a9a);
+      cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s;
+      white-space: nowrap;
+    }
+    #histBtn:hover { color: var(--text, #e8e6f0); border-color: var(--border-strong, rgba(255,255,255,0.15)); }
+
+    /* ── Surface header standard ── */
+    .gx-sh { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .gx-sh-left { display: flex; align-items: center; gap: 10px; }
+    .gx-sh-title { font-size: 16px; font-weight: 700; color: var(--text, #e8e6f0); }
+    .gx-sh-tag {
+      padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
+      background: var(--accent-soft, rgba(249,115,22,0.1)); border: 1px solid var(--accent-line, rgba(249,115,22,0.25));
+      color: var(--accent, #F97316);
+    }
+    .gx-sh-actions { display: flex; gap: 8px; }
+
+    /* ── Fleet map stats row ── */
+    .fleet-stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;
+    }
+    .fleet-stat-card {
+      background: var(--glass, rgba(255,255,255,0.05)); border: 1px solid var(--border, rgba(255,255,255,0.08));
+      border-radius: 12px; padding: 14px 16px;
+    }
+    .fleet-stat-label { font-size: 11px; color: var(--muted, #7a7a9a); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .fleet-stat-val { font-size: 22px; font-weight: 800; color: var(--text, #e8e6f0); }
+    .fleet-stat-sub { font-size: 11px; color: var(--muted, #7a7a9a); margin-top: 2px; }
+
+    /* ── Branch table ── */
+    .branch-table-wrap { margin-top: 16px; overflow-x: auto; }
+    .branch-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .branch-table th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 600; color: var(--muted, #7a7a9a); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border, rgba(255,255,255,0.08)); }
+    .branch-table td { padding: 10px 12px; color: var(--text, #e8e6f0); border-bottom: 1px solid var(--border, rgba(255,255,255,0.06)); }
+    .branch-table tr:hover td { background: var(--glass, rgba(255,255,255,0.03)); }
+    .branch-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+
+    /* ── Revenue charts grid ── */
+    .rev-grid-top { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .rev-chart-card {
+      background: var(--glass, rgba(255,255,255,0.04)); border: 1px solid var(--border, rgba(255,255,255,0.08));
+      border-radius: 12px; padding: 16px 18px;
+    }
+    .rev-chart-title { font-size: 13px; font-weight: 600; color: var(--text, #e8e6f0); margin-bottom: 12px; }
+    .rev-chart-wrap { height: 200px; position: relative; }
+    .rev-kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+    .rev-kpi { background: var(--glass, rgba(255,255,255,0.04)); border: 1px solid var(--border, rgba(255,255,255,0.08)); border-radius: 10px; padding: 12px 14px; }
+    .rev-kpi-label { font-size: 10px; color: var(--muted, #7a7a9a); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .rev-kpi-val { font-size: 20px; font-weight: 800; color: var(--text, #e8e6f0); }
+    .rev-kpi-delta { font-size: 11px; margin-top: 2px; }
+    .delta-up { color: #22c55e; }
+    .delta-down { color: #ef4444; }
+  `;
+  document.head.appendChild(style);
+}
+
+/* ─────────────────────────────────────────────
+   MODULE 1 — CLAUDE API INTEGRATION
+   ───────────────────────────────────────────── */
+function initApiIntegration() {
+  const _oldGenerate = window.generateSurface;
+  if (!_oldGenerate) return;
+
+  window.generateSurface = async function(query) {
+    if (!query || !query.trim()) return;
+
+    const stage = document.getElementById('stage');
+    const empty = document.getElementById('empty');
+    const tabs  = document.getElementById('tabs');
+    if (empty) empty.style.display = 'none';
+
+    // Create loading surface
+    const loadId = 'surface-loading-' + Date.now();
+    const loadEl = document.createElement('div');
+    loadEl.id = loadId;
+    loadEl.className = 'gx-surface';
+    loadEl.style.cssText = 'padding:24px;height:100%;overflow-y:auto;display:flex;flex-direction:column;gap:16px;';
+    loadEl.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <div style="width:220px;height:24px;background:var(--glass);border-radius:6px;animation:skeletonPulse 1.5s ease-in-out infinite"></div>
+        <div style="width:80px;height:20px;background:var(--glass);border-radius:6px;animation:skeletonPulse 1.5s ease-in-out infinite 0.2s"></div>
+      </div>
+      ${[0,1,2].map((i) => `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;animation:skeletonPulse 1.5s ease-in-out infinite ${i*0.15}s">
+        <div style="width:${[60,80,45][i]}%;height:14px;background:var(--glass);border-radius:4px;margin-bottom:12px"></div>
+        <div style="display:grid;grid-template-columns:repeat(${[4,2,3][i]},1fr);gap:12px">
+          ${Array.from({length:[4,2,3][i]}).map(() => `<div style="height:${[80,120,90][i]}px;background:var(--glass);border-radius:8px"></div>`).join('')}
+        </div>
+      </div>`).join('')}
+      <div style="text-align:center;color:var(--muted);font-size:12px;margin-top:8px">
+        <span style="display:inline-flex;align-items:center;gap:8px">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;animation:pulseDot 1s ease-in-out infinite"></span>
+          Dashboard Agent generating surface…
+        </span>
+      </div>
+    `;
+    if (stage) stage.appendChild(loadEl);
+
+    // Hide other surfaces
+    qsa('.gx-surface', stage).forEach(s => { if (s.id !== loadId) s.style.display = 'none'; });
+
+    // Loading tab
+    let loadTab = null;
+    if (tabs) {
+      qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+      loadTab = document.createElement('button');
+      loadTab.className = 'gx-tab active';
+      loadTab.id = 'tab-' + loadId;
+      loadTab.innerHTML = `<span class="tt">${query.substring(0,26)}${query.length>26?'…':''}</span><span style="font-size:9.5px;opacity:0.6;font-family:'JetBrains Mono',monospace;margin-left:6px;animation:skeletonPulse 1s infinite">generating</span>`;
+      tabs.appendChild(loadTab);
+      loadTab.addEventListener('click', () => {
+        qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+        loadTab.classList.add('active');
+        qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+        loadEl.style.display = '';
+      });
+    }
+
+    let apiResult = null;
+    try {
+      const resp = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, role: localStorage.getItem('role') || 'owner' }),
+        signal: AbortSignal.timeout(25000)
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (!data.fallback) apiResult = data;
+      }
+    } catch(e) {
+      console.log('[AdaptiveAI] API unavailable, using templates');
+    }
+
+    // Remove loading state
+    loadEl.remove();
+    const tabToRemove = document.getElementById('tab-' + loadId);
+    if (tabToRemove) tabToRemove.remove();
+
+    // Record history
+    pushHistory(query);
+
+    if (apiResult) {
+      renderApiSurface(query, apiResult);
+    } else {
+      // Check for specialized surfaces first
+      const ql = query.toLowerCase();
+      if (/map|location|where|gps|track|branch/.test(ql)) {
+        renderFleetMapSurface(query);
+      } else if (/revenue|financial|chart|analytics|earning|profit/.test(ql)) {
+        renderRevenueSurface(query);
+      } else if (/kanban|board|turnaround|workflow|pipeline/.test(ql)) {
+        renderKanbanSurface(query);
+      } else if (/agent|automat|bot\b|ai\b/.test(ql)) {
+        renderAgentsSurface(query);
+      } else {
+        _oldGenerate(query);
+      }
+    }
+
+    // Persist state
+    saveSurfaceState();
+  };
+
+  function renderApiSurface(query, result) {
+    const stage  = document.getElementById('stage');
+    const tabs   = document.getElementById('tabs');
+    const surfId = uid();
+    const surfEl = document.createElement('div');
+    surfEl.id = surfId;
+    surfEl.className = 'gx-surface';
+    surfEl.style.cssText = 'padding:24px;height:100%;overflow-y:auto;';
+    surfEl.innerHTML = result.html || `
+      <div class="gx-sh">
+        <div class="gx-sh-left">
+          <span class="gx-sh-title">${result.title || query}</span>
+          <span class="gx-sh-tag">${result.tag || 'AI'}</span>
+        </div>
+      </div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.6">${result.body || 'Surface generated by Claude.'}</p>
+    `;
+    if (stage) { qsa('.gx-surface', stage).forEach(s => s.style.display = 'none'); stage.appendChild(surfEl); }
+
+    if (tabs) {
+      qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+      const tab = document.createElement('button');
+      tab.className = 'gx-tab active';
+      tab.dataset.target = surfId;
+      tab.innerHTML = `<span class="tt">${(result.title || query).substring(0,26)}</span>`;
+      tab.addEventListener('click', () => {
+        qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+        surfEl.style.display = '';
+      });
+      tabs.appendChild(tab);
+    }
+  }
+}
+
+/* ─────────────────────────────────────────────
+   MODULE 2 — SURFACE PERSISTENCE
+   ───────────────────────────────────────────── */
+const STORAGE_KEY = 'adaptiveai_surfaces_v2';
+const HISTORY_KEY = 'adaptiveai_history_v1';
+let _surfaceHistory = [];
+
+function saveSurfaceState() {
+  try {
+    const tabs = qsa('.gx-tab');
+    const state = tabs.map(t => ({
+      query: t.querySelector('.tt')?.textContent?.trim() || '',
+      target: t.dataset.target || ''
+    })).filter(s => s.query && !s.query.includes('generating'));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.slice(-5)));
+  } catch(e) {}
+}
+
+function pushHistory(query) {
+  if (!query || !query.trim()) return;
+  try {
+    _surfaceHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    _surfaceHistory.unshift({ query: query.trim(), ts: Date.now() });
+    _surfaceHistory = _surfaceHistory.slice(0, 20);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(_surfaceHistory));
+    renderHistoryList();
+  } catch(e) {}
+}
+
+function loadSavedState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    if (saved.length > 0 && saved[0].query) {
+      setTimeout(() => {
+        saved.slice(0, 3).forEach((s, i) => {
+          if (s.query) setTimeout(() => window.generateSurface && window.generateSurface(s.query), i * 400);
+        });
+      }, 900);
+    }
+  } catch(e) {}
+}
+
+/* ─────────────────────────────────────────────
+   MODULE 3 — FLEET MAP SURFACE
+   ───────────────────────────────────────────── */
+function renderFleetMapSurface(query) {
+  const stage  = document.getElementById('stage');
+  const tabs   = document.getElementById('tabs');
+  if (!stage) return;
+
+  const surfId = uid();
+  const mapId  = 'map-' + surfId;
+
+  const branches = [
+    { name:'Athens Airport',  lat:37.9356, lng:23.9484, vehicles:52, util:'94%', color:'#22c55e', active:49 },
+    { name:'Thessaloniki',    lat:40.6401, lng:22.9444, vehicles:38, util:'87%', color:'#F97316', active:33 },
+    { name:'Heraklion',       lat:35.3387, lng:25.1442, vehicles:31, util:'82%', color:'#F97316', active:25 },
+    { name:'Rhodes',          lat:36.4341, lng:28.2176, vehicles:28, util:'79%', color:'#eab308', active:22 },
+    { name:'Patras',          lat:38.2466, lng:21.7346, vehicles:24, util:'71%', color:'#eab308', active:17 },
+    { name:'Mykonos',         lat:37.4467, lng:25.3289, vehicles:16, util:'68%', color:'#ef4444', active:11 },
+  ];
+
+  const surfEl = document.createElement('div');
+  surfEl.id = surfId;
+  surfEl.className = 'gx-surface';
+  surfEl.style.cssText = 'padding:24px;height:100%;overflow-y:auto;display:flex;flex-direction:column;';
+  surfEl.innerHTML = `
+    <div class="gx-sh">
+      <div class="gx-sh-left">
+        <span class="gx-sh-title">Fleet Map — Live Vehicle Tracking</span>
+        <span class="gx-sh-tag">GPS · LIVE</span>
+      </div>
+      <div class="gx-sh-actions">
+        <button class="gx-tool-btn" onclick="window._toast&&window._toast('Refreshing GPS data…')">↻ Refresh</button>
+        <button class="gx-tool-btn" onclick="window._toast&&window._toast('Exporting KML…')">Export KML</button>
+      </div>
+    </div>
+
+    <div class="fleet-stats-row">
+      <div class="fleet-stat-card">
+        <div class="fleet-stat-label">Total Fleet</div>
+        <div class="fleet-stat-val">189</div>
+        <div class="fleet-stat-sub">across 6 branches</div>
+      </div>
+      <div class="fleet-stat-card">
+        <div class="fleet-stat-label">Active Now</div>
+        <div class="fleet-stat-val" style="color:#22c55e">157</div>
+        <div class="fleet-stat-sub">83.1% utilisation</div>
+      </div>
+      <div class="fleet-stat-card">
+        <div class="fleet-stat-label">In Service</div>
+        <div class="fleet-stat-val" style="color:#eab308">18</div>
+        <div class="fleet-stat-sub">maintenance</div>
+      </div>
+      <div class="fleet-stat-card">
+        <div class="fleet-stat-label">Overdue Returns</div>
+        <div class="fleet-stat-val" style="color:#ef4444">14</div>
+        <div class="fleet-stat-sub">avg 2.3h late</div>
+      </div>
+    </div>
+
+    <div id="${mapId}" class="fleet-map-container" style="flex:1;min-height:380px;border-radius:12px;overflow:hidden;border:1px solid var(--border)"></div>
+
+    <div class="branch-table-wrap">
+      <table class="branch-table">
+        <thead>
+          <tr>
+            <th>Branch</th><th>Vehicles</th><th>Active</th><th>Utilisation</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${branches.map(b => `
+          <tr>
+            <td><span class="branch-dot" style="background:${b.color}"></span>${b.name}</td>
+            <td>${b.vehicles}</td>
+            <td>${b.active}</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="flex:1;height:4px;background:var(--glass);border-radius:2px">
+                  <div style="width:${b.util};height:100%;background:${b.color};border-radius:2px"></div>
+                </div>
+                <span style="font-size:11px;color:${b.color};font-weight:600">${b.util}</span>
+              </div>
+            </td>
+            <td><span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:${b.color}">
+              <span style="width:6px;height:6px;border-radius:50%;background:${b.color};display:inline-block"></span>
+              ${parseFloat(b.util) >= 85 ? 'High demand' : parseFloat(b.util) >= 70 ? 'Moderate' : 'Low demand'}
+            </span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap">
+      ${[['#22c55e','Active / rented'],['#3b82f6','Available'],['#eab308','In service'],['#ef4444','Overdue']].map(([c,l]) =>
+        `<span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)">
+          <span style="width:10px;height:10px;border-radius:50%;background:${c};display:inline-block"></span>${l}
+        </span>`).join('')}
+    </div>
+  `;
+
+  qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+  stage.appendChild(surfEl);
+
+  if (tabs) {
+    qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+    const tab = document.createElement('button');
+    tab.className = 'gx-tab active';
+    tab.dataset.target = surfId;
+    tab.innerHTML = '<span class="tt">Fleet Map</span>';
+    tab.addEventListener('click', () => {
+      qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+      surfEl.style.display = '';
+    });
+    tabs.appendChild(tab);
+  }
+
+  // Initialize Leaflet after DOM insertion
+  requestAnimationFrame(() => renderFleetMap(surfEl, mapId, branches));
+}
+
+function renderFleetMap(surfaceEl, mapId, branches) {
+  const mapDiv = document.getElementById(mapId);
+  if (!mapDiv || !window.L) return;
+
+  try {
+    const map = L.map(mapDiv, { zoomControl: true }).setView([38.5, 24.5], 6);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap © CartoDB', subdomains: 'abcd', maxZoom: 19
+    }).addTo(map);
+
+    const statusColors = { active:'#22c55e', available:'#3b82f6', service:'#eab308', overdue:'#ef4444' };
+
+    branches.forEach(b => {
+      // Heat circle
+      L.circle([b.lat, b.lng], {
+        radius: 18000, color: b.color, fillColor: b.color, fillOpacity: 0.06, weight: 1
+      }).addTo(map);
+
+      // Branch marker
+      const icon = L.divIcon({
+        html: `<div style="background:${b.color}20;color:${b.color};padding:6px 10px;border-radius:9px;font-size:11px;font-weight:700;white-space:nowrap;border:1.5px solid ${b.color}60;box-shadow:0 4px 14px rgba(0,0,0,0.5);backdrop-filter:blur(4px)">${b.name}<br><span style="font-size:10px;opacity:0.85">${b.vehicles} veh · ${b.util}</span></div>`,
+        className: '', iconAnchor: [0, 0]
+      });
+      L.marker([b.lat, b.lng], { icon }).addTo(map)
+        .bindPopup(`<b>${b.name}</b><br>Vehicles: ${b.vehicles}<br>Active: ${b.active}<br>Utilisation: ${b.util}`);
+
+      // Random vehicle dots
+      const statuses = ['active','active','active','available','available','service','overdue'];
+      const count = Math.floor(b.vehicles * 0.4);
+      for (let i = 0; i < count; i++) {
+        const lat = b.lat + (Math.random() - 0.5) * 0.22;
+        const lng = b.lng + (Math.random() - 0.5) * 0.28;
+        const st  = statuses[Math.floor(Math.random() * statuses.length)];
+        L.circleMarker([lat, lng], {
+          radius: 5, color: statusColors[st], fillColor: statusColors[st],
+          fillOpacity: 0.85, weight: 1.5
+        }).addTo(map)
+          .bindPopup(`<b>Vehicle</b><br>Status: ${st}<br>Branch: ${b.name}`);
+      }
+    });
+
+    // Force redraw
+    setTimeout(() => map.invalidateSize(), 200);
+  } catch(err) {
+    console.warn('[AdaptiveAI] Map error:', err);
+  }
+}
+
+/* ─────────────────────────────────────────────
+   MODULE 4 — REVENUE ANALYTICS WITH CHART.JS
+   ───────────────────────────────────────────── */
+function renderRevenueSurface(query) {
+  const stage  = document.getElementById('stage');
+  const tabs   = document.getElementById('tabs');
+  if (!stage) return;
+
+  const surfId      = uid();
+  const revenueId   = 'rc-rev-'  + surfId;
+  const categoryId  = 'rc-cat-'  + surfId;
+  const branchId    = 'rc-bra-'  + surfId;
+
+  const surfEl = document.createElement('div');
+  surfEl.id = surfId;
+  surfEl.className = 'gx-surface';
+  surfEl.style.cssText = 'padding:24px;height:100%;overflow-y:auto;';
+  surfEl.innerHTML = `
+    <div class="gx-sh">
+      <div class="gx-sh-left">
+        <span class="gx-sh-title">Revenue Analytics</span>
+        <span class="gx-sh-tag">FINANCIAL</span>
+      </div>
+      <div class="gx-sh-actions">
+        <button class="gx-tool-btn" onclick="window._toast&&window._toast('Exporting PDF report…')">Export PDF</button>
+        <button class="gx-tool-btn" onclick="window._toast&&window._toast('Opening in full screen…')">⛶ Expand</button>
+      </div>
+    </div>
+
+    <div class="rev-kpi-row">
+      <div class="rev-kpi">
+        <div class="rev-kpi-label">Total Revenue (Jul)</div>
+        <div class="rev-kpi-val">€94,200</div>
+        <div class="rev-kpi-delta delta-up">↑ 12.4% vs Jun</div>
+      </div>
+      <div class="rev-kpi">
+        <div class="rev-kpi-label">Avg Daily Rate</div>
+        <div class="rev-kpi-val">€68.40</div>
+        <div class="rev-kpi-delta delta-up">↑ 5.2%</div>
+      </div>
+      <div class="rev-kpi">
+        <div class="rev-kpi-label">Fleet Utilisation</div>
+        <div class="rev-kpi-val">83.1%</div>
+        <div class="rev-kpi-delta delta-up">↑ 3.8pp</div>
+      </div>
+      <div class="rev-kpi">
+        <div class="rev-kpi-label">Net Margin</div>
+        <div class="rev-kpi-val">41.2%</div>
+        <div class="rev-kpi-delta delta-down">↓ 1.1pp</div>
+      </div>
+    </div>
+
+    <div style="background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:16px">
+      <div class="rev-chart-title">Weekly Revenue (Last 8 Weeks)</div>
+      <div class="rev-chart-wrap" style="height:220px">
+        <canvas id="${revenueId}"></canvas>
+      </div>
+    </div>
+
+    <div class="rev-grid-top">
+      <div class="rev-chart-card">
+        <div class="rev-chart-title">Fleet Category Mix</div>
+        <div class="rev-chart-wrap">
+          <canvas id="${categoryId}"></canvas>
+        </div>
+      </div>
+      <div class="rev-chart-card">
+        <div class="rev-chart-title">Branch Revenue (€k)</div>
+        <div class="rev-chart-wrap">
+          <canvas id="${branchId}"></canvas>
+        </div>
+      </div>
+    </div>
+  `;
+
+  qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+  stage.appendChild(surfEl);
+
+  if (tabs) {
+    qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+    const tab = document.createElement('button');
+    tab.className = 'gx-tab active';
+    tab.dataset.target = surfId;
+    tab.innerHTML = '<span class="tt">Revenue Analytics</span>';
+    tab.addEventListener('click', () => {
+      qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+      surfEl.style.display = '';
+    });
+    tabs.appendChild(tab);
+  }
+
+  requestAnimationFrame(() => renderRevenueCharts(surfEl, revenueId, categoryId, branchId));
+}
+
+function renderRevenueCharts(surfEl, revenueId, categoryId, branchId) {
+  if (!window.Chart) return;
+  Chart.defaults.color = '#a0a0b0';
+  Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+
+  try {
+    const revenueCtx = document.getElementById(revenueId);
+    if (revenueCtx) {
+      new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+          labels: ['Jun 2','Jun 9','Jun 16','Jun 23','Jun 30','Jul 7','Jul 14','Jul 21'],
+          datasets: [{
+            label: 'Revenue (€)',
+            data: [68400, 72100, 69800, 78200, 81400, 84100, 89200, 94200],
+            borderColor: '#F97316',
+            backgroundColor: 'rgba(249,115,22,0.1)',
+            fill: true, tension: 0.4,
+            pointBackgroundColor: '#F97316', pointRadius: 4, pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: 'rgba(255,255,255,0.04)' } },
+            y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { callback: v => '€' + v.toLocaleString() } }
+          }
+        }
+      });
+    }
+
+    const categoryCtx = document.getElementById(categoryId);
+    if (categoryCtx) {
+      new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Economy','Compact','SUV','Premium','Van','Electric'],
+          datasets: [{
+            data: [52, 41, 38, 28, 18, 12],
+            backgroundColor: ['#3b82f6','#22c55e','#F97316','#a855f7','#eab308','#06b6d4'],
+            borderWidth: 0, hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11 } } } }
+        }
+      });
+    }
+
+    const branchCtx = document.getElementById(branchId);
+    if (branchCtx) {
+      new Chart(branchCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Athens AP','Thessaloniki','Heraklion','Rhodes','Patras','Mykonos'],
+          datasets: [{
+            label: 'Revenue (€)',
+            data: [31400, 22100, 18900, 12400, 9400, 8200],
+            backgroundColor: [
+              'rgba(249,115,22,0.75)','rgba(249,115,22,0.65)','rgba(249,115,22,0.6)',
+              'rgba(249,115,22,0.5)','rgba(249,115,22,0.45)','rgba(249,115,22,0.4)'
+            ],
+            borderRadius: 6, borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { callback: v => '€'+Math.round(v/1000)+'k' } },
+            y: { grid: { display: false } }
+          }
+        }
+      });
+    }
+  } catch(err) { console.warn('[AdaptiveAI] Chart error:', err); }
+}
+
+/* ─────────────────────────────────────────────
+   MODULE 5 — KANBAN BOARD
+   ───────────────────────────────────────────── */
+function renderKanbanSurface(query) {
+  const stage = document.getElementById('stage');
+  const tabs  = document.getElementById('tabs');
+  if (!stage) return;
+
+  const surfId = uid();
+  const cols = [
+    { id:'pending',    label:'Pending',      color:'#a0a0b0', cards:[
+      { id:'kc-01', title:'GR-3821 Return', meta:['Athens Airport','Due: 14:30','SUV · Panos K.'], tag:'overdue',    tagC:'#ef4444' },
+      { id:'kc-02', title:'GR-1155 Pickup', meta:['Mykonos','16:00','Compact · M. Stavros'], tag:'scheduled',  tagC:'#3b82f6' },
+    ]},
+    { id:'inspection', label:'Inspection',   color:'#3b82f6', cards:[
+      { id:'kc-03', title:'GR-7741 Inspect', meta:['Thessaloniki','Workshop A','Compact'], tag:'in progress', tagC:'#3b82f6' },
+      { id:'kc-04', title:'GR-0092 Damage',  meta:['Heraklion','Rear bumper','SUV'],      tag:'flagged',     tagC:'#ef4444' },
+    ]},
+    { id:'cleaning',   label:'Cleaning',     color:'#22c55e', cards:[
+      { id:'kc-05', title:'GR-5521 Clean',   meta:['Rhodes','Bay 3','Economy · Yiota'],   tag:'fast-track',  tagC:'#22c55e' },
+    ]},
+    { id:'ready',      label:'Ready',        color:'#a855f7', cards:[
+      { id:'kc-06', title:'GR-2211 Ready',   meta:['Athens Airport','Bay 7','Van'],        tag:'ready',       tagC:'#22c55e' },
+      { id:'kc-07', title:'GR-4478 Ready',   meta:['Patras','Bay 2','Compact'],            tag:'ready',       tagC:'#22c55e' },
+      { id:'kc-08', title:'GR-8831 Ready',   meta:['Thessaloniki','Bay 1','SUV'],          tag:'ready',       tagC:'#22c55e' },
+    ]},
+    { id:'rented',     label:'Rented Out',   color:'#F97316', cards:[
+      { id:'kc-09', title:'GR-9001 Active',  meta:['Mykonos → Athens','Day 3/7','Premium'], tag:'active',    tagC:'#F97316' },
+      { id:'kc-10', title:'GR-3345 Active',  meta:['Rhodes','Day 1/5','Economy'],           tag:'active',    tagC:'#F97316' },
+    ]},
+  ];
+
+  const surfEl = document.createElement('div');
+  surfEl.id = surfId;
+  surfEl.className = 'gx-surface';
+  surfEl.style.cssText = 'padding:24px;height:100%;overflow:hidden;display:flex;flex-direction:column;';
+  surfEl.innerHTML = `
+    <div class="gx-sh" style="flex-shrink:0">
+      <div class="gx-sh-left">
+        <span class="gx-sh-title">Turnaround Workflow</span>
+        <span class="gx-sh-tag">KANBAN</span>
+      </div>
+      <div class="gx-sh-actions">
+        <button class="gx-tool-btn" onclick="window._toast&&window._toast('Adding new card…')">+ Add Card</button>
+        <button class="gx-tool-btn" onclick="window._toast&&window._toast('Exporting board…')">Export</button>
+      </div>
+    </div>
+    <div class="kn-board" style="flex:1;overflow:auto;padding-bottom:8px">
+      ${cols.map(col => `
+      <div class="kn-col">
+        <div class="kn-col-head" style="color:${col.color}">
+          ${col.label}
+          <span class="kn-badge">${col.cards.length}</span>
+        </div>
+        <div class="kn-col-body" data-col="${col.id}">
+          ${col.cards.map(card => `
+          <div class="kn-card" id="${card.id}" draggable="true">
+            <div class="kc-title">${card.title}</div>
+            <div class="kc-meta">
+              ${card.meta.map(m => `<span>${m}</span>`).join('')}
+            </div>
+            <span class="kc-tag" style="background:${card.tagC}18;color:${card.tagC};border:1px solid ${card.tagC}40">${card.tag}</span>
+          </div>`).join('')}
+        </div>
+      </div>`).join('')}
+    </div>
+  `;
+
+  qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+  stage.appendChild(surfEl);
+
+  if (tabs) {
+    qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+    const tab = document.createElement('button');
+    tab.className = 'gx-tab active';
+    tab.dataset.target = surfId;
+    tab.innerHTML = '<span class="tt">Turnaround Board</span>';
+    tab.addEventListener('click', () => {
+      qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+      surfEl.style.display = '';
+    });
+    tabs.appendChild(tab);
+  }
+
+  wireKanban(surfEl);
+}
+
+function wireKanban(surfaceEl) {
+  const cards = qsa('.kn-card', surfaceEl);
+  const colBodies = qsa('.kn-col-body', surfaceEl);
+
+  cards.forEach(card => {
+    card.draggable = true;
+    card.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', card.id);
+      setTimeout(() => { card.style.opacity = '0.4'; card.style.transform = 'scale(0.97)'; }, 0);
+    });
+    card.addEventListener('dragend', () => {
+      card.style.opacity = '';
+      card.style.transform = '';
+    });
+  });
+
+  colBodies.forEach(col => {
+    col.addEventListener('dragover', e => {
+      e.preventDefault();
+      col.style.background = 'rgba(249,115,22,0.06)';
+      col.style.outline = '2px dashed rgba(249,115,22,0.3)';
+      col.style.outlineOffset = '-2px';
+    });
+    col.addEventListener('dragleave', e => {
+      if (!col.contains(e.relatedTarget)) {
+        col.style.background = '';
+        col.style.outline = '';
+      }
+    });
+    col.addEventListener('drop', e => {
+      e.preventDefault();
+      col.style.background = '';
+      col.style.outline = '';
+      const id   = e.dataTransfer.getData('text/plain');
+      const card = document.getElementById(id);
+      if (card && card !== e.target) {
+        col.appendChild(card);
+        const colHead = col.closest('.kn-col')?.querySelector('.kn-col-head');
+        const colName = colHead ? colHead.textContent.trim().replace(/\d+/g,'').trim() : 'column';
+        toast('Moved to "' + colName + '"');
+        // Update count badge
+        const badge = colHead?.querySelector('.kn-badge');
+        if (badge) badge.textContent = col.children.length;
+        // Update source column count
+        const prev = card._prevCol;
+        if (prev) {
+          const prevBadge = prev.closest('.kn-col')?.querySelector('.kn-badge');
+          if (prevBadge) prevBadge.textContent = prev.children.length;
+        }
+      }
+      card && (card._prevCol = col);
+    });
+    // Track prev col on dragstart
+    cards.forEach(c => { c.addEventListener('dragstart', () => { c._prevCol = c.parentElement; }); });
+  });
+}
+
+/* ─────────────────────────────────────────────
+   MODULE 6 — AI AGENTS DASHBOARD
+   ───────────────────────────────────────────── */
+function renderAgentsSurface(query) {
+  const stage = document.getElementById('stage');
+  const tabs  = document.getElementById('tabs');
+  if (!stage) return;
+
+  const surfId = uid();
+  const agents = [
+    {
+      icon: '🤖', bg: 'rgba(249,115,22,0.12)', color: '#F97316',
+      name: 'Dashboard Agent', role: 'Surface generation & routing',
+      status: 'running', lastAction: 'Generated "Fleet Utilisation" surface · 2s ago',
+      actions: ['approve','run']
+    },
+    {
+      icon: '📊', bg: 'rgba(59,130,246,0.12)', color: '#3b82f6',
+      name: 'Analytics Agent', role: 'Revenue & performance insights',
+      status: 'running', lastAction: 'Computed Jul week-4 revenue delta · 18s ago',
+      actions: ['approve','run']
+    },
+    {
+      icon: '📍', bg: 'rgba(34,197,94,0.12)', color: '#22c55e',
+      name: 'Fleet Tracker', role: 'GPS & telematics aggregation',
+      status: 'running', lastAction: 'Polled 157 active vehicles · 5s ago',
+      actions: ['run']
+    },
+    {
+      icon: '🔔', bg: 'rgba(168,85,247,0.12)', color: '#a855f7',
+      name: 'Alert Agent', role: 'Overdue returns & anomaly detection',
+      status: 'waiting', lastAction: 'Queued: GR-3821 overdue 2h14m · pending approval',
+      actions: ['approve','reject']
+    },
+    {
+      icon: '📋', bg: 'rgba(234,179,8,0.12)', color: '#eab308',
+      name: 'Report Agent', role: 'PDF & Excel report generation',
+      status: 'idle', lastAction: 'Last run: Jul 21 08:00 · Monthly P&L report',
+      actions: ['run']
+    },
+    {
+      icon: '⚙️', bg: 'rgba(6,182,212,0.12)', color: '#06b6d4',
+      name: 'Maintenance Bot', role: 'Service scheduling & reminders',
+      status: 'idle', lastAction: 'Scheduled: GR-7741 service · tomorrow 09:00',
+      actions: ['approve','run']
+    },
+  ];
+
+  const surfEl = document.createElement('div');
+  surfEl.id = surfId;
+  surfEl.className = 'gx-surface';
+  surfEl.style.cssText = 'padding:24px;height:100%;overflow-y:auto;';
+  surfEl.innerHTML = `
+    <div class="gx-sh">
+      <div class="gx-sh-left">
+        <span class="gx-sh-title">AI Agents Control Panel</span>
+        <span class="gx-sh-tag">AGENTS</span>
+      </div>
+      <div class="gx-sh-actions">
+        <button class="gx-tool-btn" onclick="window._toast&&window._toast('Stopping all agents…')">⏹ Stop All</button>
+        <button class="gx-tool-btn" onclick="window._toast&&window._toast('Restarting agents…')">↻ Restart All</button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+      <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:14px 16px">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Running</div>
+        <div style="font-size:28px;font-weight:800;color:#22c55e">3</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">agents active</div>
+      </div>
+      <div style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.2);border-radius:12px;padding:14px 16px">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Waiting Approval</div>
+        <div style="font-size:28px;font-weight:800;color:#eab308">1</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">pending action</div>
+      </div>
+      <div style="background:rgba(160,160,176,0.08);border:1px solid rgba(160,160,176,0.15);border-radius:12px;padding:14px 16px">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Idle</div>
+        <div style="font-size:28px;font-weight:800;color:#a0a0b0">2</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">ready to run</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+      ${agents.map(a => `
+      <div class="agent-card">
+        <div class="ac-head">
+          <div class="ac-icon" style="background:${a.bg}">${a.icon}</div>
+          <div style="flex:1">
+            <div class="ac-name">${a.name}</div>
+            <div class="ac-role">${a.role}</div>
+          </div>
+          <span class="agent-badge ${a.status}">
+            <span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;${a.status==='running'?'animation:pulseDot 1.2s ease-in-out infinite':''}"></span>
+            ${a.status}
+          </span>
+        </div>
+        <div class="ac-last">Last: ${a.lastAction}</div>
+        <div class="ac-foot">
+          ${a.actions.includes('approve') ? `<button class="ac-approve" onclick="window._toast&&window._toast('✓ Approved — ${a.name}')">Approve</button>` : ''}
+          ${a.actions.includes('reject')  ? `<button class="ac-reject"  onclick="window._toast&&window._toast('✕ Rejected — ${a.name}')">Reject</button>`  : ''}
+          ${a.actions.includes('run')     ? `<button class="ac-run"     onclick="window._toast&&window._toast('▶ Running ${a.name}…')">Run Now</button>`     : ''}
+        </div>
+      </div>`).join('')}
+    </div>
+
+    <div style="margin-top:20px;background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px 18px">
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Agent Activity Log</div>
+      ${[
+        ['running','#22c55e','Dashboard Agent','Generated Fleet Map surface in 1.2s'],
+        ['running','#3b82f6','Analytics Agent','Revenue delta computed: +€10,100 vs last week'],
+        ['waiting','#eab308','Alert Agent','GR-3821 overdue alert — awaiting approval to send SMS'],
+        ['running','#22c55e','Fleet Tracker','GPS sync: 157/189 vehicles reporting'],
+        ['idle','#a0a0b0','Report Agent','Idle — next scheduled run: tomorrow 08:00'],
+      ].map(([s,c,n,msg]) => `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="width:6px;height:6px;border-radius:50%;background:${c};flex-shrink:0"></span>
+        <span style="font-size:12px;font-weight:600;color:${c};min-width:130px">${n}</span>
+        <span style="font-size:12px;color:var(--muted)">${msg}</span>
+      </div>`).join('')}
+    </div>
+  `;
+
+  qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+  stage.appendChild(surfEl);
+
+  if (tabs) {
+    qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+    const tab = document.createElement('button');
+    tab.className = 'gx-tab active';
+    tab.dataset.target = surfId;
+    tab.innerHTML = '<span class="tt">AI Agents</span>';
+    tab.addEventListener('click', () => {
+      qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+      surfEl.style.display = '';
+    });
+    tabs.appendChild(tab);
+  }
+}
+
+/* ─────────────────────────────────────────────
+   MODULE 7 — SURFACE HISTORY DRAWER
+   ───────────────────────────────────────────── */
+function initHistoryDrawer() {
+  // Build drawer HTML
+  const drawer = document.createElement('div');
+  drawer.id = 'historyDrawer';
+  drawer.innerHTML = `
+    <div class="hd-head">
+      <span>Surface History</span>
+      <button class="hd-close" id="histDrawerClose">✕ Close</button>
+    </div>
+    <div class="hd-list" id="hdList">
+      <div style="text-align:center;color:var(--muted);font-size:13px;padding:32px 0">No history yet. Generate some surfaces!</div>
+    </div>
+  `;
+  document.body.appendChild(drawer);
+
+  const scrim = document.createElement('div');
+  scrim.id = 'histDrawerScrim';
+  document.body.appendChild(scrim);
+
+  // History trigger button — inject into toolbar
+  const toolbar = document.querySelector('.topbar-actions');
+  if (toolbar) {
+    const btn = document.createElement('button');
+    btn.id = 'histBtn';
+    btn.title = 'Surface history';
+    btn.innerHTML = '🕐 History';
+    btn.addEventListener('click', openHistoryDrawer);
+    toolbar.appendChild(btn);
+  }
+
+  document.getElementById('histDrawerClose')?.addEventListener('click', closeHistoryDrawer);
+  scrim.addEventListener('click', closeHistoryDrawer);
+
+  // Load existing history
+  try {
+    _surfaceHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+  } catch(e) {}
+  renderHistoryList();
+}
+
+function openHistoryDrawer() {
+  renderHistoryList();
+  document.getElementById('historyDrawer')?.classList.add('open');
+  const scrim = document.getElementById('histDrawerScrim');
+  if (scrim) scrim.style.display = 'block';
+}
+
+function closeHistoryDrawer() {
+  document.getElementById('historyDrawer')?.classList.remove('open');
+  const scrim = document.getElementById('histDrawerScrim');
+  if (scrim) scrim.style.display = 'none';
+}
+
+function renderHistoryList() {
+  const list = document.getElementById('hdList');
+  if (!list) return;
+  if (!_surfaceHistory.length) {
+    list.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:32px 0">No history yet.</div>';
+    return;
+  }
+  list.innerHTML = _surfaceHistory.map((item, i) => {
+    const ago = formatAgo(item.ts);
+    return `
+    <div class="hd-item">
+      <div class="hd-q">${escHtml(item.query)}</div>
+      <div class="hd-ts">${ago}</div>
+      <button class="hd-reload" onclick="(function(){closeHistoryDrawer&&closeHistoryDrawer();window.generateSurface&&window.generateSurface(${JSON.stringify(item.query)})})()">↩ Reload surface</button>
+    </div>`;
+  }).join('');
+}
+
+function formatAgo(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60)   return s + 's ago';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago';
+  return Math.floor(s/86400) + 'd ago';
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ─────────────────────────────────────────────
+   MODULE 8 — ONBOARDING TOUR
+   ───────────────────────────────────────────── */
+function initOnboardingTour() {
+  if (localStorage.getItem('adaptiveai_toured') === '1') return;
+
+  const steps = [
+    {
+      title: 'Ask anything about your fleet',
+      body: 'Type any question — "show fleet map", "revenue analytics", "kanban board" — and a live surface generates instantly.',
+      target: () => document.getElementById('prompt') || document.querySelector('.prompt-wrap input, textarea[id*="prompt"]'),
+      pos: 'top'
+    },
+    {
+      title: 'Surfaces generate in real-time',
+      body: 'Each query creates a new interactive surface tab. Switch between them or tear them off for comparison.',
+      target: () => document.getElementById('stage') || document.querySelector('.gx-stage'),
+      pos: 'top'
+    },
+    {
+      title: 'Navigate detailed panels',
+      body: 'Use the sidebar to jump to Fleet, Revenue, Quality, Integrations, and more structured data views.',
+      target: () => document.querySelector('.sidebar, .nav-item'),
+      pos: 'right'
+    },
+    {
+      title: 'Switch roles to change the view',
+      body: 'Toggle between Owner, Manager, Agent, and Analyst roles. Each role sees a different set of insights and permissions.',
+      target: () => document.querySelector('[id*="role"], .role-btn, button[data-role]') || document.querySelector('.toolbar button:nth-child(2)'),
+      pos: 'bottom'
+    },
+    {
+      title: 'Press ⌘K for the command palette',
+      body: 'Quick-access any surface, action, or setting instantly with the keyboard shortcut ⌘K (Ctrl+K on Windows).',
+      target: () => document.getElementById('cmdkBtn') || document.querySelector('[id*="cmdk"], button[title*="K"]'),
+      pos: 'bottom'
+    },
+  ];
+
+  let step = 0;
+
+  // Build DOM
+  const backdrop = document.createElement('div');
+  backdrop.id = 'tourBackdrop';
+  document.body.appendChild(backdrop);
+
+  const highlight = document.createElement('div');
+  highlight.id = 'tourHighlight';
+  highlight.style.display = 'none';
+  document.body.appendChild(highlight);
+
+  const tooltip = document.createElement('div');
+  tooltip.id = 'tourTooltip';
+  document.body.appendChild(tooltip);
+
+  function showStep(i) {
+    const s = steps[i];
+    const el = s.target();
+
+    // Dots
+    const dots = steps.map((_, di) => `<div class="tt-dot${di === i ? ' active' : ''}"></div>`).join('');
+
+    tooltip.innerHTML = `
+      <div class="tt-step">Step ${i + 1} of ${steps.length}</div>
+      <div class="tt-title">${s.title}</div>
+      <div class="tt-body">${s.body}</div>
+      <div class="tt-foot">
+        <button class="tt-skip" onclick="endTour()">Skip tour</button>
+        <div class="tt-dots">${dots}</div>
+        <button class="tt-next" onclick="nextStep()">${i === steps.length - 1 ? 'Done 🎉' : 'Next →'}</button>
+      </div>
+    `;
+
+    // Position highlight on target
+    if (el) {
+      const r = el.getBoundingClientRect();
+      const pad = 8;
+      highlight.style.cssText = `
+        position:fixed; z-index:2000; border-radius:10px; pointer-events:none;
+        top:${r.top - pad}px; left:${r.left - pad}px;
+        width:${r.width + pad*2}px; height:${r.height + pad*2}px;
+        box-shadow:0 0 0 4px var(--accent,#F97316),0 0 0 8px rgba(249,115,22,0.2);
+        transition:all 0.3s cubic-bezier(.4,0,.2,1);
+        display:block;
+      `;
+
+      // Position tooltip
+      const tw = 300, th = 180, margin = 20;
+      let top = r.bottom + margin + pad;
+      let left = r.left;
+
+      if (s.pos === 'top') {
+        top = r.top - th - margin;
+        left = r.left;
+      } else if (s.pos === 'right') {
+        top = r.top;
+        left = r.right + margin;
+      } else if (s.pos === 'bottom') {
+        top = r.bottom + margin;
+        left = r.left;
+      }
+
+      // Clamp to viewport
+      top  = Math.max(10, Math.min(window.innerHeight - th - 10, top));
+      left = Math.max(10, Math.min(window.innerWidth  - tw - 10, left));
+
+      tooltip.style.cssText = `
+        position:fixed; z-index:2001; width:300px; pointer-events:all;
+        background:var(--surface-solid,#16132b); border:1px solid var(--accent-line,rgba(249,115,22,0.3));
+        border-radius:14px; padding:20px 22px; box-shadow:0 20px 60px rgba(0,0,0,0.6);
+        top:${top}px; left:${left}px;
+        transition:top 0.3s cubic-bezier(.4,0,.2,1),left 0.3s cubic-bezier(.4,0,.2,1);
+      `;
+    } else {
+      // Center
+      highlight.style.display = 'none';
+      tooltip.style.cssText = `
+        position:fixed; z-index:2001; width:300px; pointer-events:all;
+        background:var(--surface-solid,#16132b); border:1px solid var(--accent-line,rgba(249,115,22,0.3));
+        border-radius:14px; padding:20px 22px; box-shadow:0 20px 60px rgba(0,0,0,0.6);
+        top:50%; left:50%; transform:translate(-50%,-50%);
+      `;
+    }
+
+    backdrop.style.display = 'block';
+  }
+
+  window.nextStep = function() {
+    step++;
+    if (step >= steps.length) { endTour(); return; }
+    showStep(step);
+  };
+
+  window.endTour = function() {
+    backdrop.remove();
+    tooltip.remove();
+    highlight.remove();
+    localStorage.setItem('adaptiveai_toured', '1');
+    delete window.nextStep;
+    delete window.endTour;
+    toast('Tour complete! Generate a surface to get started.');
+  };
+
+  // backdrop is pointer-events:none so user can still interact with the app while touring
+  showStep(0);
+}
+
+/* ─────────────────────────────────────────────
+   MODULE 9 — ENHANCED CMDK KEYBOARD NAV
+   ───────────────────────────────────────────── */
+function initEnhancedCmdk() {
+  const cmdkModal = document.getElementById('cmdkModal');
+  if (!cmdkModal) return;
+
+  const inputEl = cmdkModal.querySelector('input');
+  if (!inputEl) return;
+
+  // Inject preview card
+  const previewCard = document.createElement('div');
+  previewCard.id = 'cmdkPreview';
+  cmdkModal.appendChild(previewCard);
+
+  // Recent queries section
+  const recentKey = 'adaptiveai_recent_v1';
+  function getRecent() {
+    try { return JSON.parse(localStorage.getItem(recentKey) || '[]'); } catch(e) { return []; }
+  }
+  function addRecent(q) {
+    try {
+      const r = getRecent().filter(x => x !== q);
+      r.unshift(q);
+      localStorage.setItem(recentKey, JSON.stringify(r.slice(0, 8)));
+    } catch(e) {}
+  }
+
+  function getItems() { return qsa('[data-action],[data-q],[onclick]', cmdkModal).filter(el => el.textContent.trim()); }
+
+  let selectedIdx = -1;
+
+  function updateSelection(items, idx) {
+    items.forEach((el, i) => {
+      el.style.background = '';
+      el.style.color = '';
+      if (i === idx) {
+        el.style.background = 'var(--accent-soft, rgba(249,115,22,0.1))';
+        el.style.color = 'var(--text, #e8e6f0)';
+        el.scrollIntoView({ block: 'nearest' });
+        // Update preview
+        previewCard.classList.add('visible');
+        previewCard.innerHTML = `
+          <div class="cmdk-preview-title">${el.textContent.trim().substring(0, 60)}</div>
+          <div class="cmdk-preview-desc">Press Enter to execute this command immediately</div>
+        `;
+      }
+    });
+    if (idx < 0) {
+      previewCard.classList.remove('visible');
+    }
+  }
+
+  cmdkModal.addEventListener('keydown', e => {
+    const items = getItems();
+    if (!items.length) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectedIdx = (selectedIdx + 1) % items.length;
+      updateSelection(items, selectedIdx);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectedIdx = (selectedIdx - 1 + items.length) % items.length;
+      updateSelection(items, selectedIdx);
+    } else if (e.key === 'Enter' && selectedIdx >= 0) {
+      e.preventDefault();
+      const sel = items[selectedIdx];
+      addRecent(sel.textContent.trim());
+      sel.click();
+      selectedIdx = -1;
+    } else if (e.key === 'Escape') {
+      selectedIdx = -1;
+      updateSelection(items, -1);
+    }
+  });
+
+  inputEl.addEventListener('input', () => {
+    selectedIdx = -1;
+    previewCard.classList.remove('visible');
+  });
+
+  // Intercept generateSurface calls to add to recent
+  const _origInput = inputEl;
+  _origInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && _origInput.value.trim()) {
+      addRecent(_origInput.value.trim());
+    }
+  });
+}
+
+/* ─────────────────────────────────────────────
+   MODULE 10 — MOBILE RESPONSIVE HAMBURGER
+   ───────────────────────────────────────────── */
+function initMobileResponsive() {
+  if (window.innerWidth >= 768) return;
+
+  const sidebar = document.querySelector('.sidebar');
+  const toolbar = document.querySelector('.toolbar');
+  if (!sidebar || !toolbar) return;
+
+  // Hamburger button
+  const hamBtn = document.createElement('button');
+  hamBtn.id = 'mobileHam';
+  hamBtn.style.cssText = `
+    display:none; background:var(--glass);border:1px solid var(--border);border-radius:8px;
+    padding:7px 10px;font-size:16px;cursor:pointer;color:var(--text);line-height:1;
+  `;
+  hamBtn.innerHTML = '☰';
+  hamBtn.title = 'Toggle menu';
+  hamBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    const scrim = document.getElementById('scrim');
+    if (scrim) scrim.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+  });
+
+  // Prepend to toolbar
+  toolbar.insertBefore(hamBtn, toolbar.firstChild);
+
+  function applyMobile() {
+    if (window.innerWidth < 768) {
+      hamBtn.style.display = 'flex';
+    } else {
+      hamBtn.style.display = 'none';
+      sidebar.classList.remove('open');
+    }
+  }
+
+  applyMobile();
+  window.addEventListener('resize', applyMobile, { passive: true });
+
+  // Close sidebar on nav item click (mobile)
+  sidebar.addEventListener('click', e => {
+    if (window.innerWidth >= 768) return;
+    if (e.target.closest('.nav-item')) {
+      sidebar.classList.remove('open');
+      const scrim = document.getElementById('scrim');
+      if (scrim) scrim.style.display = 'none';
+    }
+  });
+}
+
+/* ─────────────────────────────────────────────
+   MAIN INIT
+   ───────────────────────────────────────────── */
+function initModules() {
+  try { injectModuleCSS(); } catch(e) { console.warn('[M0]', e); }
+  try { initApiIntegration(); } catch(e) { console.warn('[M1]', e); }
+  try { initHistoryDrawer(); } catch(e) { console.warn('[M7]', e); }
+  try { initMobileResponsive(); } catch(e) { console.warn('[M10]', e); }
+  try { initEnhancedCmdk(); } catch(e) { console.warn('[M9]', e); }
+  // Tour deferred until user has had time to see the app
+  setTimeout(() => { try { initOnboardingTour(); } catch(e) { console.warn('[M8]', e); } }, 4000);
+  // State restore (after API integration wraps generateSurface)
+  setTimeout(() => { try { loadSavedState(); } catch(e) { console.warn('[M2]', e); } }, 600);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initModules);
+} else {
+  initModules();
+}
+
+})();
 </script>
 </body></html>
