@@ -4877,4 +4877,1953 @@ if (document.readyState === 'loading') {
 
 })();
 </script>
+
+<script>
+/* ─────────────────────────────────────────────────────────
+   AdaptiveAI Module v3 — Ultra-Scale Extensions
+   New surfaces: Schedule, Maintenance, Drivers, Fuel, Alerts
+   Enhanced: Shell, Live Data, ⌘K Categories, Keyboard Shortcuts
+   ───────────────────────────────────────────────────────── */
+(function() {
+  'use strict';
+
+  // ── Helpers ──────────────────────────────────────────────
+  function uid3() { return 'v3-' + Math.random().toString(36).slice(2,9); }
+  function qsa3(sel, ctx) { return Array.from((ctx||document).querySelectorAll(sel)); }
+  function qs3(sel, ctx) { return (ctx||document).querySelector(sel); }
+
+  // ── Keyword routing extension ──────────────────────────
+  function extendKeywordRouting() {
+    const prev = window.generateSurface;
+    if (!prev || prev._v3extended) return;
+    const extended = async function(query) {
+      const ql = (query || '').toLowerCase();
+      if (/schedule|calendar|appointment|booking|weekly/.test(ql)) {
+        return renderScheduleSurface(query);
+      } else if (/maintenance|service|repair|oil|tire|tyre|brake/.test(ql)) {
+        return renderMaintenanceSurface(query);
+      } else if (/driver|operator|personnel|leaderboard|driver perf/.test(ql)) {
+        return renderDriversSurface(query);
+      } else if (/fuel|mpg|consumption|refill|petrol|diesel/.test(ql)) {
+        return renderFuelSurface(query);
+      } else if (/alert|incident|emergency|critical|warning|alarm/.test(ql)) {
+        return renderAlertsSurface(query);
+      } else {
+        return prev(query);
+      }
+    };
+    extended._v3extended = true;
+    window.generateSurface = extended;
+  }
+
+  // ── NEW SURFACE FUNCTIONS ─────────────────────────────
+function renderScheduleSurface(query) {
+  const surfId = uid();
+
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+
+  const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const weekDates = weekDays.map((d, i) => {
+    const dt = new Date(monday);
+    dt.setDate(monday.getDate() + i);
+    return { label: d, date: dt.getDate(), month: dt.getMonth() + 1, full: dt };
+  });
+
+  const todayIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+
+  const events = [
+    { day: 0, vh: 'VH-012', type: 'Van', event: 'Route', driver: 'Νίκος Παπαδόπουλος' },
+    { day: 0, vh: 'VH-034', type: 'Truck', event: 'Maintenance', driver: 'Κώστας Αλεξίου' },
+    { day: 1, vh: 'VH-042', type: 'Van', event: 'Route', driver: 'Γιώργης Μανώλης' },
+    { day: 1, vh: 'VH-007', type: 'Bus', event: 'Inspection', driver: 'Σταύρος Δημητρίου' },
+    { day: 2, vh: 'VH-019', type: 'Truck', event: 'Route', driver: 'Μιχάλης Σταματίου' },
+    { day: 2, vh: 'VH-055', type: 'Van', event: 'Maintenance', driver: 'Αντώνης Κωνσταντίνου' },
+    { day: 3, vh: 'VH-028', type: 'Bus', event: 'Route', driver: 'Παναγιώτης Βασιλείου' },
+    { day: 4, vh: 'VH-063', type: 'Truck', event: 'Inspection', driver: 'Ελένη Γεωργίου' },
+    { day: 5, vh: 'VH-011', type: 'Van', event: 'Route', driver: 'Χρήστος Αντωνίου' },
+    { day: 6, vh: 'VH-047', type: 'Bus', event: 'Maintenance', driver: 'Δήμητρα Νικολάου' },
+  ];
+
+  const eventColor = { Route: 'var(--accent)', Maintenance: 'var(--good)', Inspection: 'var(--warn)' };
+
+  const cellsHtml = weekDates.map((wd, i) => {
+    const isToday = i === todayIdx;
+    const dayEvents = events.filter(e => e.day === i);
+    const cardsHtml = dayEvents.map(e => `
+      <div style="background:var(--glass);border:1px solid var(--border);border-left:3px solid ${eventColor[e.event]};border-radius:6px;padding:8px 10px;margin-bottom:6px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);font-weight:600;">${e.vh}</span>
+          <span style="font-size:10px;color:var(--dim);background:var(--glass-border);padding:1px 5px;border-radius:3px;">${e.type}</span>
+        </div>
+        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">${e.event}</div>
+        <div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${e.driver}</div>
+      </div>
+    `).join('');
+    return `
+      <div style="background:${isToday ? 'rgba(249,115,22,0.05)' : 'var(--glass)'};border:1px solid ${isToday ? 'var(--accent-line)' : 'var(--border)'};border-radius:8px;padding:10px;min-height:120px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span style="font-size:12px;font-weight:700;color:${isToday ? 'var(--accent)' : 'var(--text)'};">${wd.label}</span>
+          <span style="font-size:11px;color:${isToday ? 'var(--accent)' : 'var(--dim)'};font-family:'JetBrains Mono',monospace;">${String(wd.date).padStart(2,'0')}/${String(wd.month).padStart(2,'0')}</span>
+        </div>
+        ${cardsHtml || '<div style="font-size:11px;color:var(--dim);text-align:center;padding-top:20px;">No events</div>'}
+      </div>
+    `;
+  }).join('');
+
+  const tomorrow = new Date(now);
+  tomorrow.setDate(now.getDate() + 1);
+  const tomorrowStr = `${String(tomorrow.getDate()).padStart(2,'0')}/${String(tomorrow.getMonth()+1).padStart(2,'0')}`;
+
+  const upcomingHtml = [
+    { vh: 'VH-022', event: 'Annual Inspection — Athens depot', time: '08:00' },
+    { vh: 'VH-038', event: 'Route A14 — Thessaloniki–Larissa', time: '09:30' },
+    { vh: 'VH-051', event: 'Oil & Filter Service — Piraeus workshop', time: '11:00' },
+  ].map(u => `
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--glass);border:1px solid var(--border);border-radius:8px;">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);min-width:56px;">${u.time}</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);min-width:64px;">${u.vh}</span>
+      <span style="font-size:13px;color:var(--text);">${u.event}</span>
+    </div>
+  `).join('');
+
+  const surfEl = document.createElement('div');
+  surfEl.id = surfId;
+  surfEl.className = 'gx-surface';
+  surfEl.style.cssText = 'padding:24px;height:100%;overflow-y:auto;display:flex;flex-direction:column;gap:20px;';
+  surfEl.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.3px;">Weekly Schedule</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">Fleet operations — current week</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        ${[
+          { label: "Today's Routes", val: '12', color: 'var(--accent)' },
+          { label: 'Scheduled Maint.', val: '4', color: 'var(--warn)' },
+          { label: 'Driver Availability', val: '18/23', color: 'var(--good)' },
+          { label: 'Fleet Utilization', val: '78%', color: 'var(--info)' },
+        ].map(k => `
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;text-align:center;">
+            <div style="font-size:18px;font-weight:700;color:${k.color};font-family:'JetBrains Mono',monospace;">${k.val}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">${k.label}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;">
+      ${cellsHtml}
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.05em;">Tomorrow — ${tomorrowStr}</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">${upcomingHtml}</div>
+    </div>
+  `;
+
+  const stage = query.stage || document.querySelector('.gx-stage');
+  const tabs = query.tabs || document.querySelector('.gx-tabs');
+
+  qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+  stage.appendChild(surfEl);
+
+  if (tabs) {
+    qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+    const tab = document.createElement('button');
+    tab.className = 'gx-tab active';
+    tab.dataset.target = surfId;
+    tab.innerHTML = '<span class="tt">Schedule</span><span style="font-size:9px;opacity:0.5;margin-left:4px;">WEEK</span>';
+    tab.addEventListener('click', () => {
+      qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+      surfEl.style.display = '';
+    });
+    tabs.appendChild(tab);
+  }
+}
+
+function renderMaintenanceSurface(query) {
+  const surfId = uid();
+
+  const vehicles = [
+    { id: 'VH-003', model: 'Mercedes Sprinter 316', last: '2026-03-12', next: '2026-06-10', km: -420, status: 'Overdue', cost: '€380' },
+    { id: 'VH-007', model: 'Iveco Daily 35S15', last: '2026-04-01', next: '2026-06-25', km: -210, status: 'Overdue', cost: '€520' },
+    { id: 'VH-011', model: 'Ford Transit Custom', last: '2026-04-18', next: '2026-06-30', km: 80, status: 'Due Soon', cost: '€290' },
+    { id: 'VH-015', model: 'Volkswagen Crafter 35', last: '2026-05-02', next: '2026-07-03', km: 310, status: 'Due Soon', cost: '€410' },
+    { id: 'VH-019', model: 'Renault Master L3H2', last: '2026-02-14', next: '2026-06-14', km: -540, status: 'Overdue', cost: '€660' },
+    { id: 'VH-022', model: 'MAN TGE 3.140', last: '2026-05-20', next: '2026-07-20', km: 940, status: 'Good', cost: '€350' },
+    { id: 'VH-028', model: 'Peugeot Boxer 435L', last: '2026-05-10', next: '2026-07-10', km: 780, status: 'Good', cost: '€270' },
+    { id: 'VH-034', model: 'Fiat Ducato Maxi', last: '2026-03-30', next: '2026-06-28', km: 20, status: 'Due Soon', cost: '€490' },
+    { id: 'VH-038', model: 'Volvo FH 460', last: '2026-01-20', next: '2026-05-20', km: -880, status: 'Overdue', cost: '€1,200' },
+    { id: 'VH-042', model: 'DAF XF 480', last: '2026-04-25', next: '2026-07-05', km: 420, status: 'Good', cost: '€980' },
+    { id: 'VH-047', model: 'Scania R450', last: '2026-05-15', next: '2026-07-15', km: 1100, status: 'Good', cost: '€1,050' },
+    { id: 'VH-051', model: 'MAN TGX 18.480', last: '2026-03-05', next: '2026-06-05', km: -720, status: 'Overdue', cost: '€890' },
+    { id: 'VH-055', model: 'Mercedes Actros 1845', last: '2026-04-10', next: '2026-07-01', km: 80, status: 'Due Soon', cost: '€1,140' },
+    { id: 'VH-060', model: 'Iveco Stralis 480', last: '2026-05-28', next: '2026-08-28', km: 3100, status: 'Good', cost: '€760' },
+    { id: 'VH-063', model: 'Renault Premium 440', last: '2026-03-18', next: '2026-06-18', km: -590, status: 'Overdue', cost: '€830' },
+  ];
+
+  const statusStyle = {
+    Overdue: { bg: 'rgba(239,68,68,0.15)', color: 'var(--risk)', border: 'rgba(239,68,68,0.3)' },
+    'Due Soon': { bg: 'rgba(234,179,8,0.15)', color: 'var(--warn)', border: 'rgba(234,179,8,0.3)' },
+    Good: { bg: 'rgba(34,197,94,0.15)', color: 'var(--good)', border: 'rgba(34,197,94,0.3)' },
+  };
+
+  let activeFilter = 'All';
+
+  const rowsHtml = (filter) => vehicles
+    .filter(v => filter === 'All' || v.status === filter || (filter === 'Due This Week' && v.status === 'Due Soon'))
+    .map(v => {
+      const ss = statusStyle[v.status];
+      const kmColor = v.km < 0 ? 'var(--risk)' : v.km < 200 ? 'var(--warn)' : 'var(--good)';
+      return `
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);">${v.id}</td>
+          <td style="padding:10px 12px;font-size:13px;color:var(--text);">${v.model}</td>
+          <td style="padding:10px 12px;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;">${v.last}</td>
+          <td style="padding:10px 12px;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;">${v.next}</td>
+          <td style="padding:10px 12px;font-size:12px;color:${kmColor};font-family:'JetBrains Mono',monospace;">${v.km > 0 ? '+' : ''}${v.km.toLocaleString()} km</td>
+          <td style="padding:10px 12px;">
+            <span style="background:${ss.bg};color:${ss.color};border:1px solid ${ss.border};padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;">${v.status}</span>
+          </td>
+          <td style="padding:10px 12px;font-size:13px;color:var(--text);font-family:'JetBrains Mono',monospace;">${v.cost}</td>
+        </tr>
+      `;
+    }).join('');
+
+  const healthPct = 72;
+  const healthColor = healthPct > 80 ? 'var(--good)' : healthPct > 60 ? 'var(--warn)' : 'var(--risk)';
+
+  const surfEl = document.createElement('div');
+  surfEl.id = surfId;
+  surfEl.className = 'gx-surface';
+  surfEl.style.cssText = 'padding:24px;height:100%;overflow-y:auto;display:flex;flex-direction:column;gap:20px;';
+  surfEl.innerHTML = `
+    <div>
+      <div style="font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.3px;">Maintenance Tracker</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px;">Fleet service status — ${new Date().toLocaleDateString('el-GR')}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+      ${[
+        { label: 'Overdue', val: '7', sub: 'vehicles require immediate service', bg: 'rgba(239,68,68,0.1)', color: 'var(--risk)', border: 'rgba(239,68,68,0.25)' },
+        { label: 'Due This Week', val: '12', sub: 'vehicles scheduled for service', bg: 'rgba(234,179,8,0.08)', color: 'var(--warn)', border: 'rgba(234,179,8,0.25)' },
+        { label: 'Completed This Month', val: '34', sub: 'services performed in June', bg: 'rgba(34,197,94,0.08)', color: 'var(--good)', border: 'rgba(34,197,94,0.25)' },
+      ].map(k => `
+        <div style="background:${k.bg};border:1px solid ${k.border};border-radius:10px;padding:18px 20px;">
+          <div style="font-size:36px;font-weight:800;color:${k.color};font-family:'JetBrains Mono',monospace;line-height:1;">${k.val}</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text);margin-top:8px;">${k.label}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px;">${k.sub}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:13px;font-weight:600;color:var(--text);">Fleet Health Score</span>
+        <span style="font-size:20px;font-weight:700;color:${healthColor};font-family:'JetBrains Mono',monospace;">${healthPct}%</span>
+      </div>
+      <div style="background:var(--glass-border);border-radius:6px;height:8px;overflow:hidden;">
+        <div style="height:100%;width:${healthPct}%;background:${healthColor};border-radius:6px;transition:width 0.6s ease;"></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;">Based on service compliance across 53 active vehicles</div>
+    </div>
+    <div style="display:flex;gap:8px;" id="${surfId}-filters">
+      ${['All','Overdue','Due This Week','Good'].map(f => `
+        <button data-filter="${f}" style="padding:7px 16px;border-radius:6px;border:1px solid ${f==='All'?'var(--accent)':'var(--border)'};background:${f==='All'?'var(--accent-soft)':'transparent'};color:${f==='All'?'var(--accent)':'var(--muted)'};font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;">${f}</button>
+      `).join('')}
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:auto;">
+      <table style="width:100%;border-collapse:collapse;" id="${surfId}-table">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border-strong);">
+            ${['Vehicle ID','Model','Last Service','Next Due','Km Until Svc','Status','Est. Cost'].map(h => `<th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;">${h}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody id="${surfId}-tbody">
+          ${rowsHtml('All')}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  const stage = query.stage || document.querySelector('.gx-stage');
+  const tabs = query.tabs || document.querySelector('.gx-tabs');
+
+  qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+  stage.appendChild(surfEl);
+
+  surfEl.querySelector(`#${surfId}-filters`).addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-filter]');
+    if (!btn) return;
+    const filter = btn.dataset.filter;
+    qsa('[data-filter]', surfEl).forEach(b => {
+      b.style.borderColor = 'var(--border)';
+      b.style.background = 'transparent';
+      b.style.color = 'var(--muted)';
+    });
+    btn.style.borderColor = 'var(--accent)';
+    btn.style.background = 'var(--accent-soft)';
+    btn.style.color = 'var(--accent)';
+    const filterKey = filter === 'Due This Week' ? 'Due This Week' : filter;
+    surfEl.querySelector(`#${surfId}-tbody`).innerHTML = rowsHtml(filterKey);
+  });
+
+  if (tabs) {
+    qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+    const tab = document.createElement('button');
+    tab.className = 'gx-tab active';
+    tab.dataset.target = surfId;
+    tab.innerHTML = '<span class="tt">Maintenance</span><span style="font-size:9px;opacity:0.5;margin-left:4px;">FLEET</span>';
+    tab.addEventListener('click', () => {
+      qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+      surfEl.style.display = '';
+    });
+    tabs.appendChild(tab);
+  }
+}
+
+function renderDriversSurface(query) {
+  const surfId = uid();
+
+  const drivers = [
+    { rank: 1, name: 'Νίκος Παπαδόπουλος', score: 97.4, miles: 4820, brakes: 0, speeding: 0, status: 'Active' },
+    { rank: 2, name: 'Ελένη Γεωργίου', score: 95.1, miles: 4310, brakes: 1, speeding: 0, status: 'Active' },
+    { rank: 3, name: 'Μιχάλης Σταματίου', score: 93.8, miles: 5020, brakes: 2, speeding: 1, status: 'Active' },
+    { rank: 4, name: 'Παναγιώτης Βασιλείου', score: 91.2, miles: 3980, brakes: 3, speeding: 1, status: 'Active' },
+    { rank: 5, name: 'Χρήστος Αντωνίου', score: 89.6, miles: 4150, brakes: 4, speeding: 2, status: 'On Break' },
+    { rank: 6, name: 'Γιώργης Μανώλης', score: 87.3, miles: 3740, brakes: 5, speeding: 2, status: 'Active' },
+    { rank: 7, name: 'Σταύρος Δημητρίου', score: 85.0, miles: 3290, brakes: 6, speeding: 3, status: 'Active' },
+    { rank: 8, name: 'Δήμητρα Νικολάου', score: 82.7, miles: 2940, brakes: 7, speeding: 4, status: 'Off Duty' },
+    { rank: 9, name: 'Αντώνης Κωνσταντίνου', score: 79.4, miles: 3810, brakes: 9, speeding: 5, status: 'Active' },
+    { rank: 10, name: 'Κώστας Αλεξίου', score: 76.1, miles: 2680, brakes: 11, speeding: 6, status: 'On Break' },
+    { rank: 11, name: 'Θεόδωρος Μακρής', score: 72.8, miles: 2100, brakes: 13, speeding: 8, status: 'Active' },
+    { rank: 12, name: 'Μαρία Παπανικολάου', score: 68.5, miles: 1850, brakes: 16, speeding: 10, status: 'Off Duty' },
+  ];
+
+  const scoreColor = s => s >= 90 ? 'var(--good)' : s >= 75 ? 'var(--warn)' : 'var(--risk)';
+  const stars = s => {
+    const filled = Math.round(s / 20);
+    return '★'.repeat(filled) + '☆'.repeat(5 - filled);
+  };
+
+  const statusStyle = {
+    'Active': { bg: 'rgba(34,197,94,0.12)', color: 'var(--good)', border: 'rgba(34,197,94,0.3)' },
+    'On Break': { bg: 'rgba(234,179,8,0.12)', color: 'var(--warn)', border: 'rgba(234,179,8,0.3)' },
+    'Off Duty': { bg: 'rgba(92,96,105,0.2)', color: 'var(--dim)', border: 'rgba(92,96,105,0.3)' },
+  };
+
+  const podiumColors = ['#F59E0B', '#9CA3AF', '#CD7C2F'];
+  const podiumLabels = ['1st', '2nd', '3rd'];
+
+  const podiumHtml = drivers.slice(0, 3).map((d, i) => `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;position:relative;flex:1;min-width:0;${i===0?'border-color:rgba(245,158,11,0.35);background:rgba(245,158,11,0.05);':''}">
+      <div style="position:absolute;top:12px;right:12px;background:${podiumColors[i]};color:#000;font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;">${podiumLabels[i]}</div>
+      <div style="font-size:42px;font-weight:800;color:${podiumColors[i]};font-family:'JetBrains Mono',monospace;line-height:1;">${d.score}</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Safety Score</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;">${d.name}</div>
+      <div style="display:flex;flex-direction:column;gap:5px;text-align:left;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--muted);">Miles</span><span style="color:var(--text);font-family:'JetBrains Mono',monospace;">${d.miles.toLocaleString()}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--muted);">Hard Brakes</span><span style="color:${d.brakes===0?'var(--good)':'var(--warn)'};font-family:'JetBrains Mono',monospace;">${d.brakes}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--muted);">Rating</span><span style="color:${podiumColors[i]};">${stars(d.score)}</span></div>
+      </div>
+    </div>
+  `).join('');
+
+  const tableRows = drivers.map(d => {
+    const ss = statusStyle[d.status];
+    return `
+      <tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);">#${d.rank}</td>
+        <td style="padding:10px 12px;font-size:13px;font-weight:600;color:var(--text);">${d.name}</td>
+        <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:${scoreColor(d.score)};">${d.score}</td>
+        <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);">${d.miles.toLocaleString()}</td>
+        <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:${d.brakes>8?'var(--risk)':d.brakes>4?'var(--warn)':'var(--good)'};">${d.brakes}</td>
+        <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:${d.speeding>6?'var(--risk)':d.speeding>3?'var(--warn)':'var(--good)'};">${d.speeding}</td>
+        <td style="padding:10px 12px;">
+          <span style="background:${ss.bg};color:${ss.color};border:1px solid ${ss.border};padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;">${d.status}</span>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  const surfEl = document.createElement('div');
+  surfEl.id = surfId;
+  surfEl.className = 'gx-surface';
+  surfEl.style.cssText = 'padding:24px;height:100%;overflow-y:auto;display:flex;flex-direction:column;gap:20px;';
+  surfEl.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.3px;">Driver Performance</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">Safety scores and driving metrics</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        ${['This Week','This Month','All Time'].map((p,i) => `
+          <button style="padding:6px 14px;border-radius:6px;border:1px solid ${i===1?'var(--accent)':'var(--border)'};background:${i===1?'var(--accent-soft)':'transparent'};color:${i===1?'var(--accent)':'var(--muted)'};font-size:12px;font-weight:600;cursor:pointer;">${p}</button>
+        `).join('')}
+      </div>
+    </div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;">
+      ${podiumHtml}
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:auto;">
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border-strong);">
+            ${['Rank','Driver','Safety Score','Miles This Month','Hard Brakes','Speeding Events','Status'].map(h => `<th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;">${h}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+    </div>
+  `;
+
+  const stage = query.stage || document.querySelector('.gx-stage');
+  const tabs = query.tabs || document.querySelector('.gx-tabs');
+
+  qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+  stage.appendChild(surfEl);
+
+  if (tabs) {
+    qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+    const tab = document.createElement('button');
+    tab.className = 'gx-tab active';
+    tab.dataset.target = surfId;
+    tab.innerHTML = '<span class="tt">Drivers</span><span style="font-size:9px;opacity:0.5;margin-left:4px;">PERF</span>';
+    tab.addEventListener('click', () => {
+      qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+      surfEl.style.display = '';
+    });
+    tabs.appendChild(tab);
+  }
+}
+
+function renderFuelSurface(query) {
+  const surfId = uid();
+  const chartId = 'fuel-chart-' + uid();
+
+  const weekLabels = [];
+  const now = new Date();
+  for (let i = 7; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i * 7);
+    weekLabels.push(`W${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`);
+  }
+  const weekCosts = [2140, 2380, 1960, 2720, 2310, 2580, 2240, 2090];
+
+  const transactions = [
+    { date: '2026-06-28', vh: 'VH-042', driver: 'Γιώργης Μανώλης', liters: 68, cost: 119.5, l100: 9.2, station: 'BP Αθήνα Κέντρο', card: 'FC-0142' },
+    { date: '2026-06-27', vh: 'VH-019', driver: 'Μιχάλης Σταματίου', liters: 112, cost: 196.2, l100: 13.8, station: 'Shell Θεσσαλονίκη', card: 'FC-0219' },
+    { date: '2026-06-27', vh: 'VH-034', driver: 'Κώστας Αλεξίου', liters: 84, cost: 147.4, l100: 11.4, station: 'EKO Πειραιάς', card: 'FC-0134' },
+    { date: '2026-06-26', vh: 'VH-007', driver: 'Σταύρος Δημητρίου', liters: 45, cost: 79.0, l100: 8.6, station: 'Revoil Λάρισα', card: 'FC-0007' },
+    { date: '2026-06-26', vh: 'VH-055', driver: 'Αντώνης Κωνσταντίνου', liters: 130, cost: 228.5, l100: 14.2, station: 'ΑΒ Πατήσια', card: 'FC-0255' },
+    { date: '2026-06-25', vh: 'VH-011', driver: 'Χρήστος Αντωνίου', liters: 52, cost: 91.3, l100: 9.8, station: 'BP Καλλιθέα', card: 'FC-0111' },
+    { date: '2026-06-25', vh: 'VH-028', driver: 'Παναγιώτης Βασιλείου', liters: 76, cost: 133.4, l100: 10.6, station: 'Shell Βόλος', card: 'FC-0028' },
+    { date: '2026-06-24', vh: 'VH-063', driver: 'Ελένη Γεωργίου', liters: 98, cost: 172.1, l100: 12.1, station: 'EKO Ηράκλειο', card: 'FC-0363' },
+    { date: '2026-06-24', vh: 'VH-003', driver: 'Νίκος Παπαδόπουλος', liters: 41, cost: 72.0, l100: 7.8, station: 'Revoil Κολωνάκι', card: 'FC-0003' },
+    { date: '2026-06-23', vh: 'VH-047', driver: 'Δήμητρα Νικολάου', liters: 155, cost: 272.4, l100: 15.6, station: 'BP Εθνική Οδός Α1', card: 'FC-0147' },
+  ];
+
+  const l100Color = v => v > 12 ? 'var(--risk)' : v > 10 ? 'var(--warn)' : 'var(--good)';
+
+  const txRows = transactions.map(t => `
+    <tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);">${t.date}</td>
+      <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);">${t.vh}</td>
+      <td style="padding:10px 12px;font-size:13px;color:var(--text);">${t.driver}</td>
+      <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);">${t.liters} L</td>
+      <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);">€${t.cost.toFixed(2)}</td>
+      <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:${l100Color(t.l100)};">${t.l100}</td>
+      <td style="padding:10px 12px;font-size:12px;color:var(--muted);">${t.station}</td>
+      <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);">${t.card}</td>
+    </tr>
+  `).join('');
+
+  const surfEl = document.createElement('div');
+  surfEl.id = surfId;
+  surfEl.className = 'gx-surface';
+  surfEl.style.cssText = 'padding:24px;height:100%;overflow-y:auto;display:flex;flex-direction:column;gap:20px;';
+  surfEl.innerHTML = `
+    <div>
+      <div style="font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.3px;">Fuel Management</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px;">Consumption analytics and transaction log</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      ${[
+        { label: 'Total Fuel Cost', val: '€18,420', sub: 'June 2026', color: 'var(--accent)' },
+        { label: 'Avg Fleet MPG', val: '8.4', sub: 'km per liter', color: 'var(--good)' },
+        { label: 'CO₂ This Month', val: '12.4t', sub: 'metric tons emitted', color: 'var(--warn)' },
+        { label: 'Fill-ups', val: '89', sub: 'transactions logged', color: 'var(--info)' },
+      ].map(k => `
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;">
+          <div style="font-size:28px;font-weight:800;color:${k.color};font-family:'JetBrains Mono',monospace;line-height:1;">${k.val}</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:8px;">${k.label}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:3px;">${k.sub}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;">
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:16px;">Fuel Cost Per Week — Last 8 Weeks (€)</div>
+      <div style="position:relative;height:180px;">
+        <canvas id="${chartId}" style="width:100%;height:100%;"></canvas>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:auto;">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);">Recent Transactions</div>
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border-strong);">
+            ${['Date','Vehicle','Driver','Liters','Cost','L/100km','Station','Fuel Card'].map(h => `<th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;">${h}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>${txRows}</tbody>
+      </table>
+    </div>
+  `;
+
+  const stage = query.stage || document.querySelector('.gx-stage');
+  const tabs = query.tabs || document.querySelector('.gx-tabs');
+
+  qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+  stage.appendChild(surfEl);
+
+  requestAnimationFrame(() => {
+    const canvas = document.getElementById(chartId);
+    if (!canvas) return;
+    const ChartLib = window.Chart;
+    if (!ChartLib) return;
+    if (ChartLib.register) {
+      try {
+        ChartLib.register(
+          ChartLib.CategoryScale,
+          ChartLib.LinearScale,
+          ChartLib.BarElement,
+          ChartLib.Tooltip,
+          ChartLib.Legend
+        );
+      } catch(e) {}
+    }
+    new ChartLib(canvas, {
+      type: 'bar',
+      data: {
+        labels: weekLabels,
+        datasets: [{
+          label: 'Fuel Cost (€)',
+          data: weekCosts,
+          backgroundColor: weekLabels.map((_, i) => i === weekLabels.length - 1 ? 'rgba(249,115,22,0.85)' : 'rgba(249,115,22,0.35)'),
+          borderColor: 'rgba(249,115,22,0.7)',
+          borderWidth: 1,
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#0d0d0d',
+            borderColor: 'rgba(255,255,255,0.08)',
+            borderWidth: 1,
+            titleColor: '#F5F5F4',
+            bodyColor: '#8E9299',
+            callbacks: { label: ctx => ` €${ctx.parsed.y.toLocaleString()}` }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            ticks: { color: '#5C6069', font: { family: 'JetBrains Mono', size: 11 } }
+          },
+          y: {
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            ticks: { color: '#5C6069', font: { family: 'JetBrains Mono', size: 11 }, callback: v => '€' + v.toLocaleString() }
+          }
+        }
+      }
+    });
+  });
+
+  if (tabs) {
+    qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+    const tab = document.createElement('button');
+    tab.className = 'gx-tab active';
+    tab.dataset.target = surfId;
+    tab.innerHTML = '<span class="tt">Fuel</span><span style="font-size:9px;opacity:0.5;margin-left:4px;">MGT</span>';
+    tab.addEventListener('click', () => {
+      qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+      surfEl.style.display = '';
+    });
+    tabs.appendChild(tab);
+  }
+}
+
+function renderAlertsSurface(query) {
+  const surfId = uid();
+
+  const allAlerts = [
+    { id: uid(), sev: 'critical', icon: '🔴', title: 'Driver Violation — Hard Braking Event', desc: 'Severe braking detected on A1 motorway near Larissa junction', vehicle: 'VH-019', time: '2 min ago' },
+    { id: uid(), sev: 'critical', icon: '🔴', title: 'Brake System Failure Warning', desc: 'Rear brake pressure loss detected — vehicle should be stopped immediately', vehicle: 'VH-038', time: '11 min ago' },
+    { id: uid(), sev: 'warning', icon: '🟠', title: 'Maintenance Overdue — 720 km Past Schedule', desc: 'Oil and filter service was due on 2026-06-05, vehicle still in operation', vehicle: 'VH-051', time: '1 hr ago' },
+    { id: uid(), sev: 'warning', icon: '🟠', title: 'Fuel Level Critical — 12% Remaining', desc: 'Vehicle has approximately 47 km of range left, nearest station is Revoil Θεσσαλονίκη', vehicle: 'VH-007', time: '23 min ago' },
+    { id: uid(), sev: 'warning', icon: '🟠', title: 'Route Delay — Traffic Incident on Egnatia Odos', desc: 'Estimated 42-minute delay. Alternative via Kavala bypass recommended', vehicle: 'VH-022', time: '35 min ago' },
+    { id: uid(), sev: 'warning', icon: '🟠', title: 'Tyre Pressure Low — Front Left', desc: 'Pressure reading 1.8 bar, recommended minimum is 2.3 bar', vehicle: 'VH-034', time: '48 min ago' },
+    { id: uid(), sev: 'warning', icon: '🟠', title: 'Driver Rest Time Exceeded', desc: 'Σταύρος Δημητρίου has been driving 5h 20min without a break — EU regulation limit is 4.5h', vehicle: 'VH-060', time: '1 hr ago' },
+    { id: uid(), sev: 'warning', icon: '🟠', title: 'Geofence Breach — Unauthorized Zone Entry', desc: 'Vehicle entered restricted port area at Piraeus without active delivery assignment', vehicle: 'VH-011', time: '2 hrs ago' },
+    { id: uid(), sev: 'warning', icon: '🟠', title: 'Speeding Event — 28 km/h Over Limit', desc: 'Speed of 108 km/h recorded in 80 km/h zone on National Road 8', vehicle: 'VH-063', time: '2 hrs ago' },
+    { id: uid(), sev: 'info', icon: '🔵', title: 'Checkpoint Cleared — Athens Central Depot', desc: 'Vehicle completed mandatory inspection at depot gate. All checks passed', vehicle: 'VH-042', time: '3 hrs ago' },
+    { id: uid(), sev: 'info', icon: '🔵', title: 'Fleet Sync Complete', desc: 'Telematics data synchronized for 53 active vehicles. No connectivity issues', vehicle: 'All Vehicles', time: '4 hrs ago' },
+    { id: uid(), sev: 'info', icon: '🔵', title: 'Route Assignment Confirmed', desc: 'Νίκος Παπαδόπουλος confirmed Route R-2026-06-28-A: Athens → Thessaloniki', vehicle: 'VH-003', time: '5 hrs ago' },
+  ];
+
+  const sevBorder = { critical: 'var(--risk)', warning: 'var(--warn)', info: 'var(--info)' };
+  const sevBg = { critical: 'rgba(239,68,68,0.05)', warning: 'rgba(234,179,8,0.04)', info: 'rgba(59,130,246,0.04)' };
+
+  const counts = { all: allAlerts.length, critical: 0, warning: 0, info: 0 };
+  allAlerts.forEach(a => counts[a.sev]++);
+
+  const renderAlertItems = (filter, container, liveData) => {
+    const items = filter === 'all' ? liveData : liveData.filter(a => a.sev === filter);
+    container.innerHTML = items.length === 0
+      ? `<div style="text-align:center;padding:40px;color:var(--dim);font-size:13px;">No alerts in this category</div>`
+      : items.map(a => `
+        <div data-alert-id="${a.id}" style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;background:${sevBg[a.sev]};border:1px solid var(--border);border-left:3px solid ${sevBorder[a.sev]};border-radius:8px;margin-bottom:8px;position:relative;">
+          <div style="font-size:18px;line-height:1;flex-shrink:0;margin-top:1px;">${a.icon}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">${a.title}</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:8px;">${a.desc}</div>
+            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);">${a.vehicle}</span>
+              <span style="font-size:11px;color:var(--dim);">${a.time}</span>
+            </div>
+          </div>
+          <button data-ack="${a.id}" style="flex-shrink:0;padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--border-strong)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">Acknowledge</button>
+        </div>
+      `).join('');
+  };
+
+  const surfEl = document.createElement('div');
+  surfEl.id = surfId;
+  surfEl.className = 'gx-surface';
+  surfEl.style.cssText = 'padding:24px;height:100%;overflow-y:auto;display:flex;flex-direction:column;gap:16px;';
+  surfEl.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.3px;">Live Alerts</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">Real-time incidents and fleet notifications</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:6px 14px;display:flex;align-items:center;gap:6px;">
+          <span style="font-size:12px;color:var(--risk);font-weight:600;">Critical</span>
+          <span id="${surfId}-cnt-critical" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;color:var(--risk);">${counts.critical}</span>
+        </div>
+        <div style="background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.3);border-radius:6px;padding:6px 14px;display:flex;align-items:center;gap:6px;">
+          <span style="font-size:12px;color:var(--warn);font-weight:600;">Warning</span>
+          <span id="${surfId}-cnt-warning" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;color:var(--warn);">${counts.warning}</span>
+        </div>
+        <div style="background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.3);border-radius:6px;padding:6px 14px;display:flex;align-items:center;gap:6px;">
+          <span style="font-size:12px;color:var(--info);font-weight:600;">Info</span>
+          <span id="${surfId}-cnt-info" style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;color:var(--info);">${counts.info}</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;" id="${surfId}-filter-tabs">
+      ${[['all','All'],['critical','Critical'],['warning','Warning'],['info','Info']].map(([key, label], i) => `
+        <button data-sev-filter="${key}" style="padding:7px 16px;border-radius:6px;border:1px solid ${i===0?'var(--accent)':'var(--border)'};background:${i===0?'var(--accent-soft)':'transparent'};color:${i===0?'var(--accent)':'var(--muted)'};font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;">${label}</button>
+      `).join('')}
+    </div>
+    <div id="${surfId}-alerts-list" style="flex:1;"></div>
+  `;
+
+  const stage = query.stage || document.querySelector('.gx-stage');
+  const tabs = query.tabs || document.querySelector('.gx-tabs');
+
+  qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+  stage.appendChild(surfEl);
+
+  let liveAlerts = [...allAlerts];
+  let activeFilter = 'all';
+  const listEl = surfEl.querySelector(`#${surfId}-alerts-list`);
+
+  renderAlertItems(activeFilter, listEl, liveAlerts);
+
+  surfEl.querySelector(`#${surfId}-filter-tabs`).addEventListener('click', e => {
+    const btn = e.target.closest('[data-sev-filter]');
+    if (!btn) return;
+    activeFilter = btn.dataset.sevFilter;
+    qsa('[data-sev-filter]', surfEl).forEach(b => {
+      b.style.borderColor = 'var(--border)';
+      b.style.background = 'transparent';
+      b.style.color = 'var(--muted)';
+    });
+    btn.style.borderColor = 'var(--accent)';
+    btn.style.background = 'var(--accent-soft)';
+    btn.style.color = 'var(--accent)';
+    renderAlertItems(activeFilter, listEl, liveAlerts);
+  });
+
+  listEl.addEventListener('click', e => {
+    const btn = e.target.closest('[data-ack]');
+    if (!btn) return;
+    const id = btn.dataset.ack;
+    const alertItem = liveAlerts.find(a => a.id === id);
+    if (!alertItem) return;
+    liveAlerts = liveAlerts.filter(a => a.id !== id);
+    const sev = alertItem.sev;
+    const cntEl = surfEl.querySelector(`#${surfId}-cnt-${sev}`);
+    if (cntEl) cntEl.textContent = Math.max(0, parseInt(cntEl.textContent) - 1);
+    const row = listEl.querySelector(`[data-alert-id="${id}"]`);
+    if (row) {
+      row.style.transition = 'opacity 0.2s, transform 0.2s';
+      row.style.opacity = '0';
+      row.style.transform = 'translateX(12px)';
+      setTimeout(() => {
+        renderAlertItems(activeFilter, listEl, liveAlerts);
+      }, 220);
+    }
+  });
+
+  if (tabs) {
+    qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+    const tab = document.createElement('button');
+    tab.className = 'gx-tab active';
+    tab.dataset.target = surfId;
+    tab.innerHTML = '<span class="tt">Alerts</span><span style="font-size:9px;opacity:0.5;margin-left:4px;">LIVE</span>';
+    tab.addEventListener('click', () => {
+      qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      qsa('.gx-surface', stage).forEach(s => s.style.display = 'none');
+      surfEl.style.display = '';
+    });
+    tabs.appendChild(tab);
+  }
+}
+
+  // ── ENHANCED SHELL FUNCTIONS ──────────────────────────
+function initNotificationsContent() {
+  const center = document.getElementById('notifCenter');
+  if (!center) return;
+
+  const notifications = [
+    { id: 1, icon: '🚗', title: 'VH-042 Speeding Alert', desc: 'Driver K. Nikolaou exceeded 120km/h on E75 motorway', time: '2m ago', type: 'critical', unread: true },
+    { id: 2, icon: '🔧', title: 'Maintenance Overdue', desc: 'VH-018 Sprinter: oil change 2,300km overdue — schedule immediately', time: '15m ago', type: 'warning', unread: true },
+    { id: 3, icon: '✅', title: 'Route Completed', desc: 'Athens → Thessaloniki delivery confirmed. 24 packages delivered', time: '1h ago', type: 'success', unread: true },
+    { id: 4, icon: '⚠️', title: 'Driver Issue', desc: 'G. Papadopoulos reported fatigue. Auto-assigned backup driver', time: '2h ago', type: 'warning', unread: true },
+    { id: 5, icon: '⛽', title: 'Fuel Alert', desc: 'VH-031 fuel below 15%. Nearest station: BP Kifisias Ave (2.1km)', time: '3h ago', type: 'warning', unread: false },
+    { id: 6, icon: '🛡️', title: 'Inspection Passed', desc: 'VH-007 passed annual roadworthiness inspection. Valid 12 months', time: '5h ago', type: 'success', unread: false },
+    { id: 7, icon: '🤖', title: 'AI Agent Completed', desc: 'Invoice processing agent finished: 47 documents, €12,840 processed', time: '6h ago', type: 'info', unread: false },
+    { id: 8, icon: '💳', title: 'Payment Received', desc: 'Client Hellenic Petroleum: €28,500 invoice paid — 3 days early', time: 'Yesterday', type: 'success', unread: false },
+  ];
+
+  const typeColors = {
+    critical: 'var(--risk)',
+    warning: 'var(--warn)',
+    success: 'var(--good)',
+    info: 'var(--info)',
+  };
+
+  const iconBg = {
+    critical: 'rgba(239,68,68,0.12)',
+    warning: 'rgba(234,179,8,0.12)',
+    success: 'rgba(34,197,94,0.12)',
+    info: 'rgba(59,130,246,0.12)',
+  };
+
+  let unreadCount = notifications.filter(n => n.unread).length;
+
+  function getUnreadCount() {
+    return center.querySelectorAll('.notif-dot[data-unread="true"]').length;
+  }
+
+  function updateBadges(count) {
+    const badge = document.getElementById('notifCountBadge');
+    const btnBadge = document.getElementById('notifBadge');
+    if (badge) {
+      badge.textContent = count;
+      badge.style.display = count > 0 ? 'flex' : 'none';
+    }
+    if (btnBadge) {
+      btnBadge.textContent = count;
+      btnBadge.style.display = count > 0 ? '' : 'none';
+    }
+  }
+
+  function buildItem(n) {
+    const borderColor = typeColors[n.type] || 'var(--border)';
+    const bg = iconBg[n.type] || 'rgba(255,255,255,0.04)';
+    return `
+      <div class="notif-item" data-id="${n.id}" style="
+        display:flex;align-items:flex-start;gap:12px;padding:12px 16px;
+        border-left:3px solid ${n.unread ? borderColor : 'transparent'};
+        background:${n.unread ? 'rgba(255,255,255,0.02)' : 'transparent'};
+        border-bottom:1px solid var(--border);cursor:pointer;
+        transition:background 0.15s;position:relative;
+      " onmouseenter="this.style.background='rgba(255,255,255,0.04)'"
+         onmouseleave="this.style.background='${n.unread ? 'rgba(255,255,255,0.02)' : 'transparent'}'">
+        <div style="
+          width:36px;height:36px;border-radius:50%;background:${bg};
+          display:flex;align-items:center;justify-content:center;
+          font-size:17px;flex-shrink:0;margin-top:1px;
+        ">${n.icon}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:3px;">
+            <span class="notif-title" style="font-weight:600;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n.title}</span>
+            <span class="notif-time" style="font-size:11px;color:var(--dim);white-space:nowrap;flex-shrink:0;">${n.time}</span>
+          </div>
+          <div class="notif-desc" style="font-size:12px;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${n.desc}</div>
+        </div>
+        <span class="notif-dot" data-unread="${n.unread}" style="
+          width:8px;height:8px;border-radius:50%;
+          background:${n.unread ? 'var(--accent)' : 'transparent'};
+          flex-shrink:0;margin-top:5px;transition:background 0.2s;
+        "></span>
+      </div>
+    `;
+  }
+
+  center.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:14px;font-weight:700;color:var(--text);">Notifications</span>
+        <span id="notifCountBadge" style="
+          display:${unreadCount > 0 ? 'flex' : 'none'};
+          align-items:center;justify-content:center;
+          width:18px;height:18px;border-radius:50%;
+          background:var(--risk);color:#fff;
+          font-size:10px;font-weight:700;line-height:1;
+        ">${unreadCount}</span>
+      </div>
+      <button id="notifMarkAllRead" style="
+        background:var(--glass);border:1px solid var(--border);
+        color:var(--muted);font-size:11.5px;padding:5px 11px;
+        border-radius:6px;cursor:pointer;transition:all 0.15s;
+      " onmouseenter="this.style.color='var(--text)';this.style.borderColor='var(--border-strong)'"
+         onmouseleave="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">
+        Mark all read
+      </button>
+    </div>
+    <div id="notifItemsList" style="overflow-y:auto;max-height:calc(100% - 60px);">
+      ${notifications.map(n => buildItem(n)).join('')}
+    </div>
+  `;
+
+  updateBadges(unreadCount);
+
+  center.querySelectorAll('.notif-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const dot = item.querySelector('.notif-dot');
+      if (dot && dot.dataset.unread === 'true') {
+        dot.dataset.unread = 'false';
+        dot.style.background = 'transparent';
+        item.style.background = 'transparent';
+        item.style.borderLeftColor = 'transparent';
+        item.addEventListener('mouseenter', () => { item.style.background = 'rgba(255,255,255,0.04)'; });
+        item.addEventListener('mouseleave', () => { item.style.background = 'transparent'; });
+        const count = getUnreadCount();
+        updateBadges(count);
+      }
+    });
+  });
+
+  document.getElementById('notifMarkAllRead').addEventListener('click', () => {
+    center.querySelectorAll('.notif-dot').forEach(dot => {
+      dot.dataset.unread = 'false';
+      dot.style.background = 'transparent';
+    });
+    center.querySelectorAll('.notif-item').forEach(item => {
+      item.style.background = 'transparent';
+      item.style.borderLeftColor = 'transparent';
+    });
+    updateBadges(0);
+  });
+}
+
+function initPulseContent() {
+  const panel = document.getElementById('pulsePanel');
+  if (!panel) return;
+
+  if (window._pulseInterval) {
+    clearInterval(window._pulseInterval);
+    window._pulseInterval = null;
+  }
+
+  const initialEvents = [
+    { icon: '🚛', color: 'var(--good)', action: 'VH-042 departed', detail: 'Athens Airport → Thessaloniki route started', time: 'just now' },
+    { icon: '✅', color: 'var(--good)', action: 'Route completed', detail: 'K. Papadopoulos: Athens → Piraeus Port, 45km, on time', time: '4m ago' },
+    { icon: '⚠️', color: 'var(--warn)', action: 'Maintenance alert', detail: 'VH-018 oil change overdue by 2,300km', time: '12m ago' },
+    { icon: '🤖', color: 'var(--accent)', action: 'AI Agent active', detail: 'Invoice batch processing: 47 documents queued', time: '18m ago' },
+    { icon: '💰', color: 'var(--good)', action: 'Revenue milestone', detail: 'November target: €85,420 / €80,000 — 106.8% achieved', time: '1h ago' },
+    { icon: '🛡️', color: 'var(--info)', action: 'Inspection cleared', detail: 'VH-007 passed annual roadworthiness — KTEO Piraeus', time: '2h ago' },
+    { icon: '📍', color: 'var(--accent)', action: 'Geofence entry', detail: 'VH-031 entered Port of Piraeus restricted zone', time: '3h ago' },
+    { icon: '🔄', color: 'var(--muted)', action: 'Fleet sync', detail: 'All 23 vehicles reporting. 0 connectivity issues', time: '5h ago' },
+  ];
+
+  const liveTemplates = [
+    { icon: '🚛', color: 'var(--good)', action: 'VH-{v} departed', detail: '{city1} → {city2} route initiated', time: 'just now' },
+    { icon: '⛽', color: 'var(--warn)', action: 'Fuel low — VH-{v}', detail: 'Tank at 12%. Nearest station: Shell {street} (1.8km)', time: 'just now' },
+    { icon: '✅', color: 'var(--good)', action: 'Delivery confirmed', detail: '{driver}: {city1} → {city2}, {pkg} packages signed', time: 'just now' },
+    { icon: '🔧', color: 'var(--warn)', action: 'Service reminder', detail: 'VH-{v} due for 20,000km service in {km}km', time: 'just now' },
+    { icon: '📍', color: 'var(--accent)', action: 'Geofence triggered', detail: 'VH-{v} exited {zone} zone boundary', time: 'just now' },
+    { icon: '💳', color: 'var(--good)', action: 'Payment received', detail: 'Client {client}: €{amount} settled on time', time: 'just now' },
+    { icon: '🤖', color: 'var(--accent)', action: 'AI insight ready', detail: 'Route optimization saved {km}km across {v} vehicles today', time: 'just now' },
+    { icon: '🚗', color: 'var(--risk)', action: 'Speed alert — VH-{v}', detail: 'Driver exceeded limit by {spd}km/h on {road}', time: 'just now' },
+    { icon: '🛡️', color: 'var(--info)', action: 'Document renewed', detail: 'VH-{v} insurance updated. Valid until {month} 2026', time: 'just now' },
+    { icon: '🔄', color: 'var(--muted)', action: 'Shift handover', detail: '{driver} clocked out. {driver2} assigned VH-{v}', time: 'just now' },
+  ];
+
+  const vehicles = ['011', '018', '023', '031', '042', '055', '067', '078', '089', '094'];
+  const cities = ['Athens', 'Thessaloniki', 'Piraeus', 'Patras', 'Larissa', 'Heraklion', 'Volos'];
+  const drivers = ['K. Nikolaou', 'G. Papadopoulos', 'A. Georgiou', 'M. Stavros', 'P. Kostas'];
+  const zones = ['Port', 'Airport', 'Industrial', 'City Center', 'Warehouse'];
+  const roads = ['E75', 'A1', 'Kifisias Ave', 'Vouliagmenis Ave', 'Attiki Odos'];
+  const clients = ['Hellenic Petroleum', 'Alpha Bank', 'OTE Group', 'Cosmote', 'OPAP'];
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const streets = ['Syntagma', 'Omonia', 'Kolonaki', 'Glyfada', 'Marousi'];
+
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+  function fillTemplate(str) {
+    return str
+      .replace(/{v}/g, pick(vehicles))
+      .replace(/{city1}/g, pick(cities))
+      .replace(/{city2}/g, pick(cities))
+      .replace(/{driver}/g, pick(drivers))
+      .replace(/{driver2}/g, pick(drivers))
+      .replace(/{pkg}/g, rnd(8, 60))
+      .replace(/{km}/g, rnd(100, 800))
+      .replace(/{zone}/g, pick(zones))
+      .replace(/{client}/g, pick(clients))
+      .replace(/{amount}/g, (rnd(5, 50) * 1000).toLocaleString())
+      .replace(/{spd}/g, rnd(10, 45))
+      .replace(/{road}/g, pick(roads))
+      .replace(/{month}/g, pick(months))
+      .replace(/{street}/g, pick(streets));
+  }
+
+  if (!document.getElementById('_pulseAnim')) {
+    const style = document.createElement('style');
+    style.id = '_pulseAnim';
+    style.textContent = `
+      @keyframes _dotPulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+      @keyframes _slideIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+      ._pulse-dot-live { animation: _dotPulse 2s ease-in-out infinite; }
+      ._pulse-new { animation: _slideIn 0.3s ease forwards; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function buildPulseItem(ev, isNew) {
+    return `
+      <div class="pulse-item${isNew ? ' _pulse-new' : ''}" style="
+        display:flex;align-items:flex-start;gap:10px;
+        padding:10px 14px;border-left:3px solid ${ev.color};
+        border-bottom:1px solid var(--border);
+        background:transparent;transition:background 0.15s;
+      " onmouseenter="this.style.background='rgba(255,255,255,0.03)'"
+         onmouseleave="this.style.background='transparent'">
+        <span style="font-size:16px;flex-shrink:0;margin-top:1px;">${ev.icon}</span>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+            <span style="font-weight:600;font-size:12.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ev.action}</span>
+            <span style="font-size:11px;color:var(--dim);white-space:nowrap;flex-shrink:0;">${ev.time}</span>
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ev.detail}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  panel.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="display:inline-flex;align-items:center;gap:5px;">
+          <span class="_pulse-dot-live" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--good);"></span>
+        </span>
+        <span style="font-size:14px;font-weight:700;color:var(--text);">Live Activity</span>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button id="pulsePauseBtn" style="
+          background:var(--glass);border:1px solid var(--border);
+          color:var(--muted);font-size:11.5px;padding:5px 11px;
+          border-radius:6px;cursor:pointer;transition:all 0.15s;
+        " onmouseenter="this.style.color='var(--text)';this.style.borderColor='var(--border-strong)'"
+           onmouseleave="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">
+          ⏸ Pause
+        </button>
+        <button id="pulseCloseBtn" aria-label="Close" style="
+          width:30px;height:30px;border-radius:6px;
+          background:var(--glass);border:1px solid var(--border);
+          color:var(--muted);cursor:pointer;font-size:14px;
+          display:flex;align-items:center;justify-content:center;
+          transition:all 0.15s;
+        " onmouseenter="this.style.color='var(--text)';this.style.borderColor='var(--border-strong)'"
+           onmouseleave="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">✕</button>
+      </div>
+    </div>
+    <div class="pulse-metrics" style="display:flex;gap:0;border-bottom:1px solid var(--border);">
+      <div style="flex:1;padding:10px 14px;border-right:1px solid var(--border);">
+        <div style="font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Today bookings</div>
+        <div id="pmBookings" style="font-size:20px;font-weight:700;color:var(--text);">38</div>
+      </div>
+      <div style="flex:1;padding:10px 14px;border-right:1px solid var(--border);">
+        <div style="font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">On rent now</div>
+        <div id="pmOnRent" style="font-size:20px;font-weight:700;color:var(--text);">112</div>
+      </div>
+      <div style="flex:1;padding:10px 14px;">
+        <div style="font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Revenue today</div>
+        <div id="pmRev" style="font-size:20px;font-weight:700;color:var(--text);">€9.4k</div>
+      </div>
+    </div>
+    <div id="pulseStream" style="overflow-y:auto;max-height:calc(100% - 130px);">
+      ${initialEvents.map(ev => buildPulseItem(ev, false)).join('')}
+    </div>
+  `;
+
+  let paused = false;
+  let templateIdx = 0;
+
+  document.getElementById('pulsePauseBtn').addEventListener('click', function() {
+    paused = !paused;
+    this.textContent = paused ? '▶ Resume' : '⏸ Pause';
+  });
+
+  const closeBtn = document.getElementById('pulseCloseBtn');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      const pulsePanel = document.getElementById('pulsePanel');
+      if (pulsePanel) pulsePanel.classList.remove('open');
+    });
+  }
+
+  window._pulseInterval = setInterval(() => {
+    if (paused) return;
+    const stream = document.getElementById('pulseStream');
+    if (!stream) { clearInterval(window._pulseInterval); return; }
+
+    const tmpl = liveTemplates[templateIdx % liveTemplates.length];
+    templateIdx++;
+    const ev = {
+      icon: tmpl.icon,
+      color: tmpl.color,
+      action: fillTemplate(tmpl.action),
+      detail: fillTemplate(tmpl.detail),
+      time: 'just now',
+    };
+
+    stream.querySelectorAll('.pulse-item').forEach(el => {
+      const t = el.querySelector('span[style*="just now"], div span:last-child');
+    });
+
+    const newEl = document.createElement('div');
+    newEl.innerHTML = buildPulseItem(ev, true);
+    const item = newEl.firstElementChild;
+    stream.insertBefore(item, stream.firstChild);
+
+    const items = stream.querySelectorAll('.pulse-item');
+    if (items.length > 20) {
+      for (let i = 20; i < items.length; i++) items[i].remove();
+    }
+  }, 10000);
+}
+
+function initSettingsEnhanced() {
+  const pop = document.getElementById('settingsPop');
+  if (!pop) return;
+
+  if (!document.getElementById('_settingsStyles')) {
+    const style = document.createElement('style');
+    style.id = '_settingsStyles';
+    style.textContent = `
+      body.theme-light { background:#f0f0f5!important; --bg:#f0f0f5; --surface:#ffffff; --text:#0d0d0f; --muted:#555577; --border:rgba(0,0,0,0.12); --glass:rgba(0,0,0,0.05); --sidebar-bg:#e8e8ef; }
+      body.density-compact { --row-pad:6px; --card-pad:10px; font-size:12.5px; }
+      body.density-comfortable { --row-pad:18px; --card-pad:20px; font-size:14.5px; }
+      ._stoggle { position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0; }
+      ._stoggle input { opacity:0;width:0;height:0;position:absolute; }
+      ._stoggle .slider { position:absolute;inset:0;border-radius:20px;background:rgba(255,255,255,0.12);cursor:pointer;transition:background 0.2s; }
+      ._stoggle input:checked + .slider { background:var(--accent); }
+      ._stoggle .slider::before { content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;border-radius:50%;background:#fff;transition:transform 0.2s; }
+      ._stoggle input:checked + .slider::before { transform:translateX(16px); }
+      ._sseg { display:flex;gap:4px; }
+      ._sseg button { flex:1;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--glass);color:var(--muted);font-size:12px;cursor:pointer;transition:all 0.15s; }
+      ._sseg button.active { background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent);font-weight:600; }
+      ._sseg button:hover:not(.active) { border-color:var(--border-strong);color:var(--text); }
+      ._sselect { width:100%;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface-solid);color:var(--text);font-size:12px;cursor:pointer;outline:none; }
+      ._sselect:focus { border-color:var(--accent-line); }
+      ._ssave { width:100%;padding:9px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;margin-top:4px; }
+      ._ssave:hover { background:var(--accent-600); }
+      ._ssave:active { transform:scale(0.98); }
+    `;
+    document.head.appendChild(style);
+  }
+
+  const saved = (() => {
+    try { return JSON.parse(localStorage.getItem('adaptiveai_settings_v1') || '{}'); } catch { return {}; }
+  })();
+
+  const defaultRole = localStorage.getItem('role') || 'Manager';
+
+  pop.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid var(--border);">
+      <span style="font-size:14px;font-weight:700;color:var(--text);">Settings</span>
+      <button id="settingsCloseBtn" aria-label="Close" style="
+        width:28px;height:28px;border-radius:6px;
+        background:var(--glass);border:1px solid var(--border);
+        color:var(--muted);cursor:pointer;font-size:14px;
+        display:flex;align-items:center;justify-content:center;transition:all 0.15s;
+      " onmouseenter="this.style.color='var(--text)'" onmouseleave="this.style.color='var(--muted)'">×</button>
+    </div>
+    <div style="padding:14px 16px;overflow-y:auto;max-height:calc(100% - 56px);display:flex;flex-direction:column;gap:18px;">
+
+      <!-- APPEARANCE -->
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Appearance</div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div>
+            <div style="font-size:12.5px;color:var(--text);font-weight:500;">Theme</div>
+            <div style="font-size:11px;color:var(--muted);" id="themeLabel">${saved.theme === 'light' ? 'Light' : 'Dark'} mode</div>
+          </div>
+          <label class="_stoggle">
+            <input type="checkbox" id="themeToggle" ${saved.theme === 'light' ? 'checked' : ''}>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div style="margin-bottom:2px;">
+          <div style="font-size:12.5px;color:var(--text);font-weight:500;margin-bottom:7px;">Density</div>
+          <div class="_sseg" id="densitySeg2">
+            <button data-d="compact" class="${(saved.density||'normal')==='compact'?'active':''}">Compact</button>
+            <button data-d="normal" class="${(saved.density||'normal')==='normal'?'active':''}">Normal</button>
+            <button data-d="comfortable" class="${(saved.density||'normal')==='comfortable'?'active':''}">Comfortable</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Notifications</div>
+        ${[
+          { id: 'notifEmail', label: 'Email alerts', sub: 'Critical alerts via email', def: true },
+          { id: 'notifPush', label: 'Push notifications', sub: 'Browser push alerts', def: true },
+          { id: 'notifDigest', label: 'Daily digest', sub: 'Morning summary email', def: false },
+        ].map(n => `
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;">
+            <div>
+              <div style="font-size:12.5px;color:var(--text);font-weight:500;">${n.label}</div>
+              <div style="font-size:11px;color:var(--muted);">${n.sub}</div>
+            </div>
+            <label class="_stoggle">
+              <input type="checkbox" id="${n.id}" ${(saved[n.id] !== undefined ? saved[n.id] : n.def) ? 'checked' : ''}>
+              <span class="slider"></span>
+            </label>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- AI PREFERENCES -->
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">AI Preferences</div>
+
+        <div style="margin-bottom:11px;">
+          <label style="font-size:12.5px;color:var(--text);font-weight:500;display:block;margin-bottom:5px;" for="surfaceHistory">Surface history</label>
+          <select id="surfaceHistory" class="_sselect">
+            ${[5,10,20,50].map(v => `<option value="${v}" ${(saved.surfaceHistory||10)==v?'selected':''}>${v} surfaces</option>`).join('')}
+          </select>
+        </div>
+
+        <div style="margin-bottom:11px;">
+          <label style="font-size:12.5px;color:var(--text);font-weight:500;display:block;margin-bottom:5px;" for="autoRefresh">Auto-refresh</label>
+          <select id="autoRefresh" class="_sselect">
+            ${[['off','Off'],['30s','30s'],['1min','1 min'],['5min','5 min']].map(([v,l]) => `<option value="${v}" ${(saved.autoRefresh||'off')===v?'selected':''}>${l}</option>`).join('')}
+          </select>
+        </div>
+
+        <div style="margin-bottom:4px;">
+          <label style="font-size:12.5px;color:var(--text);font-weight:500;display:block;margin-bottom:5px;" for="defaultRole">Default role</label>
+          <select id="defaultRole" class="_sselect">
+            ${['Owner','Manager','Dispatcher','Inspector'].map(r => `<option value="${r}" ${(saved.defaultRole||defaultRole)===r?'selected':''}>${r}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+
+      <button id="settingsSaveBtn" class="_ssave">Save Settings</button>
+    </div>
+  `;
+
+  document.getElementById('settingsCloseBtn').addEventListener('click', () => {
+    pop.classList.remove('open');
+  });
+
+  document.getElementById('themeToggle').addEventListener('change', function() {
+    if (this.checked) {
+      document.body.classList.add('theme-light');
+      document.getElementById('themeLabel').textContent = 'Light mode';
+    } else {
+      document.body.classList.remove('theme-light');
+      document.getElementById('themeLabel').textContent = 'Dark mode';
+    }
+  });
+
+  document.getElementById('densitySeg2').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-d]');
+    if (!btn) return;
+    document.querySelectorAll('#densitySeg2 button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.body.classList.remove('density-compact', 'density-comfortable');
+    if (btn.dataset.d === 'compact') document.body.classList.add('density-compact');
+    else if (btn.dataset.d === 'comfortable') document.body.classList.add('density-comfortable');
+  });
+
+  document.getElementById('settingsSaveBtn').addEventListener('click', function() {
+    const settings = {
+      theme: document.getElementById('themeToggle').checked ? 'light' : 'dark',
+      density: document.querySelector('#densitySeg2 button.active')?.dataset.d || 'normal',
+      notifEmail: document.getElementById('notifEmail').checked,
+      notifPush: document.getElementById('notifPush').checked,
+      notifDigest: document.getElementById('notifDigest').checked,
+      surfaceHistory: parseInt(document.getElementById('surfaceHistory').value),
+      autoRefresh: document.getElementById('autoRefresh').value,
+      defaultRole: document.getElementById('defaultRole').value,
+    };
+    localStorage.setItem('adaptiveai_settings_v1', JSON.stringify(settings));
+    localStorage.setItem('role', settings.defaultRole);
+    this.textContent = 'Saved!';
+    this.style.background = 'var(--good)';
+    setTimeout(() => {
+      this.textContent = 'Save Settings';
+      this.style.background = 'var(--accent)';
+    }, 2000);
+  });
+
+  if (saved.theme === 'light') document.body.classList.add('theme-light');
+  document.body.classList.remove('density-compact', 'density-comfortable');
+  if (saved.density === 'compact') document.body.classList.add('density-compact');
+  else if (saved.density === 'comfortable') document.body.classList.add('density-comfortable');
+}
+
+  // ── LIVE DATA FUNCTIONS ───────────────────────────────
+function initLiveUpdates() {
+  window._liveIntervals = window._liveIntervals || [];
+
+  // Interval A — every 8 seconds — Update status bar
+  const messages = [
+    '◎ Fleet AI — 23 vehicles tracked · 5 routes active · System nominal',
+    '◎ Live sync — All branches connected · Last update: just now',
+    '◎ AI Pipeline — 3 agents active · 0 errors · 47 docs processed',
+    '◎ Revenue tracking — €85,420 MTD · 106.8% of target · On track',
+    '◎ Driver network — 18 active drivers · 5 on break · Compliance: 96%',
+  ];
+  let statusIdx = 0;
+  const intervalA = setInterval(() => {
+    const statusEl = document.getElementById('statusbar');
+    if (!statusEl) return;
+    statusIdx = (statusIdx + 1) % messages.length;
+    statusEl.textContent = messages[statusIdx];
+  }, 8000);
+  window._liveIntervals.push(intervalA);
+
+  // Interval B — every 6 seconds — Flash/update KPI numbers
+  const intervalB = setInterval(() => {
+    const kpiEls = document.querySelectorAll('[class*="kpi-num"], .rev-kpi .kn, .kpi-value');
+    kpiEls.forEach(el => {
+      const raw = el.textContent.replace(/[^0-9.\-]/g, '');
+      const num = parseFloat(raw);
+      if (isNaN(num)) return;
+      const delta = Math.random() * 200 - 50;
+      const newVal = num + delta;
+      // Preserve prefix/suffix characters
+      const text = el.textContent;
+      const prefix = text.match(/^[^0-9\-]*/)?.[0] || '';
+      const suffix = text.match(/[^0-9.]+$/)?.[0] || '';
+      el.textContent = prefix + Math.round(newVal).toLocaleString() + suffix;
+      el.style.transition = 'background 0.3s';
+      el.style.background = 'rgba(249,115,22,0.15)';
+      setTimeout(() => { el.style.background = ''; }, 800);
+    });
+  }, 6000);
+  window._liveIntervals.push(intervalB);
+
+  // Interval C — every 15 seconds — Update #liveTime
+  const intervalC = setInterval(() => {
+    const liveTimeEl = document.getElementById('liveTime');
+    if (!liveTimeEl) return;
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
+    liveTimeEl.textContent = `${hh}:${mm}:${ss}`;
+  }, 15000);
+  window._liveIntervals.push(intervalC);
+
+  // Immediate live clock setup
+  const liveTimeEl = document.getElementById('liveTime');
+  if (liveTimeEl) {
+    const tickClock = () => {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+      liveTimeEl.textContent = `${hh}:${mm}:${ss}`;
+    };
+    tickClock();
+    const clockInterval = setInterval(tickClock, 1000);
+    window._liveIntervals.push(clockInterval);
+  }
+}
+
+function injectTopbarEnhancements() {
+  window._liveIntervals = window._liveIntervals || [];
+
+  const topbar = document.querySelector('.topbar-actions') || document.querySelector('.topbar');
+  if (!topbar) return;
+
+  // Inject keyframe if not already present
+  if (!document.getElementById('_liveSimStyles')) {
+    const styleEl = document.createElement('style');
+    styleEl.id = '_liveSimStyles';
+    styleEl.textContent = `
+      @keyframes pulseDot {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.7); }
+      }
+    `;
+    document.head.appendChild(styleEl);
+  }
+
+  // PREPEND real-time clock span
+  if (!document.getElementById('liveTime')) {
+    const clockSpan = document.createElement('span');
+    clockSpan.id = 'liveTime';
+    clockSpan.style.cssText = [
+      "font-size:12px",
+      "font-family:'JetBrains Mono',monospace",
+      "color:var(--muted)",
+      "padding:0 8px",
+      "border-right:1px solid var(--border)",
+      "margin-right:8px",
+    ].join(';');
+
+    const updateClock = () => {
+      clockSpan.textContent = new Date().toLocaleTimeString('el-GR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
+    };
+    updateClock();
+    const clockInterval = setInterval(updateClock, 1000);
+    window._liveIntervals.push(clockInterval);
+
+    topbar.insertBefore(clockSpan, topbar.firstChild);
+  }
+
+  // APPEND LIVE indicator
+  if (!document.getElementById('_liveIndicator')) {
+    const liveSpan = document.createElement('span');
+    liveSpan.id = '_liveIndicator';
+    liveSpan.style.cssText = [
+      "font-size:9px",
+      "letter-spacing:0.12em",
+      "font-weight:700",
+      "color:var(--good)",
+      "display:inline-flex",
+      "align-items:center",
+      "gap:4px",
+      "padding:2px 8px",
+      "border:1px solid var(--good)",
+      "border-radius:12px",
+      "margin-left:8px",
+    ].join(';');
+    liveSpan.innerHTML = `<span style="width:6px;height:6px;border-radius:50%;background:var(--good);animation:pulseDot 1.5s ease-in-out infinite"></span>LIVE`;
+
+    const breadcrumb = topbar.querySelector('.breadcrumb') || topbar.querySelector('[class*="breadcrumb"]');
+    if (breadcrumb) {
+      breadcrumb.appendChild(liveSpan);
+    } else {
+      topbar.appendChild(liveSpan);
+    }
+  }
+}
+
+function initMapLiveTracking() {
+  window._liveIntervals = window._liveIntervals || [];
+
+  const trackInterval = setInterval(() => {
+    if (!window._fleetMarkers || !window._fleetMarkers.length) return;
+    window._fleetMarkers.forEach((marker) => {
+      const pos = marker.getLatLng();
+      const dlat = (Math.random() - 0.5) * 0.004;
+      const dlng = (Math.random() - 0.5) * 0.004;
+      marker.setLatLng([pos.lat + dlat, pos.lng + dlng]);
+      if (marker.isPopupOpen()) {
+        marker.update();
+      }
+    });
+  }, 5000);
+  window._liveIntervals.push(trackInterval);
+
+  patchFleetMapForLiveTracking();
+}
+
+function patchFleetMapForLiveTracking() {
+  window._liveIntervals = window._liveIntervals || [];
+
+  const checkInterval = setInterval(() => {
+    const mapContainer = document.querySelector('.leaflet-container');
+    if (!mapContainer || !mapContainer._leaflet_id) return;
+
+    window._fleetMap = window._fleetMap || null;
+
+    if (mapContainer && window.L) {
+      const markerEls = mapContainer.querySelectorAll('.leaflet-marker-icon');
+      markerEls.forEach((el) => {
+        const jitter = (Math.random() - 0.5) * 4;
+        const current = el.style.transform || '';
+        el.style.transition = 'transform 0.5s ease';
+        el.style.transform = current + ' translate(' + jitter + 'px, ' + jitter + 'px)';
+      });
+    }
+  }, 5000);
+
+  window._liveIntervals.push(checkInterval);
+}
+
+  // ── ENHANCED CMDK + SHORTCUTS ─────────────────────────
+function enhanceCmdkWithCategories() {
+  const CATEGORIES = [
+    {
+      label: '⚡ SURFACES',
+      items: [
+        { icon: '🗺️', title: 'Fleet Map', sub: 'Show live vehicle locations', hint: '⌘ map', action: 'surface' },
+        { icon: '📊', title: 'Revenue Analytics', sub: 'Financial charts & KPIs', hint: '', action: 'surface' },
+        { icon: '🗂️', title: 'Kanban Board', sub: 'Vehicle turnaround pipeline', hint: '', action: 'surface' },
+        { icon: '🤖', title: 'AI Agents', sub: 'Automation status & controls', hint: '', action: 'surface' },
+        { icon: '📅', title: 'Schedule', sub: 'Weekly route & maintenance calendar', hint: '⌘ sched', action: 'surface' },
+        { icon: '🔧', title: 'Maintenance', sub: 'Fleet service tracker', hint: '', action: 'surface' },
+        { icon: '👤', title: 'Drivers', sub: 'Performance leaderboard', hint: '', action: 'surface' },
+        { icon: '⛽', title: 'Fuel', sub: 'Consumption & cost analytics', hint: '', action: 'surface' },
+        { icon: '🚨', title: 'Alerts', sub: 'Active incidents & warnings', hint: '', action: 'surface' },
+      ]
+    },
+    {
+      label: '📂 NAVIGATE',
+      items: [
+        { icon: '📦', title: 'Assets Panel', sub: 'Open vehicle & asset registry', hint: '1', action: 'nav', navId: 'navAssets' },
+        { icon: '⚙️', title: 'Automations', sub: 'Open workflow automation', hint: '2', action: 'nav', navId: 'navAutomations' },
+        { icon: '📈', title: 'Reports', sub: 'Open reporting center', hint: '3', action: 'nav', navId: 'navReports' },
+        { icon: '✅', title: 'Quality', sub: 'Open QA dashboard', hint: '4', action: 'nav', navId: 'navQuality' },
+        { icon: '🔗', title: 'Integrations', sub: 'Open connected services', hint: '5', action: 'nav', navId: 'navIntegrations' },
+      ]
+    },
+    {
+      label: '🎛️ ACTIONS',
+      items: [
+        { icon: '🌙', title: 'Toggle Theme', sub: 'Switch dark/light mode', hint: 'T', action: 'theme' },
+        { icon: '👤', title: 'Switch Role', sub: 'Change your role', hint: '', action: 'role' },
+        { icon: '🕐', title: 'History', sub: 'Open surface history drawer', hint: 'H', action: 'history' },
+        { icon: '⚙️', title: 'Settings', sub: 'Open preferences', hint: '', action: 'settings' },
+        { icon: '⌨️', title: 'Shortcuts', sub: 'View keyboard shortcuts', hint: '?', action: 'shortcuts' },
+      ]
+    }
+  ];
+
+  function executeItem(item) {
+    const modal = document.getElementById('cmdkModal');
+    if (modal) modal.classList.remove('open');
+
+    switch (item.action) {
+      case 'surface':
+        if (typeof window.generateSurface === 'function') window.generateSurface(item.title);
+        break;
+      case 'nav':
+        document.getElementById(item.navId)?.click();
+        break;
+      case 'theme':
+        document.body.classList.toggle('theme-light');
+        break;
+      case 'role':
+        document.getElementById('roleSwitcher')?.click();
+        break;
+      case 'history':
+        document.getElementById('histBtn')?.click();
+        break;
+      case 'settings':
+        document.getElementById('settingsBtn')?.click();
+        break;
+      case 'shortcuts':
+        const sm = document.getElementById('shortcutsModal');
+        if (sm) sm.style.display = 'flex';
+        break;
+    }
+  }
+
+  function buildResults(filterText) {
+    const results = document.getElementById('cmdkResults');
+    if (!results) return;
+
+    const q = (filterText || '').toLowerCase().trim();
+    results.innerHTML = '';
+
+    let anyVisible = false;
+
+    CATEGORIES.forEach(cat => {
+      const matchingItems = cat.items.filter(item =>
+        !q || item.title.toLowerCase().includes(q) || item.sub.toLowerCase().includes(q)
+      );
+
+      if (matchingItems.length === 0) return;
+      anyVisible = true;
+
+      const header = document.createElement('div');
+      header.className = 'cmdk-cat-header';
+      header.style.cssText = `
+        font-size:9px;
+        letter-spacing:0.1em;
+        text-transform:uppercase;
+        color:var(--muted);
+        padding:12px 16px 4px;
+        user-select:none;
+      `;
+      header.textContent = cat.label;
+      results.appendChild(header);
+
+      matchingItems.forEach(item => {
+        const el = document.createElement('div');
+        el.className = 'cmdk-cat-item';
+        el.dataset.title = item.title;
+        el.style.cssText = `
+          display:flex;
+          align-items:center;
+          gap:12px;
+          padding:8px 16px;
+          cursor:pointer;
+          border-radius:6px;
+          transition:background 0.1s;
+        `;
+
+        const iconEl = document.createElement('span');
+        iconEl.style.cssText = 'font-size:20px;flex-shrink:0;width:24px;text-align:center;';
+        iconEl.textContent = item.icon;
+
+        const center = document.createElement('div');
+        center.style.cssText = 'flex:1;min-width:0;';
+
+        const titleEl = document.createElement('div');
+        titleEl.style.cssText = 'font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+        titleEl.textContent = item.title;
+
+        const subEl = document.createElement('div');
+        subEl.style.cssText = 'font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+        subEl.textContent = item.sub;
+
+        center.appendChild(titleEl);
+        center.appendChild(subEl);
+
+        el.appendChild(iconEl);
+        el.appendChild(center);
+
+        if (item.hint) {
+          const hintEl = document.createElement('span');
+          hintEl.style.cssText = 'font-size:10px;color:var(--muted,#888);flex-shrink:0;opacity:0.7;';
+          hintEl.textContent = item.hint;
+          el.appendChild(hintEl);
+        }
+
+        el.addEventListener('mouseenter', () => {
+          el.style.background = 'var(--glass)';
+          setActiveItem(el);
+        });
+        el.addEventListener('mouseleave', () => {
+          if (!el.classList.contains('cmdk-active')) {
+            el.style.background = '';
+          }
+        });
+        el.addEventListener('click', () => executeItem(item));
+
+        results.appendChild(el);
+      });
+    });
+
+    if (!anyVisible && q) {
+      const empty = document.createElement('div');
+      empty.style.cssText = 'padding:24px 16px;text-align:center;color:var(--muted);font-size:13px;';
+      empty.textContent = 'No results for "' + filterText + '"';
+      results.appendChild(empty);
+    }
+
+    appendFooter(results);
+    highlightFirstItem();
+  }
+
+  function appendFooter(results) {
+    const footer = document.createElement('div');
+    footer.className = 'cmdk-footer';
+    footer.style.cssText = `
+      border-top:1px solid var(--border);
+      padding:8px 16px;
+      margin-top:4px;
+      font-size:10px;
+      color:var(--muted);
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      opacity:0.8;
+    `;
+    footer.innerHTML = `
+      <span>⌘K open</span>
+      <span>↑↓ navigate</span>
+      <span>↵ select</span>
+      <span>Esc close</span>
+      <span>? help</span>
+      <span>1-5 panels</span>
+    `;
+    results.appendChild(footer);
+  }
+
+  function getAllItems() {
+    const results = document.getElementById('cmdkResults');
+    return results ? Array.from(results.querySelectorAll('.cmdk-cat-item')) : [];
+  }
+
+  function setActiveItem(el) {
+    getAllItems().forEach(i => {
+      i.classList.remove('cmdk-active');
+      i.style.background = '';
+    });
+    el.classList.add('cmdk-active');
+    el.style.background = 'var(--glass)';
+    el.scrollIntoView({ block: 'nearest' });
+  }
+
+  function highlightFirstItem() {
+    const items = getAllItems();
+    if (items.length > 0) setActiveItem(items[0]);
+  }
+
+  function getActiveIndex() {
+    const items = getAllItems();
+    return items.findIndex(i => i.classList.contains('cmdk-active'));
+  }
+
+  function handleKeyNavigation(e) {
+    const modal = document.getElementById('cmdkModal');
+    if (!modal || !modal.classList.contains('open')) return;
+
+    const items = getAllItems();
+    if (!items.length) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const idx = getActiveIndex();
+      const next = items[(idx + 1) % items.length];
+      setActiveItem(next);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const idx = getActiveIndex();
+      const prev = items[(idx - 1 + items.length) % items.length];
+      setActiveItem(prev);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const idx = getActiveIndex();
+      if (idx >= 0) items[idx].click();
+    }
+  }
+
+  const input = document.getElementById('cmdkInput');
+  if (input) {
+    input.addEventListener('input', () => buildResults(input.value));
+  }
+
+  document.addEventListener('keydown', handleKeyNavigation);
+
+  const modal = document.getElementById('cmdkModal');
+  if (modal) {
+    const obs = new MutationObserver(mutations => {
+      mutations.forEach(m => {
+        if (m.attributeName === 'class') {
+          if (modal.classList.contains('open')) {
+            const inp = document.getElementById('cmdkInput');
+            buildResults(inp ? inp.value : '');
+          }
+        }
+      });
+    });
+    obs.observe(modal, { attributes: true });
+
+    if (modal.classList.contains('open')) {
+      buildResults('');
+    }
+  }
+
+  window._cmdkCategoriesLoaded = true;
+}
+
+function initKeyboardShortcuts() {
+  if (!document.getElementById('shortcutsModal')) {
+    const overlay = document.createElement('div');
+    overlay.id = 'shortcutsModal';
+    overlay.style.cssText = `
+      position:fixed;
+      inset:0;
+      z-index:3000;
+      background:rgba(0,0,0,0.7);
+      display:none;
+      align-items:center;
+      justify-content:center;
+    `;
+
+    const panel = document.createElement('div');
+    panel.style.cssText = `
+      width:400px;
+      max-width:90vw;
+      background:var(--surface,#1a1a2e);
+      border:1px solid var(--border,rgba(255,255,255,0.1));
+      border-radius:12px;
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+      box-shadow:0 24px 64px rgba(0,0,0,0.6);
+      overflow:hidden;
+    `;
+
+    const header = document.createElement('div');
+    header.style.cssText = `
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:16px 20px;
+      border-bottom:1px solid var(--border,rgba(255,255,255,0.1));
+    `;
+
+    const title = document.createElement('div');
+    title.style.cssText = 'font-size:14px;font-weight:600;color:var(--text);';
+    title.textContent = 'Keyboard Shortcuts';
+
+    const closeBtn = document.createElement('button');
+    closeBtn.style.cssText = `
+      background:none;
+      border:none;
+      color:var(--muted);
+      font-size:18px;
+      cursor:pointer;
+      padding:2px 6px;
+      border-radius:4px;
+      line-height:1;
+    `;
+    closeBtn.textContent = '×';
+    closeBtn.addEventListener('click', () => overlay.style.display = 'none');
+
+    header.appendChild(title);
+    header.appendChild(closeBtn);
+
+    const shortcuts = [
+      ['⌘K', 'Open command palette'],
+      ['?', 'Show this help'],
+      ['1–5', 'Switch nav panels (Assets→Integrations)'],
+      ['Esc', 'Close panels / Back'],
+      ['↑↓ Enter', 'Navigate command palette'],
+      ['H', 'Open history drawer'],
+      ['N', 'Open notifications'],
+      ['T', 'Toggle dark/light theme'],
+      ['F', 'Focus prompt input'],
+      ['R', 'Refresh/reload current surface'],
+      ['/', 'Focus command palette'],
+    ];
+
+    const table = document.createElement('div');
+    table.style.cssText = 'padding:8px 0 16px;';
+
+    shortcuts.forEach(([key, desc]) => {
+      const row = document.createElement('div');
+      row.style.cssText = `
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        padding:7px 20px;
+        gap:16px;
+      `;
+
+      const kbd = document.createElement('span');
+      kbd.style.cssText = `
+        font-family:monospace;
+        font-size:11px;
+        background:var(--glass,rgba(255,255,255,0.05));
+        border:1px solid var(--border,rgba(255,255,255,0.12));
+        border-radius:4px;
+        padding:2px 8px;
+        color:var(--accent,#7c6af7);
+        white-space:nowrap;
+        flex-shrink:0;
+        min-width:56px;
+        text-align:center;
+      `;
+      kbd.textContent = key;
+
+      const label = document.createElement('span');
+      label.style.cssText = 'font-size:12px;color:var(--muted);text-align:right;';
+      label.textContent = desc;
+
+      row.appendChild(kbd);
+      row.appendChild(label);
+      table.appendChild(row);
+    });
+
+    panel.appendChild(header);
+    panel.appendChild(table);
+    overlay.appendChild(panel);
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) overlay.style.display = 'none';
+    });
+  }
+
+  function isInputFocused() {
+    const el = document.activeElement;
+    return el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable;
+  }
+
+  function openCmdk() {
+    const modal = document.getElementById('cmdkModal');
+    if (modal) {
+      modal.classList.add('open');
+      const inp = document.getElementById('cmdkInput');
+      if (inp) {
+        inp.value = '';
+        inp.focus();
+        inp.dispatchEvent(new Event('input'));
+      }
+      if (typeof window.enhanceCmdkWithCategories === 'function' && !window._cmdkCategoriesLoaded) {
+        window.enhanceCmdkWithCategories();
+      } else {
+        const results = document.getElementById('cmdkResults');
+        if (results) {
+          const evt = new Event('input');
+          inp && inp.dispatchEvent(evt);
+        }
+      }
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    const tag = document.activeElement.tagName;
+    const noInput = tag !== 'INPUT' && tag !== 'TEXTAREA' && !document.activeElement.isContentEditable;
+
+    const modal = document.getElementById('cmdkModal');
+    const cmdkOpen = modal && modal.classList.contains('open');
+
+    if (e.key === 'Escape') {
+      if (cmdkOpen) {
+        modal.classList.remove('open');
+        e.preventDefault();
+        return;
+      }
+      const sm = document.getElementById('shortcutsModal');
+      if (sm && sm.style.display !== 'none') {
+        sm.style.display = 'none';
+        e.preventDefault();
+        return;
+      }
+      return;
+    }
+
+    if (cmdkOpen) return;
+
+    if (!noInput) return;
+
+    switch (e.key) {
+      case '?': {
+        e.preventDefault();
+        const sm = document.getElementById('shortcutsModal');
+        if (sm) sm.style.display = sm.style.display === 'none' || !sm.style.display ? 'flex' : 'none';
+        break;
+      }
+      case 'f':
+      case 'F': {
+        e.preventDefault();
+        const prompt = document.getElementById('prompt');
+        if (prompt) prompt.focus();
+        break;
+      }
+      case 'n':
+      case 'N': {
+        e.preventDefault();
+        document.getElementById('notifBtn')?.click();
+        break;
+      }
+      case 'h':
+      case 'H': {
+        e.preventDefault();
+        document.getElementById('histBtn')?.click();
+        break;
+      }
+      case 't':
+      case 'T': {
+        e.preventDefault();
+        document.body.classList.toggle('theme-light');
+        break;
+      }
+      case '/': {
+        e.preventDefault();
+        openCmdk();
+        break;
+      }
+      case 'r':
+      case 'R': {
+        e.preventDefault();
+        try {
+          const raw = localStorage.getItem('adaptiveai_history_v1');
+          if (raw) {
+            const history = JSON.parse(raw);
+            const last = Array.isArray(history) ? history[history.length - 1] : null;
+            if (last) {
+              const query = typeof last === 'string' ? last : last.query || last.text || last.content;
+              if (query && typeof window.generateSurface === 'function') {
+                window.generateSurface(query);
+              }
+            }
+          }
+        } catch (_) {}
+        break;
+      }
+      case '1': { e.preventDefault(); document.getElementById('navAssets')?.click(); break; }
+      case '2': { e.preventDefault(); document.getElementById('navAutomations')?.click(); break; }
+      case '3': { e.preventDefault(); document.getElementById('navReports')?.click(); break; }
+      case '4': { e.preventDefault(); document.getElementById('navQuality')?.click(); break; }
+      case '5': { e.preventDefault(); document.getElementById('navIntegrations')?.click(); break; }
+    }
+  });
+
+  window._shortcutsInitialized = true;
+}
+
+  // ── MODULE v3 INIT ────────────────────────────────────
+  function initModulesV3() {
+    try { extendKeywordRouting(); }       catch(e) { console.warn('[V3-0]', e); }
+    try { injectTopbarEnhancements(); }   catch(e) { console.warn('[V3-1]', e); }
+    try { initNotificationsContent(); }   catch(e) { console.warn('[V3-2]', e); }
+    try { initPulseContent(); }           catch(e) { console.warn('[V3-3]', e); }
+    try { initSettingsEnhanced(); }       catch(e) { console.warn('[V3-4]', e); }
+    try { initLiveUpdates(); }            catch(e) { console.warn('[V3-5]', e); }
+    try { enhanceCmdkWithCategories(); }  catch(e) { console.warn('[V3-6]', e); }
+    try { initKeyboardShortcuts(); }      catch(e) { console.warn('[V3-7]', e); }
+    try { patchFleetMapForLiveTracking(); } catch(e) { console.warn('[V3-8]', e); }
+    console.log('[AdaptiveAI] Module v3 initialized ✓');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(initModulesV3, 2500));
+  } else {
+    setTimeout(initModulesV3, 2500);
+  }
+
+})();
+</script>
+
 </body></html>
