@@ -4892,6 +4892,12 @@ if (document.readyState === 'loading') {
   function qsa3(sel, ctx) { return Array.from((ctx||document).querySelectorAll(sel)); }
   function qs3(sel, ctx) { return (ctx||document).querySelector(sel); }
 
+  // Aliases so generated surface functions (which call uid/qsa/$$/$) work in this IIFE scope
+  const uid = window.uid || uid3;
+  const qsa = window.qsa || qsa3;
+  const $   = window.$   || (id => document.getElementById(id));
+  const $$  = window.$$  || qsa3;
+
   // ── Keyword routing extension ──────────────────────────
   function extendKeywordRouting() {
     const prev = window.generateSurface;
