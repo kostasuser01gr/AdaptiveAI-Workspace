@@ -6877,6 +6877,7 @@ function renderTripHistorySurface(query) {
   document.querySelectorAll('.gx-surface').forEach(s => s.style.display = 'none');
   document.getElementById('stage').appendChild(surfEl);
 
+  document.querySelectorAll('.gx-tab').forEach(t => t.classList.remove('active'));
   const tab = document.createElement('button');
   tab.className = 'gx-tab active';
   tab.innerHTML = '<span class="tt">Trip History</span><span class="stype">TRIPS</span>';
@@ -6971,6 +6972,7 @@ function renderAssetDetailSurface(query) {
   document.querySelectorAll('.gx-surface').forEach(s => s.style.display = 'none');
   document.getElementById('stage').appendChild(surfEl);
 
+  document.querySelectorAll('.gx-tab').forEach(t => t.classList.remove('active'));
   const tab = document.createElement('button');
   tab.className = 'gx-tab active';
   tab.innerHTML = '<span class="tt">Asset Detail</span><span class="stype">VH-042</span>';
@@ -7090,6 +7092,7 @@ function renderComplianceSurface(query) {
   document.querySelectorAll('.gx-surface').forEach(s => s.style.display = 'none');
   document.getElementById('stage').appendChild(surfEl);
 
+  document.querySelectorAll('.gx-tab').forEach(t => t.classList.remove('active'));
   const tab = document.createElement('button');
   tab.className = 'gx-tab active';
   tab.innerHTML = '<span class="tt">Compliance</span><span class="stype">LEGAL</span>';
@@ -7904,6 +7907,8 @@ function initDashboardSummary() {
   function removeSummary() {
     const el = document.getElementById('dashSummary');
     if (el) el.remove();
+    const emptyEl = document.getElementById('empty');
+    if (emptyEl) emptyEl.style.display = 'none';
   }
 
   const origGenerate = window.generateSurface;
@@ -7916,8 +7921,10 @@ function initDashboardSummary() {
 
   function showSummary() {
     if (document.getElementById('dashSummary')) return;
-    const stage = document.getElementById('stage');
-    if (!stage || !stageIsEmpty()) return;
+    const emptyEl = document.getElementById('empty');
+    if (!emptyEl) return;
+    if (document.querySelectorAll('.gx-surface').length > 0) return;
+    const stage = emptyEl;
 
     const suggestions = [
       { icon: '🗺️', label: 'Fleet locations',       query: 'Show fleet map' },
