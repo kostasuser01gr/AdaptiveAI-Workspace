@@ -6832,4 +6832,1210 @@ function initKeyboardShortcuts() {
 })();
 </script>
 
+
+<script>
+/* ─────────────────────────────────────────────────────────────
+   AdaptiveAI Module v4 — Ultra-Scale Wave 2
+   New surfaces: Trip History, Asset Detail, Compliance
+   Enhanced: All 5 Nav Panels, Light Theme, Transitions
+   UX: Surface Export + Toast, Breadcrumb, Dashboard Empty State
+   Role: Personalised startup, Animated Agent progress bars
+   ──────────────────────────────────────────────────────────── */
+(function() {
+  'use strict';
+
+  const uid = window.uid || (() => 'v4-' + Math.random().toString(36).slice(2,9));
+  const qsa = (s,c) => Array.from((c||document).querySelectorAll(s));
+  const $   = id => document.getElementById(id);
+
+  function extendKeywordRoutingV4() {
+    const prev = window.generateSurface;
+    if (!prev || prev._v4extended) return;
+    const extended = async function(query) {
+      const ql = (query || '').toLowerCase();
+      if (/trip|journey|route hist|timeline/.test(ql)) {
+        return renderTripHistorySurface(query);
+      } else if (/asset detail|vehicle detail|vh-|single vehicle/.test(ql)) {
+        return renderAssetDetailSurface(query);
+      } else if (/compliance|legal|regulation|certif|audit|document expir/.test(ql)) {
+        return renderComplianceSurface(query);
+      } else {
+        return prev(query);
+      }
+    };
+    extended._v4extended = true;
+    window.generateSurface = extended;
+  }
+
+function renderTripHistorySurface(query) {
+  const surfId = uid();
+  const surfEl = document.createElement('div');
+  surfEl.id = surfId;
+  surfEl.className = 'gx-surface';
+  surfEl.style.cssText = 'width:100%;height:100%;overflow-y:auto;padding:24px;box-sizing:border-box;color:var(--text);font-family:inherit;';
+
+  document.querySelectorAll('.gx-surface').forEach(s => s.style.display = 'none');
+  document.getElementById('stage').appendChild(surfEl);
+
+  const tab = document.createElement('button');
+  tab.className = 'gx-tab active';
+  tab.innerHTML = '<span class="tt">Trip History</span><span class="stype">TRIPS</span>';
+  document.querySelector('.gx-tabs, #tabs, [class*="tab-bar"]') && document.querySelector('.gx-tabs, #tabs, [class*="tab-bar"]').appendChild(tab);
+
+  const trips = [
+    { id:'VH-042', route:'Athens HQ → Thessaloniki Hub', km:312, dur:'4h 12m', status:'Completed', driver:'K. Papadopoulos', ts:'Mon 25 Nov, 08:14', note:'' },
+    { id:'VH-018', route:'Piraeus Port → Athens Warehouse', km:28, dur:'45m', status:'Completed', driver:'N. Alexiou', ts:'Mon 25 Nov, 07:30', note:'' },
+    { id:'VH-031', route:'Athens → Patras Industrial', km:218, dur:'2h 55m', status:'In Progress', driver:'G. Papadis', ts:'Mon 25 Nov, 09:00', note:'' },
+    { id:'VH-007', route:'Athens → Volos', km:326, dur:'3h 45m', status:'Completed', driver:'S. Mitropoulos', ts:'Sun 24 Nov, 14:20', note:'' },
+    { id:'VH-015', route:'Thessaloniki → Kavala', km:155, dur:'1h 48m', status:'Delayed', driver:'T. Dimos', ts:'Sun 24 Nov, 11:05', note:'Flat tire' },
+    { id:'VH-022', route:'Athens → Lamia', km:213, dur:'2h 30m', status:'Completed', driver:'P. Stavros', ts:'Sun 24 Nov, 09:45', note:'' },
+    { id:'VH-009', route:'Thessaloniki → Ioannina', km:264, dur:'3h 10m', status:'Completed', driver:'M. Yannis', ts:'Sat 23 Nov, 15:00', note:'' },
+    { id:'VH-033', route:'Athens → Kalamata', km:229, dur:'3h 05m', status:'Cancelled', driver:'A. Kostas', ts:'Sat 23 Nov, 08:00', note:'Mechanical failure' },
+    { id:'VH-011', route:'Patras → Athens Depot', km:215, dur:'2h 40m', status:'Completed', driver:'K. Papadopoulos', ts:'Fri 22 Nov, 16:30', note:'' },
+    { id:'VH-027', route:'Athens → Heraklion (Ferry)', km:508, dur:'9h 20m', status:'In Progress', driver:'D. Georgiou', ts:'Fri 22 Nov, 22:00', note:'OVERTIME' },
+    { id:'VH-004', route:'Thessaloniki → Serres', km:88, dur:'1h 12m', status:'Completed', driver:'V. Kosta', ts:'Fri 22 Nov, 11:15', note:'' },
+    { id:'VH-019', route:'Athens → Nafplio', km:140, dur:'1h 55m', status:'Delayed', driver:'L. Petrakis', ts:'Thu 21 Nov, 13:45', note:'Traffic incident' }
+  ];
+
+  const dotColor = s => s === 'Completed' ? 'var(--good)' : s === 'In Progress' ? 'var(--info)' : s === 'Delayed' ? 'var(--warn)' : 'var(--risk)';
+  const badgeBg = s => s === 'Completed' ? 'rgba(34,197,94,0.12)' : s === 'In Progress' ? 'rgba(59,130,246,0.12)' : s === 'Delayed' ? 'rgba(234,179,8,0.12)' : 'rgba(239,68,68,0.12)';
+  const badgeColor = s => s === 'Completed' ? 'var(--good)' : s === 'In Progress' ? 'var(--info)' : s === 'Delayed' ? 'var(--warn)' : 'var(--risk)';
+
+  surfEl.innerHTML = `
+    <div style="margin-bottom:24px;">
+      <h2 style="margin:0 0 16px;font-size:20px;font-weight:600;letter-spacing:-0.3px;">Trip History</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:0;margin-bottom:20px;">
+        ${[
+          ['Total Trips This Month','847'],
+          ['Total Distance','42,180 km'],
+          ['On-Time Rate','91.4%'],
+          ['Avg Duration','2h 34m']
+        ].map(([label,val])=>`
+          <div style="display:inline-block;padding:8px 16px;border:1px solid var(--border);border-radius:8px;margin:0 6px 6px 0;background:var(--glass);">
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">${label}</div>
+            <div style="font-size:16px;font-weight:600;color:var(--text);">${val}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="display:flex;gap:4px;margin-bottom:24px;">
+        ${['All','Completed','In Progress','Delayed','Cancelled'].map((f,i)=>`
+          <button style="padding:6px 14px;border-radius:6px;border:1px solid ${i===0?'transparent':'var(--border)'};background:${i===0?'var(--accent)':'transparent'};color:${i===0?'#fff':'var(--muted)'};font-size:12px;cursor:pointer;font-family:inherit;">${f}</button>
+        `).join('')}
+      </div>
+      <div>
+        ${trips.map((t,i)=>{
+          const isLast = i === trips.length - 1;
+          const noteTag = t.note === 'Flat tire' || t.note === 'Traffic incident' || t.note === 'Mechanical failure'
+            ? `<span style="display:inline-block;padding:2px 6px;border-radius:4px;background:rgba(239,68,68,0.12);color:var(--risk);font-size:10px;font-weight:700;margin-left:6px;">INCIDENT</span>`
+            : t.note === 'OVERTIME'
+            ? `<span style="display:inline-block;padding:2px 6px;border-radius:4px;background:rgba(234,179,8,0.12);color:var(--warn);font-size:10px;font-weight:700;margin-left:6px;">OVERTIME</span>`
+            : '';
+          return `
+            <div style="display:flex;align-items:flex-start;margin-bottom:0;">
+              <div style="width:40px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;">
+                <div style="width:12px;height:12px;border-radius:50%;background:${dotColor(t.status)};box-shadow:0 0 6px ${dotColor(t.status)};flex-shrink:0;margin-top:4px;"></div>
+                ${!isLast ? `<div style="width:2px;height:48px;border-left:2px dashed var(--border);margin:2px 0;"></div>` : ''}
+              </div>
+              <div style="flex:1;padding-bottom:${isLast?'0':'16px'};min-width:0;">
+                <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:4px;">
+                  <span style="font-size:13px;font-weight:600;color:var(--accent);">${t.id}</span>
+                  <span style="color:var(--dim);">→</span>
+                  <span style="font-size:13px;font-weight:500;">${t.route}</span>
+                  ${noteTag}
+                </div>
+                <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+                  <span style="font-size:12px;color:var(--muted);">Driver: ${t.driver}</span>
+                  <span style="font-size:12px;color:var(--dim);">•</span>
+                  <span style="font-size:12px;color:var(--muted);">${t.km} km</span>
+                  <span style="font-size:12px;color:var(--dim);">•</span>
+                  <span style="font-size:12px;color:var(--muted);">${t.dur}</span>
+                  <span style="display:inline-block;padding:2px 8px;border-radius:4px;background:${badgeBg(t.status)};color:${badgeColor(t.status)};font-size:11px;font-weight:600;">${t.status}</span>
+                </div>
+                <div style="font-size:11px;color:var(--dim);">${t.ts}</div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderAssetDetailSurface(query) {
+  const surfId = uid();
+  const surfEl = document.createElement('div');
+  surfEl.id = surfId;
+  surfEl.className = 'gx-surface';
+  surfEl.style.cssText = 'width:100%;height:100%;overflow-y:auto;padding:24px;box-sizing:border-box;color:var(--text);font-family:inherit;';
+
+  document.querySelectorAll('.gx-surface').forEach(s => s.style.display = 'none');
+  document.getElementById('stage').appendChild(surfEl);
+
+  const tab = document.createElement('button');
+  tab.className = 'gx-tab active';
+  tab.innerHTML = '<span class="tt">Asset Detail</span><span class="stype">VH-042</span>';
+  document.querySelector('.gx-tabs, #tabs, [class*="tab-bar"]') && document.querySelector('.gx-tabs, #tabs, [class*="tab-bar"]').appendChild(tab);
+
+  const maintenance = [
+    { date:'2024-11-15', type:'Oil change & filter', cost:'€145', tech:'P. Stavros' },
+    { date:'2024-10-02', type:'Tire rotation', cost:'€80', tech:'A. Kostas' },
+    { date:'2024-09-18', type:'Brake inspection', cost:'€220', tech:'P. Stavros' },
+    { date:'2024-08-05', type:'A/C service', cost:'€180', tech:'M. Yannis' },
+    { date:'2024-07-12', type:'Annual service', cost:'€680', tech:'A. Kostas' }
+  ];
+
+  const docs = [
+    { name:'Insurance Policy', expiry:'2025-06-30', status:'VALID', color:'var(--good)', bg:'rgba(34,197,94,0.12)' },
+    { name:'Road Tax', expiry:'2024-12-31', status:'EXPIRING SOON', color:'var(--warn)', bg:'rgba(234,179,8,0.12)' },
+    { name:'KTEO (MOT)', expiry:'2025-03-15', status:'VALID', color:'var(--good)', bg:'rgba(34,197,94,0.12)' },
+    { name:'Tachograph cert', expiry:'2024-12-15', status:'EXPIRING SOON', color:'var(--warn)', bg:'rgba(234,179,8,0.12)' },
+    { name:'Driver card', expiry:'2025-09-01', status:'VALID', color:'var(--good)', bg:'rgba(34,197,94,0.12)' }
+  ];
+
+  const metrics = [
+    { label:'Safety Score', val:'94.2', unit:'', color:'var(--good)' },
+    { label:'Miles This Month', val:'8,420', unit:'km', color:'var(--info)' },
+    { label:'Fuel Efficiency', val:'10.2', unit:'L/100km', color:'var(--warn)' },
+    { label:'Downtime', val:'0.8', unit:'%', color:'var(--accent)' }
+  ];
+
+  surfEl.innerHTML = `
+    <h2 style="margin:0 0 20px;font-size:20px;font-weight:600;letter-spacing:-0.3px;">Asset Detail — VH-042</h2>
+
+    <div style="background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+      <div style="display:flex;align-items:center;gap:16px;flex:1;min-width:240px;">
+        <div style="font-size:52px;line-height:1;">🚐</div>
+        <div>
+          <div style="font-size:22px;font-weight:700;color:var(--accent);margin-bottom:2px;">VH-042</div>
+          <div style="font-size:14px;font-weight:500;margin-bottom:2px;">Mercedes Sprinter 316 CDI</div>
+          <div style="font-size:12px;color:var(--muted);">Year: 2021 &nbsp;•&nbsp; Plate: ΑΒΓ-1234</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;min-width:200px;">
+        <span style="padding:4px 12px;border-radius:20px;background:rgba(34,197,94,0.12);color:var(--good);font-size:12px;font-weight:700;letter-spacing:0.5px;">● ACTIVE</span>
+        <div style="font-size:12px;color:var(--muted);text-align:right;">Odometer: <strong style="color:var(--text);">124,430 km</strong></div>
+        <div style="font-size:12px;color:var(--muted);text-align:right;">Fuel Level: <strong style="color:var(--good);">68%</strong></div>
+        <div style="font-size:12px;color:var(--dim);text-align:right;">Last GPS ping: 2 minutes ago</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+      ${metrics.map(m=>`
+        <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:700;color:${m.color};">${m.val}<span style="font-size:13px;font-weight:400;color:var(--muted);"> ${m.unit}</span></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.4px;">${m.label}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+      <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:18px;">
+        <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:14px;">Maintenance History</div>
+        ${maintenance.map((m,i)=>`
+          <div style="padding:10px 0;${i<maintenance.length-1?'border-bottom:1px solid var(--border);':''}">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <div style="font-size:13px;font-weight:500;">${m.type}</div>
+                <div style="font-size:11px;color:var(--dim);margin-top:2px;">Tech: ${m.tech}</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:13px;font-weight:600;color:var(--accent);">${m.cost}</div>
+                <div style="font-size:11px;color:var(--dim);margin-top:2px;">${m.date}</div>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:18px;">
+        <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:14px;">Documents</div>
+        ${docs.map((d,i)=>`
+          <div style="padding:10px 0;${i<docs.length-1?'border-bottom:1px solid var(--border);':''}display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.name}</div>
+              <div style="font-size:11px;color:var(--dim);margin-top:2px;">Expires ${d.expiry}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+              <span style="padding:2px 7px;border-radius:4px;background:${d.bg};color:${d.color};font-size:10px;font-weight:700;white-space:nowrap;">${d.status}</span>
+              <button style="padding:3px 9px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;font-family:inherit;">View</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:18px;">
+      <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:14px;">Current Assignment</div>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-bottom:14px;">
+        <div style="font-size:13px;"><span style="color:var(--muted);">Driver:</span> <strong>Konstantinos Papadopoulos</strong></div>
+        <div style="font-size:13px;"><span style="color:var(--muted);">Route:</span> <strong>Athens → Thessaloniki</strong></div>
+        <div style="font-size:13px;"><span style="color:var(--muted);">ETA:</span> <strong style="color:var(--accent);">15:42</strong></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+          <div style="width:65%;height:100%;background:linear-gradient(90deg,var(--accent-600),var(--accent));border-radius:4px;"></div>
+        </div>
+        <span style="font-size:12px;color:var(--accent);font-weight:600;flex-shrink:0;">65%</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderComplianceSurface(query) {
+  const surfId = uid();
+  const surfEl = document.createElement('div');
+  surfEl.id = surfId;
+  surfEl.className = 'gx-surface';
+  surfEl.style.cssText = 'width:100%;height:100%;overflow-y:auto;padding:24px;box-sizing:border-box;color:var(--text);font-family:inherit;';
+
+  document.querySelectorAll('.gx-surface').forEach(s => s.style.display = 'none');
+  document.getElementById('stage').appendChild(surfEl);
+
+  const tab = document.createElement('button');
+  tab.className = 'gx-tab active';
+  tab.innerHTML = '<span class="tt">Compliance</span><span class="stype">LEGAL</span>';
+  document.querySelector('.gx-tabs, #tabs, [class*="tab-bar"]') && document.querySelector('.gx-tabs, #tabs, [class*="tab-bar"]').appendChild(tab);
+
+  const categories = [
+    { title:'VEHICLE DOCS', pct:94, icon:'✅', color:'var(--good)', bg:'rgba(34,197,94,0.12)', pass:25, total:27, desc:'Insurance, MOT, road tax' },
+    { title:'DRIVER CERTS', pct:89, icon:'⚠️', color:'var(--warn)', bg:'rgba(234,179,8,0.12)', pass:23, total:26, desc:'Licenses, CPC, tachograph cards' },
+    { title:'ROUTE COMPLIANCE', pct:82, icon:'⚠️', color:'var(--warn)', bg:'rgba(234,179,8,0.12)', pass:21, total:26, desc:'Speed limits, HOS, rest periods' },
+    { title:'SAFETY RECORDS', pct:91, icon:'✅', color:'var(--good)', bg:'rgba(34,197,94,0.12)', pass:24, total:26, desc:'Incidents, maintenance, inspections' }
+  ];
+
+  const issues = [
+    { pri:'CRITICAL', priColor:'var(--risk)', priBg:'rgba(239,68,68,0.12)', border:'var(--risk)', subject:'Insurance expiry', ref:'VH-018', due:'2024-12-01', status:'Action Required', statusColor:'var(--risk)' },
+    { pri:'HIGH', priColor:'var(--warn)', priBg:'rgba(234,179,8,0.12)', border:'var(--warn)', subject:'Driver license expiry', ref:'K. Alexiou', due:'2024-11-28', status:'Action Required', statusColor:'var(--risk)' },
+    { pri:'HIGH', priColor:'var(--warn)', priBg:'rgba(234,179,8,0.12)', border:'var(--warn)', subject:'Tachograph calibration', ref:'VH-031', due:'2024-12-15', status:'Scheduled', statusColor:'var(--info)' },
+    { pri:'MEDIUM', priColor:'var(--accent)', priBg:'var(--accent-soft)', border:'transparent', subject:'KTEO due', ref:'VH-007', due:'2024-12-30', status:'Scheduled', statusColor:'var(--info)' },
+    { pri:'MEDIUM', priColor:'var(--accent)', priBg:'var(--accent-soft)', border:'transparent', subject:'Driver CPC renewal', ref:'G. Papadis', due:'2025-01-15', status:'In Progress', statusColor:'var(--accent)' },
+    { pri:'LOW', priColor:'var(--muted)', priBg:'rgba(142,146,153,0.1)', border:'transparent', subject:'Road tax', ref:'VH-042', due:'2024-12-31', status:'Pending', statusColor:'var(--muted)' },
+    { pri:'LOW', priColor:'var(--muted)', priBg:'rgba(142,146,153,0.1)', border:'transparent', subject:'Annual vehicle inspection', ref:'VH-022', due:'2025-01-20', status:'Pending', statusColor:'var(--muted)' },
+    { pri:'INFO', priColor:'var(--good)', priBg:'rgba(34,197,94,0.12)', border:'transparent', subject:'GDPR data retention policy', ref:'All staff', due:'—', status:'Completed', statusColor:'var(--good)' }
+  ];
+
+  const score = 87.4;
+  const circumference = 2 * Math.PI * 54;
+  const dashOffset = circumference * (1 - score / 100);
+
+  surfEl.innerHTML = `
+    <h2 style="margin:0 0 20px;font-size:20px;font-weight:600;letter-spacing:-0.3px;">Compliance Dashboard</h2>
+
+    <div style="text-align:center;margin-bottom:28px;padding:28px 20px;background:var(--glass);border:1px solid var(--border);border-radius:12px;">
+      <div style="position:relative;display:inline-block;width:128px;height:128px;margin-bottom:16px;">
+        <svg width="128" height="128" viewBox="0 0 128 128" style="transform:rotate(-90deg);">
+          <circle cx="64" cy="64" r="54" fill="none" stroke="var(--border)" stroke-width="10"/>
+          <circle cx="64" cy="64" r="54" fill="none" stroke="var(--good)" stroke-width="10"
+            stroke-dasharray="${circumference.toFixed(2)}"
+            stroke-dashoffset="${dashOffset.toFixed(2)}"
+            stroke-linecap="round"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="font-size:26px;font-weight:800;color:var(--good);line-height:1;">${score}%</div>
+        </div>
+      </div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;">23 vehicles compliant out of 26 total</div>
+      <div style="font-size:12px;color:var(--dim);">Next audit: January 15, 2025</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">
+      ${categories.map(c=>`
+        <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);">${c.icon} ${c.title}</div>
+            <div style="font-size:18px;font-weight:800;color:${c.color};">${c.pct}%</div>
+          </div>
+          <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:8px;">
+            <div style="width:${c.pct}%;height:100%;background:${c.color};border-radius:3px;transition:width 0.6s ease;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <div style="font-size:11px;color:var(--dim);">${c.desc}</div>
+            <div style="font-size:11px;color:var(--muted);flex-shrink:0;margin-left:8px;">${c.pass}/${c.total}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px;">
+      <div style="padding:14px 18px;border-bottom:1px solid var(--border);">
+        <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);">Compliance Issues</div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="background:rgba(255,255,255,0.02);">
+              ${['Priority','Issue','Vehicle / Driver','Due Date','Status'].map(h=>`<th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;color:var(--dim);white-space:nowrap;">${h}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${issues.map((iss,i)=>`
+              <tr style="border-top:1px solid var(--border);${iss.pri==='CRITICAL'||iss.pri==='HIGH'?`border-left:3px solid ${iss.priColor};`:''}" >
+                <td style="padding:11px 14px;">
+                  <span style="display:inline-block;padding:3px 8px;border-radius:5px;background:${iss.priBg};color:${iss.priColor};font-size:10px;font-weight:700;letter-spacing:0.4px;white-space:nowrap;">${iss.pri}</span>
+                </td>
+                <td style="padding:11px 14px;font-weight:500;">${iss.subject}</td>
+                <td style="padding:11px 14px;color:var(--muted);">${iss.ref}</td>
+                <td style="padding:11px 14px;color:var(--dim);white-space:nowrap;">${iss.due}</td>
+                <td style="padding:11px 14px;"><span style="color:${iss.statusColor};font-weight:500;">${iss.status}</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button onclick="console.log('Compliance report export triggered')" style="padding:10px 18px;border-radius:8px;border:1px solid var(--border);background:var(--glass);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;">
+        ⬇ Download Report
+      </button>
+      <button onclick="console.log('Schedule audit triggered')" style="padding:10px 18px;border-radius:8px;border:1px solid var(--border);background:var(--glass);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;">
+        📅 Schedule Audit
+      </button>
+      <button onclick="console.log('Send compliance reminders triggered')" style="padding:10px 18px;border-radius:8px;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;">
+        🔔 Send Reminders
+      </button>
+    </div>
+  `;
+}
+
+function enhanceNavPanels() {
+
+  // ================================================================
+  // ASSETS PANEL
+  // ================================================================
+  const assetPanel = document.getElementById('assetBg');
+  const assetBody = assetPanel?.querySelector('.panel-body, .panel-content, [class*="panel-body"]');
+  if (assetBody) assetBody.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:14px;height:100%;overflow-y:auto;padding-right:2px;">
+
+      <div style="position:relative;">
+        <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;">🔍</span>
+        <input type="text" placeholder="Search vehicles, routes, IDs…"
+          style="width:100%;box-sizing:border-box;padding:8px 10px 8px 32px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;outline:none;"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <span style="font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.04em;">26 VEHICLES</span>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;" id="assetFilterTabs">
+          ${['All','Active','In Service','Available','Inactive'].map((t,i)=>`
+            <button onclick="document.querySelectorAll('#assetFilterTabs button').forEach(b=>{b.style.background='var(--glass)';b.style.color='var(--muted)';b.style.borderColor='var(--border)';});this.style.background='var(--accent)';this.style.color='#fff';this.style.borderColor='var(--accent)';"
+              style="padding:3px 10px;border-radius:20px;border:1px solid ${i===0?'var(--accent)':'var(--border)'};background:${i===0?'var(--accent)':'var(--glass)'};color:${i===0?'#fff':'var(--muted)'};font-size:11px;cursor:pointer;font-weight:500;transition:all .15s;">${t}</button>
+          `).join('')}
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+        ${[
+          {id:'VH-042',model:'Mercedes Sprinter 316',route:'Athens → Thessaloniki',odo:'124,430 km',fuel:68,ping:'2m ago',status:'ACTIVE',color:'var(--good)'},
+          {id:'VH-018',model:'Iveco Daily 35S',route:'MAINTENANCE',odo:'89,210 km',fuel:45,ping:'1h ago',status:'IN SERVICE',color:'var(--warn)'},
+          {id:'VH-031',model:'Ford Transit Custom',route:'Athens → Patras',odo:'67,890 km',fuel:82,ping:'5m ago',status:'ACTIVE',color:'var(--good)'},
+          {id:'VH-007',model:'Mercedes Sprinter 319',route:'Thessaloniki → Kavala',odo:'198,540 km',fuel:34,ping:'8m ago',status:'ACTIVE',color:'var(--good)'},
+          {id:'VH-015',model:'Volkswagen Crafter',route:'Delayed (roadside)',odo:'156,230 km',fuel:12,ping:'14m ago',status:'ACTIVE',color:'var(--risk)'},
+          {id:'VH-022',model:'Renault Master',route:'Athens Hub',odo:'43,210 km',fuel:91,ping:'2h ago',status:'AVAILABLE',color:'var(--good)'},
+          {id:'VH-009',model:'Iveco Daily 50C',route:'Piraeus Port',odo:'211,890 km',fuel:58,ping:'22m ago',status:'ACTIVE',color:'var(--good)'},
+          {id:'VH-003',model:'Mercedes Atego',route:'DEPOT',odo:'389,120 km',fuel:75,ping:'6h ago',status:'INACTIVE',color:'var(--dim,#6b7280)'},
+        ].map(v => {
+          const fuelColor = v.fuel <= 20 ? 'var(--risk)' : v.fuel <= 40 ? 'var(--warn)' : 'var(--good)';
+          return `
+            <div
+              style="background:var(--surface);border:1px solid var(--border);border-left:3px solid ${v.color};border-radius:8px;padding:10px;cursor:pointer;transition:background .15s;"
+              onmouseenter="this.style.background='var(--glass)'" onmouseleave="this.style.background='var(--surface)'">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                <span style="width:7px;height:7px;border-radius:50%;background:${v.color};flex-shrink:0;"></span>
+                <span style="font-weight:700;font-size:12px;color:var(--text);">${v.id}</span>
+                <span style="font-size:10px;color:var(--muted);margin-left:auto;background:var(--glass);padding:1px 6px;border-radius:10px;border:1px solid var(--border);">${v.status}</span>
+              </div>
+              <div style="font-size:11px;color:var(--muted);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.model}</div>
+              <div style="font-size:11px;color:var(--text);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.85;">${v.route}</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding-top:6px;border-top:1px solid var(--border);">
+                <span style="font-size:10px;color:var(--muted);">${v.odo}</span>
+                <span style="font-size:10px;font-weight:600;color:${fuelColor};">⛽ ${v.fuel}%</span>
+                <span style="font-size:10px;color:var(--muted);">🕐 ${v.ping}</span>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <button
+        style="width:100%;padding:9px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:.01em;"
+        onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--border)'">
+        View All 26 Vehicles →
+      </button>
+    </div>
+  `;
+
+  // ================================================================
+  // AUTOMATIONS PANEL
+  // ================================================================
+  const autoPanel = document.getElementById('autoBg');
+  const autoBody = autoPanel?.querySelector('.panel-body, .panel-content, [class*="panel-body"]');
+  if (autoBody) autoBody.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:14px;height:100%;overflow-y:auto;padding-right:2px;">
+
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--glass);border:1px solid var(--border);border-radius:8px;font-size:12px;">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 6px var(--good);flex-shrink:0;"></span>
+        <span style="color:var(--text);font-weight:600;">3 active automations</span>
+        <span style="color:var(--muted);margin-left:auto;">Last run: <strong style="color:var(--text);">4 minutes ago</strong></span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        ${[
+          {id:'auto1',on:true, title:'Invoice Processing',    desc:'Auto-process and categorize incoming fleet invoices',     last:'4m ago',    wk:'47/wk',  rate:'99.2%'},
+          {id:'auto2',on:true, title:'Maintenance Alerts',   desc:'Send alerts when vehicles approach service intervals',    last:'1h ago',    wk:'23/wk',  rate:'100%'},
+          {id:'auto3',on:true, title:'Route Optimization',   desc:'AI-optimize routes based on traffic and delivery windows',last:'2h ago',    wk:'156/wk', rate:'94.1%'},
+          {id:'auto4',on:false,title:'Driver Fatigue Monitor',desc:'Alert if driving hours exceed legal limits',              last:'Yesterday', wk:'0/wk',   rate:'—'},
+          {id:'auto5',on:false,title:'Fuel Cost Reporter',   desc:'Weekly fuel cost report sent to management',             last:'Mon',       wk:'7/wk',   rate:'100%'},
+        ].map(a => `
+          <div id="${a.id}_card"
+            style="background:var(--surface);border:1px solid var(--border);border-left:3px solid ${a.on?'var(--good)':'var(--dim,#6b7280)'};border-radius:8px;padding:12px;transition:all .15s;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <span style="font-size:13px;font-weight:700;color:var(--text);flex:1;">${a.title}</span>
+              <label style="position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0;">
+                <input type="checkbox" ${a.on?'checked':''} id="${a.id}_toggle" style="opacity:0;width:0;height:0;"
+                  onchange="(function(cb){
+                    var card=document.getElementById('${a.id}_card');
+                    var track=document.getElementById('${a.id}_track');
+                    var thumb=document.getElementById('${a.id}_thumb');
+                    if(cb.checked){
+                      card.style.borderLeftColor='var(--good)';
+                      track.style.background='var(--good)';
+                      thumb.style.transform='translateX(16px)';
+                    } else {
+                      card.style.borderLeftColor='var(--dim,#6b7280)';
+                      track.style.background='var(--border)';
+                      thumb.style.transform='translateX(0)';
+                    }
+                  })(this)">
+                <span id="${a.id}_track" style="position:absolute;inset:0;border-radius:20px;background:${a.on?'var(--good)':'var(--border)'};cursor:pointer;transition:background .2s;"></span>
+                <span id="${a.id}_thumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;transform:${a.on?'translateX(16px)':'translateX(0)'};pointer-events:none;"></span>
+              </label>
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">${a.desc}</div>
+            <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;">
+              <span style="font-size:10px;color:var(--muted);margin-right:12px;">Last: <strong style="color:var(--text);">${a.last}</strong></span>
+              <span style="font-size:10px;color:var(--muted);margin-right:12px;">${a.wk}</span>
+              <span style="font-size:10px;color:var(--muted);">Success: <strong style="color:${a.rate==='100%'?'var(--good)':a.rate==='—'?'var(--muted)':'var(--warn)'};">${a.rate}</strong></span>
+              <button style="margin-left:auto;padding:4px 10px;background:var(--glass);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;cursor:pointer;font-weight:500;"
+                onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--border)'">Configure</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <button
+        style="width:100%;padding:9px;background:var(--glass);border:1px solid var(--accent);border-radius:8px;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;"
+        onmouseenter="this.style.background='rgba(249,115,22,.08)'" onmouseleave="this.style.background='var(--glass)'">
+        + Create New Automation
+      </button>
+    </div>
+  `;
+
+  // ================================================================
+  // REPORTS PANEL
+  // ================================================================
+  const reportPanel = document.getElementById('reportBg');
+  const reportBody = reportPanel?.querySelector('.panel-body, .panel-content, [class*="panel-body"]');
+  if (reportBody) reportBody.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:14px;height:100%;overflow-y:auto;padding-right:2px;">
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${[
+          {label:'14',sub:'This Month',color:'var(--accent)'},
+          {label:'3', sub:'Scheduled', color:'var(--good)'},
+          {label:'2', sub:'Pending Review',color:'var(--warn)'},
+        ].map(s=>`
+          <div style="flex:1;min-width:80px;background:var(--glass);border:1px solid var(--border);border-radius:8px;padding:8px 10px;text-align:center;">
+            <div style="font-size:20px;font-weight:800;color:${s.color};">${s.label}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:1px;white-space:nowrap;">${s.sub}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        ${[
+          {icon:'📊',title:'Monthly Fleet Summary',      sub:'Nov 1–30, 2024',  type:'PDF', status:'READY',     action:'⬇ Download'},
+          {icon:'🗺️',title:'Route Performance Analysis', sub:'Q4 2024',         type:'XLSX',status:'READY',     action:'⬇ Download'},
+          {icon:'👤',title:'Driver Performance Report',  sub:'November',        type:'PDF', status:'READY',     action:'⬇ Download'},
+          {icon:'🔧',title:'Maintenance Cost Breakdown', sub:'Nov 2024',        type:'PDF', status:'PENDING',   action:'⏳ Preview'},
+          {icon:'⛽',title:'Fuel Consumption Report',    sub:'Nov 2024',        type:'XLSX',status:'DEC 1',     action:'⏰ Dec 1'},
+          {icon:'📋',title:'Compliance Audit Report',    sub:'Q4 2024',         type:'PDF', status:'DEC 15',    action:'⏰ Dec 15'},
+        ].map(r => {
+          const sColor = r.status==='READY'?'var(--good)':r.status==='PENDING'?'var(--warn)':'var(--muted)';
+          const sBg = r.status==='READY'?'rgba(34,197,94,.1)':r.status==='PENDING'?'rgba(245,158,11,.1)':'var(--glass)';
+          return `
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;transition:background .15s;"
+              onmouseenter="this.style.background='var(--glass)'" onmouseleave="this.style.background='var(--surface)'">
+              <span style="font-size:18px;flex-shrink:0;">${r.icon}</span>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.title}</div>
+                <div style="font-size:10px;color:var(--muted);margin-top:1px;">${r.sub}</div>
+              </div>
+              <span style="font-size:10px;font-weight:700;color:var(--muted);background:var(--glass);border:1px solid var(--border);padding:2px 6px;border-radius:4px;flex-shrink:0;">${r.type}</span>
+              <span style="font-size:10px;font-weight:700;color:${sColor};background:${sBg};padding:2px 7px;border-radius:10px;flex-shrink:0;">${r.status}</span>
+              <button style="padding:4px 9px;background:var(--glass);border:1px solid var(--border);border-radius:6px;font-size:11px;color:var(--text);cursor:pointer;white-space:nowrap;flex-shrink:0;"
+                onmouseenter="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseleave="this.style.borderColor='var(--border)';this.style.color='var(--text)'">${r.action}</button>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <button
+        style="width:100%;padding:9px;background:var(--glass);border:1px solid var(--accent);border-radius:8px;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;"
+        onmouseenter="this.style.background='rgba(249,115,22,.08)'" onmouseleave="this.style.background='var(--glass)'">
+        + Create Custom Report
+      </button>
+    </div>
+  `;
+
+  // ================================================================
+  // QUALITY PANEL
+  // ================================================================
+  const qualityPanel = document.getElementById('qualityBg');
+  const qualityBody = qualityPanel?.querySelector('.panel-body, .panel-content, [class*="panel-body"]');
+  if (qualityBody) qualityBody.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:14px;height:100%;overflow-y:auto;padding-right:2px;">
+
+      <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;align-items:center;gap:16px;">
+        <div style="text-align:center;">
+          <div style="font-size:32px;font-weight:900;color:var(--good);line-height:1;">96.4%</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px;">OVERALL QA SCORE</div>
+        </div>
+        <div style="width:1px;height:40px;background:var(--border);flex-shrink:0;"></div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--good);">EXCELLENT</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">All core metrics within acceptable range</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+        ${[
+          {label:'Pre-trip Checks',    value:'98.1%', color:'var(--good)'},
+          {label:'Incidents Resolved', value:'91.2%', color:'var(--good)'},
+          {label:'Customer Complaints',value:'2',     color:'var(--warn)'},
+          {label:'SLA Compliance',     value:'94.8%', color:'var(--good)'},
+        ].map(m=>`
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;">
+            <div style="font-size:20px;font-weight:800;color:${m.color};">${m.value}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3;">${m.label}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;margin-bottom:8px;">INSPECTION CHECKLIST</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          ${[
+            {id:'qc1',checked:true, label:'Pre-trip vehicle walkaround documented', detail:'23/23 vehicles (100%)',    due:''},
+            {id:'qc2',checked:true, label:'Tachograph data downloaded this week',   detail:'22/23 vehicles (95.7%)',  due:''},
+            {id:'qc3',checked:false,label:'Monthly brake inspection',               detail:'18/23 vehicles (78.3%)',  due:'DUE: Nov 30'},
+            {id:'qc4',checked:false,label:'Driver signature on daily log',          detail:'21/23 (91.3%)',           due:''},
+            {id:'qc5',checked:false,label:'Incident reports filed within 24h',      detail:'3/3 pending',             due:'IN REVIEW'},
+          ].map(item=>`
+            <label style="display:flex;align-items:flex-start;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:8px 10px;cursor:pointer;transition:background .15s;"
+              onmouseenter="this.style.background='var(--glass)'" onmouseleave="this.style.background='var(--surface)'">
+              <input type="checkbox" id="${item.id}" ${item.checked?'checked':''} style="margin-top:1px;accent-color:var(--good);width:14px;height:14px;flex-shrink:0;cursor:pointer;">
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:12px;color:var(--text);line-height:1.3;">${item.label}</div>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:2px;">
+                  <span style="font-size:10px;color:var(--muted);">${item.detail}</span>
+                  ${item.due?`<span style="font-size:10px;font-weight:700;color:var(--warn);">${item.due}</span>`:''}
+                </div>
+              </div>
+            </label>
+          `).join('')}
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;margin-bottom:8px;">RECENT INCIDENTS</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+          ${[
+            {date:'NOV 22',vehicle:'VH-015',desc:'Minor fender dent — Piraeus Port',  status:'Closed',    sc:'var(--good)'},
+            {date:'NOV 19',vehicle:'VH-007',desc:'Speeding warning — E75 motorway',   status:'Closed',    sc:'var(--good)'},
+            {date:'NOV 15',vehicle:'VH-031',desc:'Late delivery — client complaint',  status:'In Review', sc:'var(--warn)'},
+          ].map((inc,i)=>`
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;${i>0?'border-top:1px solid var(--border)':''};font-size:11px;">
+              <span style="color:var(--muted);white-space:nowrap;flex-shrink:0;">${inc.date}</span>
+              <span style="font-weight:700;color:var(--accent);flex-shrink:0;">${inc.vehicle}</span>
+              <span style="color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${inc.desc}</span>
+              <span style="font-size:10px;font-weight:700;color:${inc.sc};white-space:nowrap;">${inc.status}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // ================================================================
+  // INTEGRATIONS PANEL
+  // ================================================================
+  const intPanel = document.getElementById('intBg');
+  const intBody = intPanel?.querySelector('.panel-body, .panel-content, [class*="panel-body"]');
+  if (intBody) intBody.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:14px;height:100%;overflow-y:auto;padding-right:2px;">
+
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--glass);border:1px solid var(--border);border-radius:8px;font-size:12px;flex-wrap:wrap;gap:6px;">
+        <span style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--good);"></span><strong style="color:var(--text);">8</strong><span style="color:var(--muted);">connected</span></span>
+        <span style="color:var(--border);">|</span>
+        <span style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--good);"></span><strong style="color:var(--good);">7</strong><span style="color:var(--muted);">active</span></span>
+        <span style="color:var(--border);">|</span>
+        <span style="display:flex;align-items:center;gap:5px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--warn);"></span><strong style="color:var(--warn);">1</strong><span style="color:var(--muted);">warning</span></span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+        ${[
+          {icon:'🗺️',name:'Google Maps',    status:'CONNECTED', desc:'Route optimization & geocoding',    sync:'5m ago',    btn:'Configure', warn:false},
+          {icon:'💳',name:'Stripe',          status:'CONNECTED', desc:'Fleet card payments & expenses',    sync:'12m ago',   btn:'Configure', warn:false},
+          {icon:'📧',name:'SendGrid',        status:'CONNECTED', desc:'Email alerts & reports',            sync:'1h ago',    btn:'Configure', warn:false},
+          {icon:'🔌',name:'Garmin Fleet',    status:'WARNING',   desc:'GPS telemetry (API rate limit)',    sync:'3h ago',    btn:'Reconnect', warn:true},
+          {icon:'🏦',name:'Eurobank Biz',    status:'CONNECTED', desc:'Bank feed & reconciliation',       sync:'6h ago',    btn:'Configure', warn:false},
+          {icon:'📱',name:'Twilio',          status:'CONNECTED', desc:'SMS driver alerts',                sync:'2h ago',    btn:'Configure', warn:false},
+          {icon:'🤖',name:'Anthropic Claude',status:'CONNECTED', desc:'AI surface generation',            sync:'Active',    btn:'Configure', warn:false},
+          {icon:'📊',name:'Google Analytics',status:'CONNECTED', desc:'Usage & performance',              sync:'Daily',     btn:'Configure', warn:false},
+        ].map(s => {
+          const sColor = s.status==='WARNING'?'var(--warn)':'var(--good)';
+          const sBg    = s.status==='WARNING'?'rgba(245,158,11,.12)':'rgba(34,197,94,.1)';
+          return `
+            <div style="background:var(--surface);border:1px solid ${s.warn?'var(--warn)':'var(--border)'};border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:6px;transition:background .15s;"
+              onmouseenter="this.style.background='var(--glass)'" onmouseleave="this.style.background='var(--surface)'">
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="font-size:16px;">${s.icon}</span>
+                <span style="font-size:11px;font-weight:700;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.name}</span>
+              </div>
+              <span style="font-size:10px;font-weight:700;color:${sColor};background:${sBg};padding:2px 6px;border-radius:10px;align-self:flex-start;">${s.status}</span>
+              <div style="font-size:10px;color:var(--muted);line-height:1.3;">${s.desc}</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px;">
+                <span style="font-size:10px;color:var(--muted);">🕐 ${s.sync}</span>
+                <button style="padding:3px 8px;background:var(--glass);border:1px solid ${s.warn?'var(--warn)':'var(--border)'};border-radius:5px;font-size:10px;color:${s.warn?'var(--warn)':'var(--text)'};cursor:pointer;font-weight:${s.warn?700:400};"
+                  onmouseenter="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseleave="this.style.borderColor='${s.warn?'var(--warn)':'var(--border)'}';this.style.color='${s.warn?'var(--warn)':'var(--text)'}'">
+                  ${s.btn}
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <button
+        style="width:100%;padding:9px;background:var(--glass);border:1px solid var(--accent);border-radius:8px;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;"
+        onmouseenter="this.style.background='rgba(249,115,22,.08)'" onmouseleave="this.style.background='var(--glass)'">
+        + Add Integration
+      </button>
+    </div>
+  `;
+
+}
+
+function injectLightThemeCss() {
+  const style = document.createElement('style');
+  style.textContent = `
+    body.theme-light {
+      --bg: #f4f4f8;
+      --surface: #ffffff;
+      --sidebar-bg: #ebebf2;
+      --text: #0d0d14;
+      --muted: #52527a;
+      --dim: #8888aa;
+      --border: rgba(0,0,0,0.1);
+      --glass: rgba(0,0,0,0.04);
+      --glow: none;
+    }
+
+    body.theme-light .topbar {
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    body.theme-light .sidebar {
+      box-shadow: 1px 0 6px rgba(0,0,0,0.08);
+    }
+
+    body.theme-light .gx-tab.active {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .density-comfortable .gx-surface {
+      padding: 28px !important;
+    }
+
+    .density-comfortable .gx-tab {
+      padding: 10px 18px !important;
+    }
+
+    @keyframes fadeInSurface {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+function initSurfaceTransitions() {
+  const stage = document.getElementById('stage');
+  if (!stage) return;
+
+  const observer = new MutationObserver(mutations => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node.nodeType !== 1) continue;
+        const surfaces = node.classList && node.classList.contains('gx-surface')
+          ? [node]
+          : Array.from(node.querySelectorAll('.gx-surface'));
+        for (const newSurf of surfaces) {
+          newSurf.style.animation = 'fadeInSurface 0.25s ease-out forwards';
+        }
+      }
+    }
+  });
+
+  observer.observe(stage, { childList: true, subtree: true });
+
+  document.addEventListener('click', e => {
+    const tab = e.target.closest('.gx-tab');
+    if (!tab) return;
+    const targetId = tab.dataset.target;
+    const surf = document.getElementById(targetId);
+    if (surf) {
+      surf.style.animation = 'none';
+      surf.offsetHeight;
+      surf.style.animation = 'fadeInSurface 0.2s ease-out forwards';
+    }
+  });
+}
+
+function initSurfaceExport() {
+  function showToast(message, duration = 2500) {
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 10px 20px;
+      background: var(--accent, #f97316);
+      color: #fff;
+      border-radius: 8px;
+      z-index: 9999;
+      font-size: 13px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    `;
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => {
+      toast.style.opacity = '1';
+    });
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      setTimeout(() => toast.remove(), 200);
+    }, duration);
+  }
+
+  function exportSurface(surfEl) {
+    const titleEl = surfEl.querySelector('.gx-sh-title');
+    const title = titleEl ? titleEl.textContent.trim().replace(/\s+/g, '-') : 'surface';
+    const sh = surfEl.querySelector('.gx-sh');
+    let bodyHtml = '';
+    if (sh) {
+      let next = sh.nextElementSibling;
+      while (next) {
+        bodyHtml += next.outerHTML;
+        next = next.nextElementSibling;
+      }
+    } else {
+      bodyHtml = surfEl.innerHTML;
+    }
+    const date = new Date().toISOString().slice(0, 10);
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${title}</title>
+  <style>body { font-family: system-ui, sans-serif; padding: 24px; }</style>
+</head>
+<body>
+${bodyHtml}
+</body>
+</html>`;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `adaptiveai-surface-${title}-${date}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Surface exported!');
+  }
+
+  function addExportButton(surfEl) {
+    let actions = surfEl.querySelector('.gx-sh-actions');
+    if (!actions) {
+      const sh = surfEl.querySelector('.gx-sh');
+      if (sh) {
+        actions = document.createElement('div');
+        actions.className = 'gx-sh-actions';
+        actions.style.cssText = 'display:flex;align-items:center;gap:8px;margin-left:auto;';
+        sh.appendChild(actions);
+      }
+    }
+    if (!actions) return;
+    if (actions.querySelector('.gx-export-btn')) return;
+    const btn = document.createElement('button');
+    btn.className = 'gx-export-btn';
+    btn.textContent = '⬇ Export';
+    btn.style.cssText = `
+      font-size: 11px;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--glass);
+      color: var(--muted);
+      cursor: pointer;
+    `;
+    btn.addEventListener('click', () => exportSurface(surfEl));
+    actions.appendChild(btn);
+  }
+
+  const stage = document.getElementById('stage');
+  if (!stage) return;
+
+  stage.querySelectorAll('.gx-surface').forEach(addExportButton);
+
+  const observer = new MutationObserver(mutations => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node.nodeType !== 1) continue;
+        if (node.classList && node.classList.contains('gx-surface')) {
+          addExportButton(node);
+        }
+        node.querySelectorAll && node.querySelectorAll('.gx-surface').forEach(addExportButton);
+      }
+    }
+  });
+
+  observer.observe(stage, { childList: true, subtree: true });
+}
+
+function injectBreadcrumb() {
+  if (document.getElementById('breadcrumb')) return;
+
+  const breadcrumb = document.createElement('div');
+  breadcrumb.id = 'breadcrumb';
+  breadcrumb.style.cssText = `
+    padding: 4px 24px;
+    font-size: 11px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  `;
+  breadcrumb.innerHTML = `Fleet AI <span style="opacity:0.5;margin:0 2px;">›</span> <span id="breadcrumbSurface">Dashboard</span>`;
+
+  const topbar = document.querySelector('.topbar');
+  if (topbar && topbar.parentNode) {
+    topbar.parentNode.insertBefore(breadcrumb, topbar.nextSibling);
+  } else {
+    const main = document.querySelector('.main-layout, main');
+    if (main && main.parentNode) {
+      main.parentNode.insertBefore(breadcrumb, main);
+    } else {
+      document.body.insertBefore(breadcrumb, document.body.firstChild);
+    }
+  }
+
+  function updateBreadcrumb() {
+    const activeTab = document.querySelector('.gx-tab.active');
+    if (!activeTab) return;
+    const ttEl = activeTab.querySelector('.tt');
+    const label = ttEl ? ttEl.textContent.trim() : activeTab.textContent.trim();
+    const surfaceSpan = document.getElementById('breadcrumbSurface');
+    if (surfaceSpan && label) surfaceSpan.textContent = label;
+  }
+
+  updateBreadcrumb();
+
+  const tabs = document.getElementById('tabs');
+  if (tabs) {
+    const observer = new MutationObserver(updateBreadcrumb);
+    observer.observe(tabs, { attributes: true, subtree: true, attributeFilter: ['class'] });
+  }
+
+  document.addEventListener('click', e => {
+    const tab = e.target.closest('.gx-tab');
+    if (!tab) return;
+    setTimeout(updateBreadcrumb, 50);
+  });
+}
+
+function initRoleBasedStartup() {
+  setTimeout(function () {
+    const role = localStorage.getItem('role') || 'owner';
+    const existingSurfaces = document.querySelectorAll('.gx-surface').length;
+    if (existingSurfaces > 0) return;
+
+    const queryMap = {
+      owner:      'Show revenue analytics and financial performance',
+      manager:    'Show fleet map with all vehicle locations',
+      dispatcher: 'Show kanban turnaround board for today\'s routes',
+      inspector:  'Show fleet maintenance tracker and service status'
+    };
+    const query = queryMap[role] || queryMap['owner'];
+
+    const greeting = 'Welcome back, Fleet ' + role.charAt(0).toUpperCase() + role.slice(1) + ' 👋 Loading your dashboard...';
+    const statusbar = document.getElementById('statusbar');
+    if (statusbar) {
+      const prev = statusbar.textContent;
+      statusbar.textContent = greeting;
+      setTimeout(function () {
+        statusbar.textContent = prev;
+      }, 5000);
+    }
+
+    if (typeof window.generateSurface === 'function') {
+      window.generateSurface(query);
+    }
+  }, 3000);
+}
+
+function enhanceAgentCards() {
+  function getStatusText(pct) {
+    if (pct < 30) return 'Initializing...';
+    if (pct < 60) return 'Processing data...';
+    if (pct < 90) return 'Analyzing results...';
+    return 'Finalizing...';
+  }
+
+  function processCard(card, index) {
+    if (card.querySelector('.agent-progress-wrap')) return;
+
+    const targetPct = Math.round(40 + (index % 12) * (55 / 11));
+    const wrap = document.createElement('div');
+    wrap.className = 'agent-progress-wrap';
+    wrap.style.cssText = 'margin-top:8px';
+    wrap.innerHTML =
+      '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px">' +
+        '<span class="agent-status-text">Processing...</span>' +
+        '<span class="agent-pct">0%</span>' +
+      '</div>' +
+      '<div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">' +
+        '<div class="agent-bar" style="height:100%;width:0%;background:var(--accent);border-radius:2px;transition:width 1.5s ease-out"></div>' +
+      '</div>';
+
+    card.appendChild(wrap);
+
+    const barEl = wrap.querySelector('.agent-bar');
+    const pctEl = wrap.querySelector('.agent-pct');
+    const statusEl = wrap.querySelector('.agent-status-text');
+
+    requestAnimationFrame(function () {
+      setTimeout(function () {
+        barEl.style.width = targetPct + '%';
+        pctEl.textContent = targetPct + '%';
+        statusEl.textContent = getStatusText(targetPct);
+      }, 100);
+    });
+  }
+
+  function processAll() {
+    const cards = document.querySelectorAll('.agent-card');
+    cards.forEach(function (card, i) {
+      processCard(card, i);
+    });
+  }
+
+  processAll();
+
+  const observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      mutation.addedNodes.forEach(function (node) {
+        if (node.nodeType !== 1) return;
+        if (node.classList && node.classList.contains('agent-card')) {
+          const all = document.querySelectorAll('.agent-card');
+          let idx = 0;
+          all.forEach(function (c, i) { if (c === node) idx = i; });
+          processCard(node, idx);
+        }
+        const nested = node.querySelectorAll ? node.querySelectorAll('.agent-card') : [];
+        nested.forEach(function (card) {
+          const all = document.querySelectorAll('.agent-card');
+          let idx = 0;
+          all.forEach(function (c, i) { if (c === card) idx = i; });
+          processCard(card, idx);
+        });
+      });
+    });
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  setInterval(function () {
+    const cards = document.querySelectorAll('.agent-card');
+    if (!cards.length) return;
+    const idx = Math.floor(Math.random() * cards.length);
+    const card = cards[idx];
+    const barEl = card.querySelector('.agent-bar');
+    const pctEl = card.querySelector('.agent-pct');
+    const statusEl = card.querySelector('.agent-status-text');
+    if (!barEl || !pctEl) return;
+    const current = parseFloat(barEl.style.width) || 0;
+    const delta = (Math.random() > 0.5 ? 1 : -1) * 2;
+    const next = Math.min(99, Math.max(1, current + delta));
+    barEl.style.transition = 'width 0.8s ease-out';
+    barEl.style.width = next + '%';
+    pctEl.textContent = Math.round(next) + '%';
+    if (statusEl) statusEl.textContent = getStatusText(next);
+  }, 30000);
+}
+
+function initDashboardSummary() {
+  function stageIsEmpty() {
+    const stage = document.getElementById('stage');
+    if (!stage) return false;
+    const children = Array.from(stage.children);
+    if (children.length === 0) return true;
+    return children.every(function (el) {
+      return window.getComputedStyle(el).display === 'none';
+    });
+  }
+
+  function removeSummary() {
+    const el = document.getElementById('dashSummary');
+    if (el) el.remove();
+  }
+
+  const origGenerate = window.generateSurface;
+  window.generateSurface = function () {
+    removeSummary();
+    if (typeof origGenerate === 'function') {
+      return origGenerate.apply(this, arguments);
+    }
+  };
+
+  function showSummary() {
+    if (document.getElementById('dashSummary')) return;
+    const stage = document.getElementById('stage');
+    if (!stage || !stageIsEmpty()) return;
+
+    const suggestions = [
+      { icon: '🗺️', label: 'Fleet locations',       query: 'Show fleet map' },
+      { icon: '📊', label: 'Revenue analytics',      query: 'Revenue analytics' },
+      { icon: '🗂️', label: 'Turnaround board',       query: 'Kanban turnaround board' },
+      { icon: '🤖', label: 'AI agents status',       query: 'Show AI agents and automation status' },
+      { icon: '📅', label: 'Weekly schedule',        query: 'Show weekly schedule calendar' },
+      { icon: '🔧', label: 'Maintenance tracker',    query: 'Fleet maintenance tracker' },
+      { icon: '👤', label: 'Driver leaderboard',     query: 'Driver performance leaderboard' },
+      { icon: '🚨', label: 'Alerts & incidents',     query: 'Show critical alerts' }
+    ];
+
+    const summary = document.createElement('div');
+    summary.id = 'dashSummary';
+    summary.style.cssText = 'padding:32px;max-width:800px;margin:0 auto';
+
+    const title = document.createElement('h1');
+    title.textContent = 'AdaptiveAI Workspace';
+    title.style.cssText = [
+      'font-size:2rem',
+      'font-weight:700',
+      'margin:0 0 12px',
+      'background:linear-gradient(135deg,var(--accent),var(--good))',
+      '-webkit-background-clip:text',
+      '-webkit-text-fill-color:transparent',
+      'background-clip:text'
+    ].join(';');
+
+    const subtitle = document.createElement('p');
+    subtitle.textContent = 'Your AI-powered fleet intelligence platform. Ask me anything about your fleet.';
+    subtitle.style.cssText = 'color:var(--muted);margin:0 0 28px;font-size:1rem;line-height:1.5';
+
+    const grid = document.createElement('div');
+    grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px';
+
+    suggestions.forEach(function (s) {
+      const btn = document.createElement('button');
+      btn.style.cssText = [
+        'padding:16px 20px',
+        'border:1px solid var(--border)',
+        'border-radius:12px',
+        'background:var(--glass)',
+        'cursor:pointer',
+        'text-align:left',
+        'display:flex',
+        'gap:12px',
+        'align-items:center',
+        'color:var(--text)',
+        'font-size:0.9rem',
+        'transition:all 0.15s'
+      ].join(';');
+
+      const icon = document.createElement('span');
+      icon.textContent = s.icon;
+      icon.style.cssText = 'font-size:1.25rem;flex-shrink:0';
+
+      const label = document.createElement('span');
+      label.textContent = s.label;
+
+      btn.appendChild(icon);
+      btn.appendChild(label);
+
+      btn.addEventListener('mouseenter', function () {
+        btn.style.background = 'var(--surface)';
+        btn.style.transform = 'translateY(-2px)';
+      });
+      btn.addEventListener('mouseleave', function () {
+        btn.style.background = 'var(--glass)';
+        btn.style.transform = 'translateY(0)';
+      });
+      btn.addEventListener('click', function () {
+        removeSummary();
+        if (typeof window.generateSurface === 'function') {
+          window.generateSurface(s.query);
+        }
+      });
+
+      grid.appendChild(btn);
+    });
+
+    const hint = document.createElement('p');
+    hint.textContent = 'Press ⌘K for the command palette or type in the prompt below';
+    hint.style.cssText = 'color:var(--muted);font-size:0.8rem;text-align:center;margin:0';
+
+    summary.appendChild(title);
+    summary.appendChild(subtitle);
+    summary.appendChild(grid);
+    summary.appendChild(hint);
+    stage.appendChild(summary);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', showSummary);
+  } else {
+    showSummary();
+  }
+}
+
+  function initModulesV4() {
+    try { extendKeywordRoutingV4(); }  catch(e) { console.warn('[V4-0]', e); }
+    try { injectLightThemeCss(); }     catch(e) { console.warn('[V4-1]', e); }
+    try { initSurfaceTransitions(); }  catch(e) { console.warn('[V4-2]', e); }
+    try { initSurfaceExport(); }       catch(e) { console.warn('[V4-3]', e); }
+    try { injectBreadcrumb(); }        catch(e) { console.warn('[V4-4]', e); }
+    try { enhanceNavPanels(); }        catch(e) { console.warn('[V4-5]', e); }
+    try { initDashboardSummary(); }    catch(e) { console.warn('[V4-6]', e); }
+    try { initRoleBasedStartup(); }    catch(e) { console.warn('[V4-7]', e); }
+    setTimeout(() => { try { enhanceAgentCards(); } catch(e) { console.warn('[V4-8]', e); } }, 1000);
+    console.log('[AdaptiveAI] Module v4 initialized ✓');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(initModulesV4, 3500));
+  } else {
+    setTimeout(initModulesV4, 3500);
+  }
+
+})();
+</script>
+
 </body></html>
