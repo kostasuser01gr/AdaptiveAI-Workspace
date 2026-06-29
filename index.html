@@ -8662,7 +8662,7 @@ function renderDriverScorecardSurface(query) {
   var tabBar = document.querySelector('.gx-tabs, #tabs');
   var tab = document.createElement('div');
   tab.className = 'gx-tab active';
-  tab.textContent = 'Driver Scorecard';
+  tab.innerHTML = '<span class="tt">Driver Scorecard</span><span class="stype">PERF</span>';
   tab.style.cssText = 'padding:8px 18px;cursor:pointer;border-radius:8px;font-size:13px;font-weight:600;white-space:nowrap;';
   document.querySelectorAll('.gx-tab').forEach(function(t) { t.classList.remove('active'); });
   if (tabBar) tabBar.appendChild(tab);
@@ -8813,7 +8813,7 @@ function renderGeofencingSurface(query) {
   var tabBar = document.querySelector('.gx-tabs, #tabs');
   var tab = document.createElement('div');
   tab.className = 'gx-tab active';
-  tab.textContent = 'Geofencing';
+  tab.innerHTML = '<span class="tt">Geofencing</span><span class="stype">ZONES</span>';
   tab.style.cssText = 'padding:8px 18px;cursor:pointer;border-radius:8px;font-size:13px;font-weight:600;white-space:nowrap;';
   document.querySelectorAll('.gx-tab').forEach(function(t) { t.classList.remove('active'); });
   if (tabBar) tabBar.appendChild(tab);
@@ -9736,9 +9736,7 @@ function initOnboardingTourV5() {
     try { initPWA(); } catch(e) { console.warn('[V5] pwa', e); }
     try { initAccessibility(); } catch(e) { console.warn('[V5] a11y', e); }
     try { initPrintExport(); } catch(e) { console.warn('[V5] print', e); }
-    setTimeout(function() {
-      try { initOnboardingTourV5(); } catch(e) { console.warn('[V5] tour', e); }
-    }, 4000);
+    try { initOnboardingTourV5(); } catch(e) { console.warn('[V5] tour', e); }
     console.log('[AdaptiveAI] Module v5 initialized ✓');
   }
 
