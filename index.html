@@ -9765,7 +9765,7 @@ function initOnboardingTourV5() {
     const extended = async function(query) {
       const ql = (query || '').toLowerCase();
       if (/inventory|stock|parts|spare|warehouse|supply/.test(ql)) return renderInventorySurface(query);
-      else if (/analytics|dashboard|kpi|metrics|performance overview|executive/.test(ql)) return renderAnalyticsSurface(query);
+      else if (/\bkpi\b|executive analytics|performance overview|exec dashboard/.test(ql)) return renderAnalyticsSurface(query);
       else return prev(query);
     };
     extended._v6extended = true;
