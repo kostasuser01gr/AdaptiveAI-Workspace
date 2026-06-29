@@ -8045,4 +8045,1709 @@ function initDashboardSummary() {
 })();
 </script>
 
+
+<script>
+
+(function() {
+  'use strict';
+  const uid = window.uid || (() => 'v5-' + Math.random().toString(36).slice(2,9));
+  const qsa = (s,c) => Array.from((c||document).querySelectorAll(s));
+  const $ = id => document.getElementById(id);
+
+  function extendKeywordRoutingV5() {
+    const prev = window.generateSurface;
+    if (!prev || prev._v5extended) return;
+    const extended = async function(query) {
+      const ql = (query || '').toLowerCase();
+      if (/customer|client|portal|account|crm|contact/.test(ql)) return renderCustomerPortalSurface(query);
+      else if (/forecast|predict|projection|budget|next month|next quarter/.test(ql)) return renderRevenueForecastSurface(query);
+      else if (/scorecard|score card|driver score|performance report|driver review/.test(ql)) return renderDriverScorecardSurface(query);
+      else if (/geofenc|zone|boundary|restricted|safe zone|depot zone/.test(ql)) return renderGeofencingSurface(query);
+      else return prev(query);
+    };
+    extended._v5extended = true;
+    window.generateSurface = extended;
+  }
+
+async function renderCustomerPortalSurface(query) {
+  const surfId = (window.uid || (() => 'v5-' + Math.random().toString(36).slice(2,9)))();
+  const surfEl = document.createElement('div');
+  surfEl.className = 'gx-surface';
+  surfEl.id = surfId;
+  surfEl.style.cssText = 'display:flex;flex-direction:column;gap:16px;padding:20px;height:100%;overflow-y:auto;box-sizing:border-box;';
+
+  // Header
+  const header = document.createElement('div');
+  header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;';
+  const title = document.createElement('h2');
+  title.textContent = 'Customer Portal';
+  title.style.cssText = 'margin:0;font-size:1.4rem;font-weight:700;color:var(--text);';
+  header.appendChild(title);
+
+  // Stats row
+  const stats = document.createElement('div');
+  stats.style.cssText = 'display:flex;gap:12px;flex-wrap:wrap;';
+  const statData = [
+    { label: 'Active Clients', value: '247', color: 'var(--good)' },
+    { label: 'Satisfaction', value: '94%', color: 'var(--accent)' },
+    { label: 'Pending Queries', value: '18', color: 'var(--warn)' },
+    { label: 'Monthly Revenue', value: '$2.4M', color: 'var(--good)' },
+  ];
+  statData.forEach(s => {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px 16px;min-width:110px;';
+    const val = document.createElement('div');
+    val.textContent = s.value;
+    val.style.cssText = `font-size:1.3rem;font-weight:700;color:${s.color};`;
+    const lbl = document.createElement('div');
+    lbl.textContent = s.label;
+    lbl.style.cssText = 'font-size:0.72rem;color:var(--muted);margin-top:2px;';
+    card.appendChild(val);
+    card.appendChild(lbl);
+    stats.appendChild(card);
+  });
+  header.appendChild(stats);
+  surfEl.appendChild(header);
+
+  // Search bar
+  const searchWrap = document.createElement('div');
+  searchWrap.style.cssText = 'display:flex;align-items:center;gap:10px;';
+  const searchInput = document.createElement('input');
+  searchInput.type = 'text';
+  searchInput.placeholder = 'Search clients by name, email, or company...';
+  searchInput.style.cssText = 'flex:1;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--glass);color:var(--text);font-size:0.9rem;outline:none;';
+  searchWrap.appendChild(searchInput);
+  surfEl.appendChild(searchWrap);
+
+  // Client grid
+  const grid = document.createElement('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;';
+
+  const clients = [
+    { company: 'Meridian Logistics Ltd', contact: 'Sarah Chen', email: 'sarah.chen@meridianlog.com', phone: '+1 (555) 203-4891', status: 'VIP', lastInteraction: '2026-06-27', spend: '$48,200', statusColor: '#a78bfa' },
+    { company: 'Nordic Fresh Transport', contact: 'Erik Lindqvist', email: 'e.lindqvist@nordicfresh.no', phone: '+47 22 45 67 89', status: 'Active', lastInteraction: '2026-06-28', spend: '$31,500', statusColor: 'var(--good)' },
+    { company: 'Atlantic Pharma Supply', contact: 'Maria Oliveira', email: 'm.oliveira@atlanticpharma.pt', phone: '+351 21 340 2200', status: 'VIP', lastInteraction: '2026-06-25', spend: '$62,100', statusColor: '#a78bfa' },
+    { company: 'Delta Auto Freight', contact: 'James Kowalski', email: 'j.kowalski@deltafreight.pl', phone: '+48 22 567 8901', status: 'Active', lastInteraction: '2026-06-26', spend: '$19,800', statusColor: 'var(--good)' },
+    { company: 'Sunrise Retail Group', contact: 'Anya Patel', email: 'anya.patel@sunriseretail.in', phone: '+91 98200 34567', status: 'Pending', lastInteraction: '2026-06-20', spend: '$7,400', statusColor: 'var(--warn)' },
+    { company: 'Helios Construction Co.', contact: 'Nikolaos Papadopoulos', email: 'n.papa@heliosconstruct.gr', phone: '+30 21 0456 7890', status: 'Active', lastInteraction: '2026-06-29', spend: '$24,300', statusColor: 'var(--good)' },
+    { company: 'ClearWave Technology', contact: 'Lena Fischer', email: 'l.fischer@clearwave.de', phone: '+49 30 1234 5678', status: 'VIP', lastInteraction: '2026-06-24', spend: '$55,700', statusColor: '#a78bfa' },
+    { company: 'Iberian Cold Chain', contact: 'Carlos Ruiz', email: 'c.ruiz@iberiancoldchain.es', phone: '+34 91 234 5678', status: 'Pending', lastInteraction: '2026-06-18', spend: '$3,200', statusColor: 'var(--warn)' },
+  ];
+
+  clients.forEach(client => {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:border-color 0.2s;';
+    card.addEventListener('mouseenter', () => { card.style.borderColor = 'var(--accent)'; });
+    card.addEventListener('mouseleave', () => { card.style.borderColor = 'var(--border)'; });
+
+    const topRow = document.createElement('div');
+    topRow.style.cssText = 'display:flex;align-items:flex-start;justify-content:space-between;gap:8px;';
+    const companyName = document.createElement('div');
+    companyName.textContent = client.company;
+    companyName.style.cssText = 'font-weight:700;font-size:0.95rem;color:var(--text);line-height:1.3;';
+    const badge = document.createElement('span');
+    badge.textContent = client.status;
+    badge.style.cssText = `font-size:0.68rem;font-weight:600;padding:3px 8px;border-radius:20px;background:${client.statusColor}22;color:${client.statusColor};border:1px solid ${client.statusColor}55;white-space:nowrap;`;
+    topRow.appendChild(companyName);
+    topRow.appendChild(badge);
+    card.appendChild(topRow);
+
+    const contactDiv = document.createElement('div');
+    contactDiv.style.cssText = 'font-size:0.82rem;color:var(--muted);';
+    contactDiv.textContent = client.contact;
+    card.appendChild(contactDiv);
+
+    const emailDiv = document.createElement('div');
+    emailDiv.style.cssText = 'font-size:0.78rem;color:var(--accent);';
+    emailDiv.textContent = client.email;
+    card.appendChild(emailDiv);
+
+    const phoneDiv = document.createElement('div');
+    phoneDiv.style.cssText = 'font-size:0.78rem;color:var(--muted);';
+    phoneDiv.textContent = client.phone;
+    card.appendChild(phoneDiv);
+
+    const metaRow = document.createElement('div');
+    metaRow.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-top:4px;';
+    const lastInt = document.createElement('div');
+    lastInt.style.cssText = 'font-size:0.72rem;color:var(--muted);';
+    lastInt.textContent = 'Last: ' + client.lastInteraction;
+    const spend = document.createElement('div');
+    spend.style.cssText = 'font-size:0.85rem;font-weight:600;color:var(--good);';
+    spend.textContent = client.spend + '/mo';
+    metaRow.appendChild(lastInt);
+    metaRow.appendChild(spend);
+    card.appendChild(metaRow);
+
+    const btn = document.createElement('button');
+    btn.textContent = 'View Account';
+    btn.style.cssText = 'margin-top:6px;padding:7px 0;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:0.8rem;font-weight:600;cursor:pointer;transition:background 0.2s;';
+    btn.addEventListener('mouseenter', () => { btn.style.background = 'var(--accent)'; btn.style.color = '#fff'; });
+    btn.addEventListener('mouseleave', () => { btn.style.background = 'transparent'; btn.style.color = 'var(--accent)'; });
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      detailName.textContent = client.company;
+      detailContact.textContent = 'Contact: ' + client.contact + ' · ' + client.email + ' · ' + client.phone;
+      detailMeta.textContent = 'Contract: Enterprise SLA · Vehicles Assigned: 12 · Address: See account file';
+      detailHistory.textContent = 'Recent Services: Oil change fleet-wide (Jun 15), Tire rotation 8 units (Jun 10), GPS calibration (Jun 2)';
+      detailPanel.style.display = 'block';
+    });
+    card.appendChild(btn);
+
+    grid.appendChild(card);
+  });
+
+  surfEl.appendChild(grid);
+
+  // Detail panel
+  const detailPanel = document.createElement('div');
+  detailPanel.style.cssText = 'display:none;background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:18px;';
+  const detailHeader = document.createElement('div');
+  detailHeader.style.cssText = 'font-size:0.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;';
+  detailHeader.textContent = 'Selected Client';
+  const detailName = document.createElement('div');
+  detailName.style.cssText = 'font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:6px;';
+  const detailContact = document.createElement('div');
+  detailContact.style.cssText = 'font-size:0.82rem;color:var(--muted);margin-bottom:4px;';
+  const detailMeta = document.createElement('div');
+  detailMeta.style.cssText = 'font-size:0.82rem;color:var(--muted);margin-bottom:4px;';
+  const detailHistory = document.createElement('div');
+  detailHistory.style.cssText = 'font-size:0.82rem;color:var(--muted);';
+  detailPanel.appendChild(detailHeader);
+  detailPanel.appendChild(detailName);
+  detailPanel.appendChild(detailContact);
+  detailPanel.appendChild(detailMeta);
+  detailPanel.appendChild(detailHistory);
+  surfEl.appendChild(detailPanel);
+
+  // Hide all existing surfaces
+  document.querySelectorAll('.gx-surface').forEach(s => { s.style.display = 'none'; });
+  const stage = document.getElementById('stage');
+  if (stage) stage.appendChild(surfEl);
+
+  // Tab management
+  document.querySelectorAll('.gx-tab').forEach(t => t.classList.remove('active'));
+  const tab = document.createElement('button');
+  tab.className = 'gx-tab active';
+  tab.style.cssText = 'display:flex;flex-direction:column;align-items:flex-start;padding:8px 14px;border:none;background:var(--accent);border-radius:8px;cursor:pointer;gap:2px;';
+  const tabTitle = document.createElement('span');
+  tabTitle.className = 'tt';
+  tabTitle.textContent = 'Customer Portal';
+  tabTitle.style.cssText = 'font-size:0.82rem;font-weight:600;color:#fff;';
+  const tabType = document.createElement('span');
+  tabType.className = 'stype';
+  tabType.textContent = 'CRM';
+  tabType.style.cssText = 'font-size:0.65rem;color:rgba(255,255,255,0.7);';
+  tab.appendChild(tabTitle);
+  tab.appendChild(tabType);
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.gx-surface').forEach(s => { s.style.display = 'none'; });
+    surfEl.style.display = 'flex';
+    document.querySelectorAll('.gx-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    tab.style.background = 'var(--accent)';
+  });
+  const tabsContainer = document.querySelector('.gx-tabs, #tabs');
+  if (tabsContainer) tabsContainer.appendChild(tab);
+}
+
+async function renderRevenueForecastSurface(query) {
+  const surfId = (window.uid || (() => 'v5-' + Math.random().toString(36).slice(2,9)))();
+  const surfEl = document.createElement('div');
+  surfEl.className = 'gx-surface';
+  surfEl.id = surfId;
+  surfEl.style.cssText = 'display:flex;flex-direction:column;gap:16px;padding:20px;height:100%;overflow-y:auto;box-sizing:border-box;';
+
+  // Header
+  const header = document.createElement('div');
+  header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;';
+  const title = document.createElement('h2');
+  title.textContent = 'Revenue Forecast';
+  title.style.cssText = 'margin:0;font-size:1.4rem;font-weight:700;color:var(--text);';
+  header.appendChild(title);
+
+  // Period selector
+  const periodWrap = document.createElement('div');
+  periodWrap.style.cssText = 'display:flex;gap:6px;';
+  const periods = ['3M', '6M', '12M', '24M'];
+  periods.forEach((p, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = p;
+    const isActive = i === 1;
+    btn.style.cssText = `padding:6px 14px;border-radius:7px;border:1px solid var(--border);background:${isActive ? 'var(--accent)' : 'var(--glass)'};color:${isActive ? '#fff' : 'var(--muted)'};font-size:0.8rem;font-weight:600;cursor:pointer;`;
+    btn.addEventListener('click', () => {
+      periodWrap.querySelectorAll('button').forEach(b => {
+        b.style.background = 'var(--glass)';
+        b.style.color = 'var(--muted)';
+      });
+      btn.style.background = 'var(--accent)';
+      btn.style.color = '#fff';
+    });
+    periodWrap.appendChild(btn);
+  });
+  header.appendChild(periodWrap);
+  surfEl.appendChild(header);
+
+  // Summary cards
+  const summaryRow = document.createElement('div');
+  summaryRow.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;';
+  const summaryData = [
+    { label: 'Current Month', value: '€280K', sub: 'Actual', color: 'var(--text)' },
+    { label: 'Next Month Forecast', value: '€312K', sub: '+11.4% projected', color: 'var(--good)' },
+    { label: 'Q1 Total', value: '€847K', sub: 'Cumulative', color: 'var(--accent)' },
+    { label: 'YoY Growth', value: '18.3%', sub: 'Year-over-year', color: 'var(--good)' },
+  ];
+  summaryData.forEach(s => {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:14px 16px;';
+    const val = document.createElement('div');
+    val.textContent = s.value;
+    val.style.cssText = `font-size:1.5rem;font-weight:700;color:${s.color};`;
+    const lbl = document.createElement('div');
+    lbl.textContent = s.label;
+    lbl.style.cssText = 'font-size:0.75rem;color:var(--muted);margin-top:2px;font-weight:600;';
+    const sub = document.createElement('div');
+    sub.textContent = s.sub;
+    sub.style.cssText = 'font-size:0.68rem;color:var(--muted);margin-top:2px;';
+    card.appendChild(val);
+    card.appendChild(lbl);
+    card.appendChild(sub);
+    summaryRow.appendChild(card);
+  });
+  surfEl.appendChild(summaryRow);
+
+  // Chart area
+  const chartWrap = document.createElement('div');
+  chartWrap.style.cssText = 'background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px;';
+  const chartLabel = document.createElement('div');
+  chartLabel.style.cssText = 'font-size:0.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;display:flex;gap:16px;align-items:center;';
+  chartLabel.textContent = 'Projected vs Actual Revenue';
+  const legendActual = document.createElement('span');
+  legendActual.style.cssText = 'display:inline-flex;align-items:center;gap:5px;font-size:0.72rem;color:var(--accent);';
+  legendActual.innerHTML = '<span style="width:20px;height:2px;background:var(--accent);display:inline-block;border-radius:2px;"></span>Actual';
+  const legendForecast = document.createElement('span');
+  legendForecast.style.cssText = 'display:inline-flex;align-items:center;gap:5px;font-size:0.72rem;color:var(--good);';
+  legendForecast.innerHTML = '<span style="width:20px;height:2px;background:var(--good);display:inline-block;border-radius:2px;border-style:dashed;"></span>Forecast';
+  chartLabel.appendChild(legendActual);
+  chartLabel.appendChild(legendForecast);
+  chartWrap.appendChild(chartLabel);
+
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('viewBox', '0 0 800 200');
+  svg.setAttribute('preserveAspectRatio', 'none');
+  svg.style.cssText = 'width:100%;height:180px;display:block;';
+
+  // Grid lines
+  [40, 80, 120, 160].forEach(y => {
+    const line = document.createElementNS(svgNS, 'line');
+    line.setAttribute('x1', '0'); line.setAttribute('x2', '800');
+    line.setAttribute('y1', y); line.setAttribute('y2', y);
+    line.setAttribute('stroke', 'rgba(255,255,255,0.06)'); line.setAttribute('stroke-width', '1');
+    svg.appendChild(line);
+  });
+
+  // Actual line (solid)
+  const actualPoints = '20,160 90,145 160,130 230,120 300,110 370,100 440,90 510,95 580,80 650,70';
+  const actualPath = document.createElementNS(svgNS, 'polyline');
+  actualPath.setAttribute('points', actualPoints);
+  actualPath.setAttribute('fill', 'none');
+  actualPath.setAttribute('stroke', 'var(--accent)');
+  actualPath.setAttribute('stroke-width', '2.5');
+  actualPath.setAttribute('stroke-linecap', 'round');
+  actualPath.setAttribute('stroke-linejoin', 'round');
+
+  // Fill under actual
+  const actualArea = document.createElementNS(svgNS, 'polygon');
+  actualArea.setAttribute('points', actualPoints + ' 650,200 20,200');
+  actualArea.setAttribute('fill', 'var(--accent)');
+  actualArea.setAttribute('fill-opacity', '0.08');
+
+  // Forecast line (dashed)
+  const forecastPath = document.createElementNS(svgNS, 'polyline');
+  forecastPath.setAttribute('points', '510,95 580,72 650,58 720,44 780,34');
+  forecastPath.setAttribute('fill', 'none');
+  forecastPath.setAttribute('stroke', 'var(--good)');
+  forecastPath.setAttribute('stroke-width', '2');
+  forecastPath.setAttribute('stroke-dasharray', '6,4');
+  forecastPath.setAttribute('stroke-linecap', 'round');
+
+  svg.appendChild(actualArea);
+  svg.appendChild(actualPath);
+  svg.appendChild(forecastPath);
+
+  // Dots on actual
+  [[20,160],[160,130],[300,110],[440,90],[580,80],[650,70]].forEach(([cx,cy]) => {
+    const circle = document.createElementNS(svgNS, 'circle');
+    circle.setAttribute('cx', cx); circle.setAttribute('cy', cy); circle.setAttribute('r', '4');
+    circle.setAttribute('fill', 'var(--accent)'); circle.setAttribute('stroke', '#fff'); circle.setAttribute('stroke-width', '1.5');
+    svg.appendChild(circle);
+  });
+
+  chartWrap.appendChild(svg);
+  surfEl.appendChild(chartWrap);
+
+  // Breakdown table
+  const tableWrap = document.createElement('div');
+  tableWrap.style.cssText = 'background:var(--glass);border:1px solid var(--border);border-radius:12px;overflow:hidden;';
+  const tableHeader = document.createElement('div');
+  tableHeader.style.cssText = 'padding:12px 16px;font-size:0.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 1fr;gap:8px;';
+  ['Month', 'Actual', 'Forecast', 'Variance', 'Accuracy'].forEach(col => {
+    const th = document.createElement('span');
+    th.textContent = col;
+    tableHeader.appendChild(th);
+  });
+  tableWrap.appendChild(tableHeader);
+
+  const monthlyData = [
+    { month: 'Jan 2026', actual: '€242K', forecast: '€238K', variance: '+€4K', accuracy: '98.3%', varColor: 'var(--good)' },
+    { month: 'Feb 2026', actual: '€258K', forecast: '€255K', variance: '+€3K', accuracy: '98.8%', varColor: 'var(--good)' },
+    { month: 'Mar 2026', actual: '€271K', forecast: '€268K', variance: '+€3K', accuracy: '98.9%', varColor: 'var(--good)' },
+    { month: 'Apr 2026', actual: '€263K', forecast: '€274K', variance: '-€11K', accuracy: '95.9%', varColor: 'var(--warn)' },
+    { month: 'May 2026', actual: '€279K', forecast: '€281K', variance: '-€2K', accuracy: '99.3%', varColor: 'var(--good)' },
+    { month: 'Jun 2026', actual: '€280K', forecast: '€276K', variance: '+€4K', accuracy: '98.6%', varColor: 'var(--good)' },
+    { month: 'Jul 2026', actual: '—', forecast: '€312K', variance: '—', accuracy: '—', varColor: 'var(--muted)' },
+    { month: 'Aug 2026', actual: '—', forecast: '€328K', variance: '—', accuracy: '—', varColor: 'var(--muted)' },
+  ];
+
+  monthlyData.forEach((row, i) => {
+    const tr = document.createElement('div');
+    tr.style.cssText = `display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 1fr;gap:8px;padding:11px 16px;font-size:0.82rem;border-bottom:1px solid var(--border);background:${i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)'};align-items:center;`;
+    const cells = [
+      { text: row.month, color: 'var(--text)', weight: '600' },
+      { text: row.actual, color: 'var(--text)', weight: '400' },
+      { text: row.forecast, color: 'var(--accent)', weight: '600' },
+      { text: row.variance, color: row.varColor, weight: '600' },
+      { text: row.accuracy, color: row.accuracy === '—' ? 'var(--muted)' : 'var(--good)', weight: '600' },
+    ];
+    cells.forEach(c => {
+      const td = document.createElement('span');
+      td.textContent = c.text;
+      td.style.cssText = `color:${c.color};font-weight:${c.weight};`;
+      tr.appendChild(td);
+    });
+    tableWrap.appendChild(tr);
+  });
+  surfEl.appendChild(tableWrap);
+
+  // Risk indicators
+  const riskHeader = document.createElement('div');
+  riskHeader.style.cssText = 'font-size:0.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;';
+  riskHeader.textContent = 'Risk Indicators';
+  surfEl.appendChild(riskHeader);
+
+  const riskRow = document.createElement('div');
+  riskRow.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;';
+  const risks = [
+    { level: 'Low Risk', desc: 'Stable long-term contracts (82% of portfolio) provide predictable recurring revenue with minimal churn exposure.', color: 'var(--good)', bg: '#22c55e15' },
+    { level: 'Medium Risk', desc: 'Seasonal demand variation in Q3/Q4 may shift revenue ±8%. Mitigated by diversified client industries.', color: 'var(--warn)', bg: '#f59e0b15' },
+    { level: 'High Risk', desc: 'Fuel price exposure affects margin on 34% of contracts. Hedging strategy review recommended for H2 2026.', color: 'var(--danger)', bg: '#ef444415' },
+  ];
+  risks.forEach(r => {
+    const card = document.createElement('div');
+    card.style.cssText = `background:${r.bg};border:1px solid ${r.color}44;border-radius:10px;padding:14px 16px;`;
+    const lvl = document.createElement('div');
+    lvl.textContent = r.level;
+    lvl.style.cssText = `font-size:0.82rem;font-weight:700;color:${r.color};margin-bottom:6px;`;
+    const desc = document.createElement('div');
+    desc.textContent = r.desc;
+    desc.style.cssText = 'font-size:0.78rem;color:var(--muted);line-height:1.5;';
+    card.appendChild(lvl);
+    card.appendChild(desc);
+    riskRow.appendChild(card);
+  });
+  surfEl.appendChild(riskRow);
+
+  // Hide all existing surfaces
+  document.querySelectorAll('.gx-surface').forEach(s => { s.style.display = 'none'; });
+  const stage = document.getElementById('stage');
+  if (stage) stage.appendChild(surfEl);
+
+  // Tab management
+  document.querySelectorAll('.gx-tab').forEach(t => t.classList.remove('active'));
+  const tab = document.createElement('button');
+  tab.className = 'gx-tab active';
+  tab.style.cssText = 'display:flex;flex-direction:column;align-items:flex-start;padding:8px 14px;border:none;background:var(--accent);border-radius:8px;cursor:pointer;gap:2px;';
+  const tabTitle = document.createElement('span');
+  tabTitle.className = 'tt';
+  tabTitle.textContent = 'Revenue Forecast';
+  tabTitle.style.cssText = 'font-size:0.82rem;font-weight:600;color:#fff;';
+  const tabType = document.createElement('span');
+  tabType.className = 'stype';
+  tabType.textContent = 'Forecast';
+  tabType.style.cssText = 'font-size:0.65rem;color:rgba(255,255,255,0.7);';
+  tab.appendChild(tabTitle);
+  tab.appendChild(tabType);
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.gx-surface').forEach(s => { s.style.display = 'none'; });
+    surfEl.style.display = 'flex';
+    document.querySelectorAll('.gx-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    tab.style.background = 'var(--accent)';
+  });
+  const tabsContainer = document.querySelector('.gx-tabs, #tabs');
+  if (tabsContainer) tabsContainer.appendChild(tab);
+}
+
+function renderDriverScorecardSurface(query) {
+  var id = (window.uid || function() { return 'v5-' + Math.random().toString(36).slice(2,9); })();
+  var surfEl = document.createElement('div');
+  surfEl.className = 'gx-surface';
+  surfEl.id = 'surf-' + id;
+  surfEl.style.cssText = 'display:none;flex-direction:column;gap:20px;padding:24px;height:100%;overflow-y:auto;box-sizing:border-box;';
+
+  var drivers = [
+    { name: 'Konstantinos Papadopoulos', id: 'DRV-001', initials: 'KP', rating: 4.8, tenure: '3 years 4 months', safety: 94, ontime: 97, fuel: 88, custRating: 4.8, distance: '12,450', incidents: 0 },
+    { name: 'Maria Stavridou', id: 'DRV-002', initials: 'MS', rating: 4.5, tenure: '1 year 8 months', safety: 89, ontime: 91, fuel: 82, custRating: 4.5, distance: '8,320', incidents: 1 },
+    { name: 'Nikos Alexiou', id: 'DRV-003', initials: 'NA', rating: 4.2, tenure: '2 years 1 month', safety: 85, ontime: 88, fuel: 79, custRating: 4.2, distance: '9,870', incidents: 2 },
+    { name: 'Elena Georgiou', id: 'DRV-004', initials: 'EG', rating: 4.7, tenure: '4 years 0 months', safety: 92, ontime: 95, fuel: 90, custRating: 4.7, distance: '15,200', incidents: 0 },
+    { name: 'Petros Dimas', id: 'DRV-005', initials: 'PD', rating: 3.9, tenure: '0 years 9 months', safety: 78, ontime: 82, fuel: 74, custRating: 3.9, distance: '4,650', incidents: 3 }
+  ];
+
+  var selectedIdx = 0;
+
+  function renderStars(val) {
+    var s = '';
+    for (var i = 1; i <= 5; i++) {
+      if (i <= Math.floor(val)) s += '<span style="color:var(--accent)">&#9733;</span>';
+      else if (i - val < 1 && i - val > 0) s += '<span style="color:var(--accent)">&#9734;</span>';
+      else s += '<span style="color:var(--muted)">&#9734;</span>';
+    }
+    return s;
+  }
+
+  function buildContent() {
+    var d = drivers[selectedIdx];
+    var monthLabels = ['Jan','Feb','Mar','Apr','May','Jun'];
+    var monthData = [88, 91, 87, 93, 95, 94];
+    var maxVal = 100;
+    var barW = 32;
+    var barGap = 14;
+    var chartH = 90;
+    var svgW = (barW + barGap) * 6 + barGap;
+
+    var barsHTML = '';
+    for (var b = 0; b < monthData.length; b++) {
+      var barH = Math.round((monthData[b] / maxVal) * chartH);
+      var bx = barGap + b * (barW + barGap);
+      var by = chartH - barH;
+      barsHTML += '<rect x="' + bx + '" y="' + by + '" width="' + barW + '" height="' + barH + '" rx="4" fill="var(--accent)" opacity="0.85"/>';
+      barsHTML += '<text x="' + (bx + barW / 2) + '" y="' + (chartH + 14) + '" text-anchor="middle" fill="var(--muted)" font-size="10">' + monthLabels[b] + '</text>';
+      barsHTML += '<text x="' + (bx + barW / 2) + '" y="' + (by - 4) + '" text-anchor="middle" fill="var(--text)" font-size="10">' + monthData[b] + '</text>';
+    }
+
+    var trips = [
+      { route: 'Athens → Thessaloniki', dist: '502km', dur: '4h 32m', score: 96, date: '2026-06-28' },
+      { route: 'Thessaloniki → Larissa', dist: '154km', dur: '1h 48m', score: 98, date: '2026-06-27' },
+      { route: 'Athens → Patras', dist: '218km', dur: '2h 15m', score: 93, date: '2026-06-25' },
+      { route: 'Piraeus → Athens', dist: '12km', dur: '0h 28m', score: 91, date: '2026-06-24' },
+      { route: 'Athens → Volos', dist: '327km', dur: '3h 10m', score: 97, date: '2026-06-22' }
+    ];
+
+    var tripsRows = trips.map(function(t) {
+      var scoreColor = t.score >= 95 ? 'var(--good)' : t.score >= 88 ? 'var(--warn)' : 'var(--danger)';
+      return '<tr>' +
+        '<td style="padding:10px 12px;color:var(--text);border-bottom:1px solid var(--border);">' + t.route + '</td>' +
+        '<td style="padding:10px 12px;color:var(--muted);border-bottom:1px solid var(--border);text-align:center;">' + t.dist + '</td>' +
+        '<td style="padding:10px 12px;color:var(--muted);border-bottom:1px solid var(--border);text-align:center;">' + t.dur + '</td>' +
+        '<td style="padding:10px 12px;text-align:center;border-bottom:1px solid var(--border);"><span style="background:' + scoreColor + '22;color:' + scoreColor + ';padding:2px 10px;border-radius:12px;font-weight:600;">' + t.score + '</span></td>' +
+        '<td style="padding:10px 12px;color:var(--muted);border-bottom:1px solid var(--border);text-align:center;">' + t.date + '</td>' +
+        '</tr>';
+    }).join('');
+
+    var certs = ['ADR Certified', 'First Aid', 'Heavy Vehicle License', 'Defensive Driving'];
+    var certsHTML = certs.map(function(c) {
+      return '<span style="display:inline-flex;align-items:center;gap:6px;background:var(--good)18;color:var(--good);border:1px solid var(--good)44;border-radius:20px;padding:5px 14px;font-size:13px;font-weight:500;">' +
+        '<span style="font-size:15px;">&#10003;</span>' + c + '</span>';
+    }).join('');
+
+    var metrics = [
+      { label: 'Safety Score', value: d.safety, unit: '', color: 'var(--good)', icon: '&#128737;' },
+      { label: 'On-Time Rate', value: d.ontime + '%', unit: '', color: 'var(--accent)', icon: '&#9201;' },
+      { label: 'Fuel Efficiency', value: d.fuel, unit: '', color: 'var(--warn)', icon: '&#9981;' },
+      { label: 'Customer Rating', value: d.custRating, unit: '/5', color: 'var(--accent)', icon: '&#11088;' },
+      { label: 'Distance Covered', value: d.distance + 'km', unit: '', color: 'var(--muted)', icon: '&#128205;' },
+      { label: 'Incidents', value: d.incidents, unit: '', color: d.incidents === 0 ? 'var(--good)' : 'var(--danger)', icon: '&#9888;' }
+    ];
+
+    var metricsHTML = metrics.map(function(m) {
+      return '<div style="background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:18px 16px;display:flex;flex-direction:column;gap:6px;">' +
+        '<div style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;">' +
+          '<span>' + m.icon + '</span>' + m.label +
+        '</div>' +
+        '<div style="font-size:28px;font-weight:700;color:' + m.color + ';">' + m.value + '<span style="font-size:14px;color:var(--muted);">' + m.unit + '</span></div>' +
+      '</div>';
+    }).join('');
+
+    var selectorOptions = drivers.map(function(dr, i) {
+      return '<option value="' + i + '"' + (i === selectedIdx ? ' selected' : '') + '>' + dr.name + ' (' + dr.id + ')</option>';
+    }).join('');
+
+    return '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">' +
+        '<div>' +
+          '<div style="font-size:22px;font-weight:700;color:var(--text);">Driver Scorecard</div>' +
+          '<div style="font-size:13px;color:var(--muted);margin-top:2px;">Individual performance overview</div>' +
+        '</div>' +
+        '<select id="drv-sel-' + id + '" style="background:var(--glass);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:14px;cursor:pointer;outline:none;">' +
+          selectorOptions +
+        '</select>' +
+      '</div>' +
+
+      '<div style="background:var(--glass);border:1px solid var(--border);border-radius:18px;padding:24px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;">' +
+        '<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#6a4fff);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#fff;flex-shrink:0;">' + d.initials + '</div>' +
+        '<div style="flex:1;min-width:180px;">' +
+          '<div style="font-size:20px;font-weight:700;color:var(--text);">' + d.name + '</div>' +
+          '<div style="font-size:13px;color:var(--muted);margin-top:2px;">' + d.id + ' &nbsp;·&nbsp; Tenure: ' + d.tenure + '</div>' +
+          '<div style="margin-top:10px;font-size:20px;">' + renderStars(d.rating) + '<span style="font-size:15px;color:var(--text);font-weight:600;margin-left:6px;">' + d.rating + '</span><span style="font-size:13px;color:var(--muted)">/5.0</span></div>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">' +
+          '<div style="background:var(--good)22;color:var(--good);border-radius:20px;padding:6px 18px;font-size:13px;font-weight:600;border:1px solid var(--good)44;">Top Performer</div>' +
+          '<div style="font-size:13px;color:var(--muted);">Overall Score: <span style="color:var(--good);font-weight:700;">' + d.safety + '</span>/100</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div>' +
+        '<div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:12px;">Performance Metrics</div>' +
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">' + metricsHTML + '</div>' +
+      '</div>' +
+
+      '<div style="background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:20px;">' +
+        '<div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;">Monthly Safety Trend</div>' +
+        '<svg width="' + svgW + '" height="' + (chartH + 24) + '" style="overflow:visible;width:100%;max-width:' + svgW + 'px;">' + barsHTML + '</svg>' +
+      '</div>' +
+
+      '<div style="background:var(--glass);border:1px solid var(--border);border-radius:14px;overflow:hidden;">' +
+        '<div style="padding:16px 20px;font-size:15px;font-weight:600;color:var(--text);border-bottom:1px solid var(--border);">Recent Trips</div>' +
+        '<div style="overflow-x:auto;">' +
+          '<table style="width:100%;border-collapse:collapse;">' +
+            '<thead><tr style="background:var(--surface);">' +
+              '<th style="padding:10px 12px;text-align:left;color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Route</th>' +
+              '<th style="padding:10px 12px;text-align:center;color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Distance</th>' +
+              '<th style="padding:10px 12px;text-align:center;color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Duration</th>' +
+              '<th style="padding:10px 12px;text-align:center;color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Score</th>' +
+              '<th style="padding:10px 12px;text-align:center;color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Date</th>' +
+            '</tr></thead>' +
+            '<tbody>' + tripsRows + '</tbody>' +
+          '</table>' +
+        '</div>' +
+      '</div>' +
+
+      '<div>' +
+        '<div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:12px;">Certifications</div>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:10px;">' + certsHTML + '</div>' +
+      '</div>';
+  }
+
+  var inner = document.createElement('div');
+  inner.id = 'drv-scorecard-inner-' + id;
+  surfEl.appendChild(inner);
+
+  function refreshContent() {
+    inner.innerHTML = buildContent();
+    var sel = document.getElementById('drv-sel-' + id);
+    if (sel) {
+      sel.addEventListener('change', function() {
+        selectedIdx = parseInt(this.value, 10);
+        refreshContent();
+      });
+    }
+  }
+
+  document.querySelectorAll('.gx-surface').forEach(function(s) { s.style.display = 'none'; });
+  document.getElementById('stage') && document.getElementById('stage').appendChild(surfEl);
+  surfEl.style.display = 'flex';
+
+  var tabBar = document.querySelector('.gx-tabs, #tabs');
+  var tab = document.createElement('div');
+  tab.className = 'gx-tab active';
+  tab.textContent = 'Driver Scorecard';
+  tab.style.cssText = 'padding:8px 18px;cursor:pointer;border-radius:8px;font-size:13px;font-weight:600;white-space:nowrap;';
+  document.querySelectorAll('.gx-tab').forEach(function(t) { t.classList.remove('active'); });
+  if (tabBar) tabBar.appendChild(tab);
+
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.gx-surface').forEach(function(s) { s.style.display = 'none'; });
+    surfEl.style.display = 'flex';
+    document.querySelectorAll('.gx-tab').forEach(function(t) { t.classList.remove('active'); });
+    tab.classList.add('active');
+  });
+
+  refreshContent();
+}
+
+function renderGeofencingSurface(query) {
+  var id = (window.uid || function() { return 'v5-' + Math.random().toString(36).slice(2,9); })();
+  var surfEl = document.createElement('div');
+  surfEl.className = 'gx-surface';
+  surfEl.id = 'surf-geo-' + id;
+  surfEl.style.cssText = 'display:none;flex-direction:column;gap:20px;padding:24px;height:100%;overflow-y:auto;box-sizing:border-box;';
+
+  var zones = [
+    { name: 'Athens HQ Depot', type: 'Depot', radius: '400m', vehicles: 12, active: true, lastTrig: '2026-06-29 08:14', color: '#4a9eff', cx: 52, cy: 48 },
+    { name: 'Restricted Industrial Area', type: 'Restricted', radius: '600m', vehicles: 0, active: true, lastTrig: '2026-06-29 06:52', color: '#ff4a4a', cx: 78, cy: 35 },
+    { name: 'Customer Zone A - Piraeus', type: 'Customer', radius: '200m', vehicles: 3, active: true, lastTrig: '2026-06-28 17:30', color: '#4aff9e', cx: 40, cy: 65 },
+    { name: 'Speed Limit Zone - Highway', type: 'Speed', radius: '500m', vehicles: 7, active: true, lastTrig: '2026-06-29 07:45', color: '#ffcc4a', cx: 65, cy: 58 },
+    { name: 'Thessaloniki Hub', type: 'Depot', radius: '350m', vehicles: 8, active: true, lastTrig: '2026-06-29 09:01', color: '#4a9eff', cx: 30, cy: 28 },
+    { name: 'Airport Cargo Terminal', type: 'Customer', radius: '300m', vehicles: 1, active: false, lastTrig: '2026-06-28 22:10', color: '#4aff9e', cx: 82, cy: 70 }
+  ];
+
+  var zoneToggles = zones.map(function(z) { return z.active; });
+
+  var events = [
+    { vehicle: 'VH-2341', zone: 'Athens HQ Depot', event: 'Entry', time: '2026-06-29 09:14:22', color: 'var(--good)' },
+    { vehicle: 'VH-1187', zone: 'Restricted Industrial Area', event: 'Violation', time: '2026-06-29 08:52:10', color: 'var(--danger)' },
+    { vehicle: 'VH-3305', zone: 'Speed Limit Zone - Highway', event: 'Entry', time: '2026-06-29 08:45:03', color: 'var(--good)' },
+    { vehicle: 'VH-0892', zone: 'Customer Zone A - Piraeus', event: 'Exit', time: '2026-06-29 08:30:55', color: 'var(--warn)' },
+    { vehicle: 'VH-2341', zone: 'Thessaloniki Hub', event: 'Entry', time: '2026-06-29 08:01:17', color: 'var(--good)' },
+    { vehicle: 'VH-4410', zone: 'Athens HQ Depot', event: 'Exit', time: '2026-06-28 23:58:44', color: 'var(--warn)' },
+    { vehicle: 'VH-1187', zone: 'Airport Cargo Terminal', event: 'Entry', time: '2026-06-28 22:10:09', color: 'var(--good)' },
+    { vehicle: 'VH-3305', zone: 'Restricted Industrial Area', event: 'Violation', time: '2026-06-28 21:33:50', color: 'var(--danger)' }
+  ];
+
+  var typeColors = { Depot: '#4a9eff', Restricted: '#ff4a4a', Customer: '#4aff9e', Speed: '#ffcc4a' };
+
+  function typeTag(t) {
+    var c = typeColors[t] || 'var(--muted)';
+    return '<span style="background:' + c + '22;color:' + c + ';border:1px solid ' + c + '44;border-radius:10px;padding:2px 10px;font-size:11px;font-weight:600;">' + t + '</span>';
+  }
+
+  var zonesCardsHTML = zones.map(function(z, i) {
+    var statusColor = zoneToggles[i] ? 'var(--good)' : 'var(--muted)';
+    var statusLabel = zoneToggles[i] ? 'Active' : 'Inactive';
+    var vehInfo = z.vehicles > 0
+      ? '<span style="color:var(--accent);font-weight:600;">' + z.vehicles + ' vehicles</span>'
+      : '<span style="color:var(--muted);">No vehicles</span>';
+
+    return '<div style="background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">' +
+      '<div style="width:44px;height:44px;border-radius:50%;background:' + z.color + '22;border:2px solid ' + z.color + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+        '<div style="width:16px;height:16px;border-radius:50%;background:' + z.color + ';opacity:0.85;"></div>' +
+      '</div>' +
+      '<div style="flex:1;min-width:140px;">' +
+        '<div style="font-size:14px;font-weight:600;color:var(--text);">' + z.name + '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap;">' +
+          typeTag(z.type) +
+          '<span style="color:var(--muted);font-size:12px;">r: ' + z.radius + '</span>' +
+          vehInfo +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">' +
+        '<div style="display:flex;align-items:center;gap:6px;">' +
+          '<span style="width:8px;height:8px;border-radius:50%;background:' + statusColor + ';display:inline-block;"></span>' +
+          '<span style="font-size:12px;color:' + statusColor + ';font-weight:600;">' + statusLabel + '</span>' +
+        '</div>' +
+        '<div style="font-size:11px;color:var(--muted);">Last: ' + z.lastTrig + '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  var circlesHTML = zones.map(function(z) {
+    var r = z.type === 'Restricted' ? 38 : z.type === 'Speed' ? 32 : z.type === 'Depot' ? (z.name.includes('Athens') ? 28 : 24) : 16;
+    return '<circle cx="' + z.cx + '%" cy="' + z.cy + '%" r="' + r + '" fill="' + z.color + '" fill-opacity="0.13" stroke="' + z.color + '" stroke-width="1.5" stroke-dasharray="' + (z.type === 'Restricted' ? '5,3' : 'none') + '"/>' +
+      '<circle cx="' + z.cx + '%" cy="' + z.cy + '%" r="5" fill="' + z.color + '" fill-opacity="0.85"/>' +
+      '<text x="' + z.cx + '%" y="calc(' + z.cy + '% + ' + (r + 14) + 'px)" text-anchor="middle" fill="' + z.color + '" font-size="9" font-family="system-ui,sans-serif">' + z.name.split(' ')[0] + ' ' + (z.name.split(' ')[1] || '') + '</text>';
+  }).join('');
+
+  var eventsRows = events.map(function(ev) {
+    return '<tr>' +
+      '<td style="padding:10px 12px;color:var(--text);border-bottom:1px solid var(--border);font-weight:500;">' + ev.vehicle + '</td>' +
+      '<td style="padding:10px 12px;color:var(--muted);border-bottom:1px solid var(--border);font-size:12px;">' + ev.zone + '</td>' +
+      '<td style="padding:10px 12px;border-bottom:1px solid var(--border);text-align:center;"><span style="background:' + ev.color + '22;color:' + ev.color + ';border:1px solid ' + ev.color + '44;border-radius:12px;padding:2px 10px;font-size:12px;font-weight:600;">' + ev.event + '</span></td>' +
+      '<td style="padding:10px 12px;color:var(--muted);border-bottom:1px solid var(--border);font-size:12px;">' + ev.time + '</td>' +
+    '</tr>';
+  }).join('');
+
+  surfEl.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">' +
+      '<div>' +
+        '<div style="font-size:22px;font-weight:700;color:var(--text);">Geofencing Zones</div>' +
+        '<div style="font-size:13px;color:var(--muted);margin-top:2px;">' + zones.length + ' active zones &nbsp;·&nbsp; Real-time monitoring</div>' +
+      '</div>' +
+      '<button style="background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">' +
+        '<span style="font-size:18px;line-height:1;">+</span> Create Zone' +
+      '</button>' +
+    '</div>' +
+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px;">' + zonesCardsHTML + '</div>' +
+
+    '<div style="background:#0d1117;border:1px solid var(--border);border-radius:16px;padding:20px;">' +
+      '<div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:14px;">Zone Map Overview</div>' +
+      '<div style="position:relative;width:100%;padding-bottom:42%;background:linear-gradient(135deg,#0f1624 0%,#141e30 50%,#0d1117 100%);border-radius:10px;overflow:hidden;">' +
+        '<svg style="position:absolute;top:0;left:0;width:100%;height:100%;" viewBox="0 0 100% 100%" preserveAspectRatio="none">' +
+          '<defs><pattern id="grid-' + id + '" width="5%" height="5%" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="#ffffff08" stroke-width="0.5"/></pattern></defs>' +
+          '<rect width="100%" height="100%" fill="url(#grid-' + id + ')"/>' +
+        '</svg>' +
+        '<svg style="position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible;">' + circlesHTML + '</svg>' +
+        '<div style="position:absolute;bottom:10px;right:12px;display:flex;flex-direction:column;gap:6px;">' +
+          '<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);"><div style="width:10px;height:10px;border-radius:50%;background:#4a9eff;"></div>Depot</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);"><div style="width:10px;height:10px;border-radius:50%;background:#ff4a4a;"></div>Restricted</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);"><div style="width:10px;height:10px;border-radius:50%;background:#4aff9e;"></div>Customer</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);"><div style="width:10px;height:10px;border-radius:50%;background:#ffcc4a;"></div>Speed</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div style="background:var(--glass);border:1px solid var(--border);border-radius:14px;overflow:hidden;">' +
+      '<div style="padding:16px 20px;font-size:15px;font-weight:600;color:var(--text);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">' +
+        '<span>Alert Log</span>' +
+        '<span style="font-size:12px;color:var(--muted);">Last 8 events</span>' +
+      '</div>' +
+      '<div style="overflow-x:auto;">' +
+        '<table style="width:100%;border-collapse:collapse;">' +
+          '<thead><tr style="background:var(--surface);">' +
+            '<th style="padding:10px 12px;text-align:left;color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Vehicle</th>' +
+            '<th style="padding:10px 12px;text-align:left;color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Zone</th>' +
+            '<th style="padding:10px 12px;text-align:center;color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Event</th>' +
+            '<th style="padding:10px 12px;text-align:left;color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Timestamp</th>' +
+          '</tr></thead>' +
+          '<tbody>' + eventsRows + '</tbody>' +
+        '</table>' +
+      '</div>' +
+    '</div>';
+
+  document.querySelectorAll('.gx-surface').forEach(function(s) { s.style.display = 'none'; });
+  document.getElementById('stage') && document.getElementById('stage').appendChild(surfEl);
+  surfEl.style.display = 'flex';
+
+  var tabBar = document.querySelector('.gx-tabs, #tabs');
+  var tab = document.createElement('div');
+  tab.className = 'gx-tab active';
+  tab.textContent = 'Geofencing';
+  tab.style.cssText = 'padding:8px 18px;cursor:pointer;border-radius:8px;font-size:13px;font-weight:600;white-space:nowrap;';
+  document.querySelectorAll('.gx-tab').forEach(function(t) { t.classList.remove('active'); });
+  if (tabBar) tabBar.appendChild(tab);
+
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.gx-surface').forEach(function(s) { s.style.display = 'none'; });
+    surfEl.style.display = 'flex';
+    document.querySelectorAll('.gx-tab').forEach(function(t) { t.classList.remove('active'); });
+    tab.classList.add('active');
+  });
+}
+
+```javascript
+function initWebSocketSimulation() {
+  var subscribers = [];
+  var messageCount = 0;
+
+  window.fleetSocket = {
+    connected: true,
+    messageCount: 0,
+    lastMessage: null,
+    subscribe: function(fn) {
+      if (typeof fn === 'function') subscribers.push(fn);
+    }
+  };
+
+  // Inject pulse keyframe
+  if (!document.getElementById('wsAnimStyle')) {
+    var styleEl = document.createElement('style');
+    styleEl.id = 'wsAnimStyle';
+    styleEl.textContent = '@keyframes wsPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}';
+    document.head.appendChild(styleEl);
+  }
+
+  // Create persistent indicator
+  var ind = document.getElementById('wsIndicator');
+  if (!ind) {
+    ind = document.createElement('div');
+    ind.id = 'wsIndicator';
+    ind.style.cssText = 'position:fixed;bottom:16px;left:80px;z-index:9999;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:5px 12px;font-size:11px;font-family:inherit;color:#e2e8f0;pointer-events:none;';
+    document.body.appendChild(ind);
+  }
+
+  function renderIndicator() {
+    var dot = '<span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;animation:wsPulse 1.4s ease-in-out infinite;"></span>';
+    ind.innerHTML = dot + '<span>WebSocket LIVE</span><span style="color:#94a3b8;">·</span><span style="color:#94a3b8;">' + window.fleetSocket.messageCount + ' msg</span>';
+  }
+  renderIndicator();
+
+  var vehicles = [];
+  for (var i = 1; i <= 99; i++) {
+    vehicles.push('VH-' + (i < 10 ? '00' : i < 100 ? '0' : '') + i);
+  }
+
+  var baseLat = 37.7749, baseLng = -122.4194;
+  var vehicleState = {};
+
+  function pickVehicles() {
+    var count = 1 + Math.floor(Math.random() * 3);
+    var picked = [];
+    var pool = vehicles.slice();
+    for (var i = 0; i < count; i++) {
+      var idx = Math.floor(Math.random() * pool.length);
+      picked.push(pool.splice(idx, 1)[0]);
+    }
+    return picked;
+  }
+
+  function generateTelemetry() {
+    var eventTypes = ['update', 'alert', 'maintenance', 'geofence'];
+    var headings = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+    var pickedVehicles = pickVehicles();
+    var records = pickedVehicles.map(function(vid) {
+      if (!vehicleState[vid]) {
+        vehicleState[vid] = {
+          lat: baseLat + (Math.random() - .5) * .2,
+          lng: baseLng + (Math.random() - .5) * .2,
+          fuel: 40 + Math.random() * 60
+        };
+      }
+      var s = vehicleState[vid];
+      s.lat += (Math.random() - .5) * .005;
+      s.lng += (Math.random() - .5) * .005;
+      s.fuel = Math.max(5, Math.min(100, s.fuel + (Math.random() - .6) * 2));
+      return {
+        vehicleId: vid,
+        lat: +s.lat.toFixed(6),
+        lng: +s.lng.toFixed(6),
+        speed: Math.round(40 + Math.random() * 80),
+        heading: headings[Math.floor(Math.random() * headings.length)],
+        fuelLevel: +s.fuel.toFixed(1),
+        eventType: eventTypes[Math.floor(Math.random() * eventTypes.length)]
+      };
+    });
+
+    messageCount++;
+    window.fleetSocket.messageCount = messageCount;
+    var payload = { timestamp: Date.now(), records: records };
+    window.fleetSocket.lastMessage = payload;
+    renderIndicator();
+
+    var evt = new CustomEvent('fleet:telemetry', { detail: payload });
+    window.dispatchEvent(evt);
+    subscribers.forEach(function(fn) { try { fn(payload); } catch(e) {} });
+  }
+
+  var fleetEventPool = [
+    function(vid) { return { type: 'arrived', msg: vid + ' arrived at destination', icon: '📍' }; },
+    function(vid) { return { type: 'geofence', msg: vid + ' breached geofence boundary', icon: '⚠️' }; },
+    function(vid) { return { type: 'maintenance', msg: vid + ' maintenance due in 50 km', icon: '🔧' }; },
+    function(vid) { return { type: 'fuel_low', msg: vid + ' fuel below 15%', icon: '⛽' }; },
+    function(vid) { return { type: 'driver_change', msg: vid + ' driver handover completed', icon: '👤' }; }
+  ];
+
+  function showFleetEventToast(eventObj) {
+    if (typeof window.showToast === 'function') {
+      window.showToast(eventObj.msg, eventObj.type === 'geofence' ? 'warn' : 'info');
+      return;
+    }
+    var t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:56px;left:80px;z-index:10000;background:rgba(15,23,42,.92);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 16px;font-size:12px;color:#e2e8f0;font-family:inherit;max-width:280px;opacity:0;transition:opacity .25s;';
+    t.textContent = eventObj.msg;
+    document.body.appendChild(t);
+    requestAnimationFrame(function() { t.style.opacity = '1'; });
+    setTimeout(function() {
+      t.style.opacity = '0';
+      setTimeout(function() { t.parentNode && t.parentNode.removeChild(t); }, 300);
+    }, 4000);
+  }
+
+  function simulateFleetEvent() {
+    var vid = vehicles[Math.floor(Math.random() * vehicles.length)];
+    var factory = fleetEventPool[Math.floor(Math.random() * fleetEventPool.length)];
+    var eventObj = factory(vid);
+    showFleetEventToast(eventObj);
+    window.dispatchEvent(new CustomEvent('fleet:event', { detail: { vehicleId: vid, event: eventObj } }));
+  }
+
+  generateTelemetry();
+  setInterval(generateTelemetry, 8000);
+  setInterval(simulateFleetEvent, 15000);
+}
+```
+
+function initPWA() {
+  var dismissed = localStorage.getItem('pwa_dismissed');
+  if (dismissed && Date.now() - parseInt(dismissed) < 7 * 24 * 60 * 60 * 1000) {
+    dismissed = true;
+  } else {
+    dismissed = false;
+  }
+
+  var swCode = [
+    "var CACHE_NAME = 'adaptiveai-v5-cache';",
+    "self.addEventListener('install', function(e) {",
+    "  e.waitUntil(caches.open(CACHE_NAME).then(function(cache) {",
+    "    return cache.addAll([self.location.origin + '/']);",
+    "  }));",
+    "});",
+    "self.addEventListener('fetch', function(e) {",
+    "  e.respondWith(caches.match(e.request).then(function(cached) {",
+    "    return cached || fetch(e.request).then(function(resp) {",
+    "      return caches.open(CACHE_NAME).then(function(cache) {",
+    "        cache.put(e.request, resp.clone());",
+    "        return resp;",
+    "      });",
+    "    });",
+    "  }));",
+    "});"
+  ].join('\n');
+
+  if ('serviceWorker' in navigator) {
+    try {
+      var swBlob = new Blob([swCode], { type: 'application/javascript' });
+      var swUrl = URL.createObjectURL(swBlob);
+      navigator.serviceWorker.register(swUrl).then(function(reg) {
+        console.log('[v5-PWA] SW registered', reg.scope);
+      }).catch(function(err) {
+        console.warn('[v5-PWA] SW registration failed', err);
+      });
+    } catch (e) {
+      console.warn('[v5-PWA] SW blob failed', e);
+    }
+  }
+
+  var manifestData = {
+    name: 'AdaptiveAI Workspace',
+    short_name: 'AdaptiveAI',
+    description: 'AdaptiveAI Fleet & Operations Workspace',
+    theme_color: '#7c3aed',
+    background_color: '#0f0f1a',
+    display: 'standalone',
+    start_url: '/',
+    icons: [
+      { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/icon-512.png', sizes: '512x512', type: 'image/png' }
+    ]
+  };
+  var manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
+  var manifestUrl = URL.createObjectURL(manifestBlob);
+  var existingManifest = document.querySelector('link[rel="manifest"]');
+  if (!existingManifest) {
+    var manifestLink = document.createElement('link');
+    manifestLink.rel = 'manifest';
+    manifestLink.href = manifestUrl;
+    document.head.appendChild(manifestLink);
+  }
+  var themeMetaExisting = document.querySelector('meta[name="theme-color"]');
+  if (!themeMetaExisting) {
+    var themeMeta = document.createElement('meta');
+    themeMeta.name = 'theme-color';
+    themeMeta.content = '#7c3aed';
+    document.head.appendChild(themeMeta);
+  }
+  var appleMeta = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
+  if (!appleMeta) {
+    var appleCap = document.createElement('meta');
+    appleCap.name = 'apple-mobile-web-app-capable';
+    appleCap.content = 'yes';
+    document.head.appendChild(appleCap);
+    var appleStatus = document.createElement('meta');
+    appleStatus.name = 'apple-mobile-web-app-status-bar-style';
+    appleStatus.content = 'black-translucent';
+    document.head.appendChild(appleStatus);
+  }
+
+  function showInstallBanner() {
+    if (document.getElementById('pwaInstallBanner')) return;
+    var banner = document.createElement('div');
+    banner.id = 'pwaInstallBanner';
+    banner.style.cssText = [
+      'position:fixed',
+      'bottom:16px',
+      'right:16px',
+      'z-index:99999',
+      'display:flex',
+      'align-items:center',
+      'gap:12px',
+      'padding:14px 18px',
+      'border-radius:14px',
+      'background:var(--glass,rgba(24,24,40,0.97))',
+      'border:1px solid var(--border,rgba(124,58,237,0.25))',
+      'box-shadow:0 8px 32px rgba(0,0,0,0.45)',
+      'backdrop-filter:blur(16px)',
+      '-webkit-backdrop-filter:blur(16px)',
+      'max-width:320px',
+      'animation:pwaBannerIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both'
+    ].join(';');
+
+    if (!document.getElementById('pwaKeyframes')) {
+      var kf = document.createElement('style');
+      kf.id = 'pwaKeyframes';
+      kf.textContent = '@keyframes pwaBannerIn{from{opacity:0;transform:translateY(24px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}';
+      document.head.appendChild(kf);
+    }
+
+    var logo = document.createElement('span');
+    logo.textContent = '🚀';
+    logo.style.cssText = 'font-size:28px;flex-shrink:0;line-height:1';
+
+    var textWrap = document.createElement('div');
+    textWrap.style.cssText = 'flex:1;min-width:0';
+
+    var title = document.createElement('div');
+    title.textContent = 'Install AdaptiveAI App';
+    title.style.cssText = 'font-size:14px;font-weight:600;color:var(--text,#f1f0ff);line-height:1.3;white-space:nowrap';
+
+    var sub = document.createElement('div');
+    sub.textContent = 'Add to home screen for quick access';
+    sub.style.cssText = 'font-size:11px;color:var(--muted,#8b8bab);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis';
+
+    textWrap.appendChild(title);
+    textWrap.appendChild(sub);
+
+    var btnWrap = document.createElement('div');
+    btnWrap.style.cssText = 'display:flex;align-items:center;gap:6px;flex-shrink:0';
+
+    var installBtn = document.createElement('button');
+    installBtn.textContent = 'Install';
+    installBtn.style.cssText = [
+      'padding:7px 14px',
+      'border-radius:8px',
+      'border:none',
+      'cursor:pointer',
+      'font-size:12px',
+      'font-weight:600',
+      'background:var(--accent,#7c3aed)',
+      'color:#fff',
+      'transition:opacity 0.15s',
+      'white-space:nowrap'
+    ].join(';');
+    installBtn.onmouseover = function() { this.style.opacity = '0.85'; };
+    installBtn.onmouseout = function() { this.style.opacity = '1'; };
+    installBtn.onclick = function() {
+      if (window.deferredPWAPrompt) {
+        window.deferredPWAPrompt.prompt();
+        window.deferredPWAPrompt.userChoice.then(function(choice) {
+          if (choice.outcome === 'accepted') {
+            hideBanner();
+          }
+          window.deferredPWAPrompt = null;
+        });
+      }
+    };
+
+    var dismissBtn = document.createElement('button');
+    dismissBtn.textContent = '×';
+    dismissBtn.title = 'Dismiss';
+    dismissBtn.style.cssText = [
+      'padding:4px 8px',
+      'border-radius:6px',
+      'border:1px solid var(--border,rgba(124,58,237,0.2))',
+      'cursor:pointer',
+      'font-size:16px',
+      'line-height:1',
+      'background:transparent',
+      'color:var(--muted,#8b8bab)',
+      'transition:color 0.15s,background 0.15s'
+    ].join(';');
+    dismissBtn.onmouseover = function() { this.style.background = 'rgba(124,58,237,0.15)'; this.style.color = 'var(--text,#f1f0ff)'; };
+    dismissBtn.onmouseout = function() { this.style.background = 'transparent'; this.style.color = 'var(--muted,#8b8bab)'; };
+    dismissBtn.onclick = function() {
+      localStorage.setItem('pwa_dismissed', String(Date.now()));
+      hideBanner();
+    };
+
+    btnWrap.appendChild(installBtn);
+    btnWrap.appendChild(dismissBtn);
+
+    banner.appendChild(logo);
+    banner.appendChild(textWrap);
+    banner.appendChild(btnWrap);
+    document.body.appendChild(banner);
+  }
+
+  function hideBanner() {
+    var b = document.getElementById('pwaInstallBanner');
+    if (b) {
+      b.style.transition = 'opacity 0.25s,transform 0.25s';
+      b.style.opacity = '0';
+      b.style.transform = 'translateY(16px) scale(0.95)';
+      setTimeout(function() { if (b.parentNode) b.parentNode.removeChild(b); }, 280);
+    }
+  }
+
+  function showToast(msg) {
+    var toast = document.createElement('div');
+    toast.style.cssText = [
+      'position:fixed',
+      'bottom:24px',
+      'left:50%',
+      'transform:translateX(-50%) translateY(0)',
+      'z-index:99999',
+      'padding:10px 20px',
+      'border-radius:10px',
+      'background:var(--good,#22c55e)',
+      'color:#fff',
+      'font-size:13px',
+      'font-weight:600',
+      'box-shadow:0 4px 20px rgba(34,197,94,0.4)',
+      'opacity:1',
+      'transition:opacity 0.4s,transform 0.4s',
+      'pointer-events:none'
+    ].join(';');
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(function() {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(12px)';
+      setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 420);
+    }, 3000);
+  }
+
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    window.deferredPWAPrompt = e;
+    if (!dismissed) {
+      showInstallBanner();
+    }
+  });
+
+  window.addEventListener('appinstalled', function() {
+    hideBanner();
+    showToast('App installed successfully!');
+    window.deferredPWAPrompt = null;
+  });
+}
+
+function initAccessibility() {
+  var stage = document.getElementById('stage');
+  if (stage) {
+    stage.setAttribute('role', 'main');
+    stage.setAttribute('aria-label', 'Dashboard content area');
+  }
+
+  var tabs = document.querySelector('.gx-tabs, #tabs');
+  if (tabs) {
+    tabs.setAttribute('role', 'tablist');
+  }
+
+  document.querySelectorAll('.gx-tab').forEach(function(tab) {
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-selected', tab.classList.contains('active') ? 'true' : 'false');
+  });
+
+  var prompt = document.getElementById('prompt');
+  if (prompt) {
+    prompt.setAttribute('aria-label', 'Ask about your fleet');
+  }
+
+  var sendBtn = document.getElementById('sendBtn');
+  if (sendBtn) {
+    sendBtn.setAttribute('aria-label', 'Submit query');
+  }
+
+  document.querySelectorAll('.gx-nav-btn').forEach(function(btn) {
+    var title = btn.getAttribute('title') || btn.getAttribute('data-tooltip') || btn.textContent.trim();
+    if (title && !btn.getAttribute('aria-label')) {
+      btn.setAttribute('aria-label', title);
+    }
+  });
+
+  var focusStyle = document.createElement('style');
+  focusStyle.textContent = ':focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }';
+  document.head.appendChild(focusStyle);
+
+  var skipLink = document.createElement('a');
+  skipLink.href = '#stage';
+  skipLink.textContent = 'Skip to content';
+  skipLink.setAttribute('tabindex', '0');
+  skipLink.style.cssText = 'position:fixed;top:0;left:0;z-index:99999;padding:8px 16px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;border-radius:0 0 6px 0;transform:translateY(-100%);transition:transform 0.2s;';
+  skipLink.addEventListener('focus', function() {
+    skipLink.style.transform = 'translateY(0)';
+  });
+  skipLink.addEventListener('blur', function() {
+    skipLink.style.transform = 'translateY(-100%)';
+  });
+  document.body.insertBefore(skipLink, document.body.firstChild);
+
+  var srStatus = document.getElementById('srStatus');
+  if (!srStatus) {
+    srStatus = document.createElement('div');
+    srStatus.id = 'srStatus';
+    srStatus.setAttribute('role', 'status');
+    srStatus.setAttribute('aria-live', 'polite');
+    srStatus.setAttribute('aria-atomic', 'true');
+    srStatus.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;';
+    document.body.appendChild(srStatus);
+  }
+
+  var srClearTimer = null;
+  window.announceToSR = function(text) {
+    if (!srStatus) return;
+    srStatus.textContent = '';
+    void srStatus.offsetWidth;
+    srStatus.textContent = text;
+    if (srClearTimer) clearTimeout(srClearTimer);
+    srClearTimer = setTimeout(function() {
+      srStatus.textContent = '';
+    }, 3000);
+  };
+
+  var tabsContainer = document.querySelector('.gx-tabs, #tabs');
+  if (tabsContainer) {
+    var tabObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+          var el = mutation.target;
+          if (el.classList.contains('gx-tab')) {
+            el.setAttribute('aria-selected', el.classList.contains('active') ? 'true' : 'false');
+          }
+        }
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach(function(node) {
+            if (node.nodeType === 1 && node.classList && node.classList.contains('gx-tab')) {
+              node.setAttribute('role', 'tab');
+              node.setAttribute('aria-selected', node.classList.contains('active') ? 'true' : 'false');
+            }
+          });
+          tabsContainer.querySelectorAll('.gx-tab').forEach(function(tab) {
+            tab.setAttribute('aria-selected', tab.classList.contains('active') ? 'true' : 'false');
+          });
+        }
+      });
+    });
+    tabObserver.observe(tabsContainer, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
+  }
+
+  if (stage) {
+    var stageObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        mutation.addedNodes.forEach(function(node) {
+          if (node.nodeType === 1 && node.classList && node.classList.contains('gx-surface')) {
+            if (!node.getAttribute('tabindex')) {
+              node.setAttribute('tabindex', '-1');
+            }
+            setTimeout(function() { node.focus(); }, 50);
+          }
+        });
+      });
+    });
+    stageObserver.observe(stage, { childList: true });
+  }
+}
+
+function initPrintExport() {
+  var printStyle = document.createElement('style');
+  printStyle.textContent = [
+    '@media print {',
+    '  .gx-nav, .gx-tabs, #tabs, #prompt-area, #topbar, .gx-sidebar, #wsIndicator, #pwaInstallBanner { display: none !important; }',
+    '  .fixed { position: static !important; }',
+    '  .gx-surface { display: none !important; }',
+    '  .gx-surface[style*="display: block"], .gx-surface[style*="display:block"], .gx-surface:not([style*="display: none"]):not([style*="display:none"]) { display: block !important; }',
+    '  body::before { content: "AdaptiveAI Workspace  |  " attr(data-print-title) "  |  Printed: ' + new Date().toLocaleDateString() + '"; display: block; font-size: 13px; color: #333; border-bottom: 1px solid #ccc; padding-bottom: 8px; margin-bottom: 16px; font-family: sans-serif; }',
+    '  .gx-card, table, tr, td, th { page-break-inside: avoid; }',
+    '  table { width: 100%; border-collapse: collapse; }',
+    '  th, td { border: 1px solid #ccc; padding: 6px 10px; font-size: 12px; }',
+    '}'
+  ].join('\n');
+  document.head.appendChild(printStyle);
+
+  function buildCSV(surface) {
+    var tables = surface.querySelectorAll('table');
+    if (!tables.length) return null;
+    var rows = [];
+    tables[0].querySelectorAll('tr').forEach(function(tr) {
+      var cells = [];
+      tr.querySelectorAll('th, td').forEach(function(cell) {
+        var text = cell.textContent.trim().replace(/"/g, '""');
+        cells.push('"' + text + '"');
+      });
+      if (cells.length) rows.push(cells.join(','));
+    });
+    return rows.join('\n');
+  }
+
+  function downloadCSV(csv, filename) {
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'export.csv';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function() {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
+  }
+
+  function getActiveSurface() {
+    var surfaces = document.querySelectorAll('.gx-surface');
+    for (var i = 0; i < surfaces.length; i++) {
+      var s = surfaces[i];
+      var st = s.style.display;
+      if (st === 'block' || st === 'flex' || st === 'grid' || (st !== 'none' && s.offsetParent !== null)) {
+        return s;
+      }
+    }
+    return surfaces[surfaces.length - 1] || null;
+  }
+
+  function createDropdown(exportBtn) {
+    var existing = document.getElementById('v5-export-dropdown');
+    if (existing) {
+      existing.remove();
+      return;
+    }
+
+    var dropdown = document.createElement('div');
+    dropdown.id = 'v5-export-dropdown';
+    dropdown.setAttribute('role', 'menu');
+    dropdown.style.cssText = 'position:absolute;z-index:9999;min-width:160px;background:var(--glass,rgba(20,20,30,0.95));border:1px solid var(--border,rgba(255,255,255,0.1));border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.4);overflow:hidden;backdrop-filter:blur(12px);';
+
+    var rect = exportBtn.getBoundingClientRect();
+    dropdown.style.top = (rect.bottom + window.scrollY + 4) + 'px';
+    dropdown.style.left = (rect.left + window.scrollX) + 'px';
+
+    var options = [
+      { label: 'Print', icon: '🖨', action: function() {
+        var surface = getActiveSurface();
+        document.body.setAttribute('data-print-title', surface ? (surface.getAttribute('data-title') || document.title) : document.title);
+        window.print();
+      }},
+      { label: 'Copy Link', icon: '🔗', action: function() {
+        var prompt = document.getElementById('prompt');
+        var query = prompt ? prompt.value : '';
+        var url = window.location.href.split('?')[0] + (query ? '?q=' + encodeURIComponent(query) : '');
+        navigator.clipboard.writeText(url).then(function() {
+          if (window.announceToSR) window.announceToSR('Link copied to clipboard');
+          if (window.showToast) window.showToast('Link copied');
+        }).catch(function() {
+          var ta = document.createElement('textarea');
+          ta.value = url;
+          ta.style.cssText = 'position:fixed;opacity:0;';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (window.announceToSR) window.announceToSR('Link copied to clipboard');
+        });
+      }},
+      { label: 'Download CSV', icon: '⬇', action: function() {
+        var surface = getActiveSurface();
+        if (!surface) {
+          if (window.announceToSR) window.announceToSR('No active surface to export');
+          return;
+        }
+        var csv = buildCSV(surface);
+        if (!csv) {
+          if (window.announceToSR) window.announceToSR('No table data found on current surface');
+          return;
+        }
+        var title = surface.getAttribute('data-title') || 'export';
+        downloadCSV(csv, title.replace(/\s+/g, '-').toLowerCase() + '-' + Date.now() + '.csv');
+        if (window.announceToSR) window.announceToSR('CSV download started');
+      }}
+    ];
+
+    options.forEach(function(opt) {
+      var item = document.createElement('button');
+      item.setAttribute('role', 'menuitem');
+      item.style.cssText = 'display:flex;align-items:center;gap:10px;width:100%;padding:10px 16px;background:transparent;border:none;color:var(--text,#e2e8f0);font-size:14px;cursor:pointer;text-align:left;transition:background 0.15s;';
+      item.innerHTML = '<span style="font-size:16px;width:20px;text-align:center;">' + opt.icon + '</span><span>' + opt.label + '</span>';
+      item.addEventListener('mouseenter', function() {
+        item.style.background = 'var(--accent,rgba(99,102,241,0.3))';
+      });
+      item.addEventListener('mouseleave', function() {
+        item.style.background = 'transparent';
+      });
+      item.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdown.remove();
+        opt.action();
+      });
+      dropdown.appendChild(item);
+    });
+
+    document.body.appendChild(dropdown);
+
+    function closeDropdown(e) {
+      if (!dropdown.contains(e.target) && e.target !== exportBtn) {
+        dropdown.remove();
+        document.removeEventListener('click', closeDropdown);
+        document.removeEventListener('keydown', escClose);
+      }
+    }
+    function escClose(e) {
+      if (e.key === 'Escape') {
+        dropdown.remove();
+        document.removeEventListener('click', closeDropdown);
+        document.removeEventListener('keydown', escClose);
+        exportBtn.focus();
+      }
+    }
+    setTimeout(function() {
+      document.addEventListener('click', closeDropdown);
+      document.addEventListener('keydown', escClose);
+    }, 0);
+  }
+
+  function attachExportDropdown() {
+    var exportBtn = document.getElementById('exportBtn') || document.querySelector('[data-action="export"], button[title*="Export"], button[aria-label*="Export"]');
+    if (!exportBtn || exportBtn._v5exportAttached) return;
+    exportBtn._v5exportAttached = true;
+    exportBtn.style.position = 'relative';
+    exportBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      createDropdown(exportBtn);
+    });
+  }
+
+  attachExportDropdown();
+
+  var exportCheckInterval = setInterval(function() {
+    var btn = document.getElementById('exportBtn') || document.querySelector('[data-action="export"], button[title*="Export"], button[aria-label*="Export"]');
+    if (btn && !btn._v5exportAttached) {
+      attachExportDropdown();
+    }
+    if (btn && btn._v5exportAttached) {
+      clearInterval(exportCheckInterval);
+    }
+  }, 500);
+
+  setTimeout(function() { clearInterval(exportCheckInterval); }, 15000);
+}
+
+function initOnboardingTourV5() {
+  if (localStorage.getItem('adaptiveai_tour_v5') === 'done') return;
+
+  setTimeout(function() {
+    var role = localStorage.getItem('role') || 'owner';
+
+    var stepsMap = {
+      owner: [
+        { title: 'Welcome to your Fleet HQ', desc: 'Your command center for the entire fleet operation is ready.' },
+        { title: 'See live revenue', desc: "Say 'Revenue analytics' to view financial performance in real time." },
+        { title: 'Track all vehicles', desc: "Open the Fleet Map to see live GPS positions for every vehicle." },
+        { title: 'AI agent automation', desc: "Check the AI Agents surface to monitor bots handling dispatch and alerts." },
+        { title: 'Export any surface', desc: "Every surface has an Export button — download data as PDF or CSV instantly." }
+      ],
+      manager: [
+        { title: 'Fleet command center ready', desc: 'You have full visibility across vehicles, drivers, and schedules.' },
+        { title: 'Live WebSocket telemetry', desc: 'Telemetry data streams in every 8 seconds — no refresh needed.' },
+        { title: 'Fleet Map for tracking', desc: "Open the Fleet Map surface to monitor vehicle locations in real time." },
+        { title: 'Schedule routes', desc: "Use 'Weekly schedule' to plan and adjust driver routes and shifts." },
+        { title: 'Driver performance', desc: "Check the Driver leaderboard to spot top performers and issues." }
+      ],
+      dispatcher: [
+        { title: 'Dispatch console ready', desc: 'All active routes and drivers are loaded and ready for management.' },
+        { title: 'Manage routes with Kanban', desc: "Open the Kanban Board to drag-and-drop tasks and assign dispatches." },
+        { title: 'Monitor drivers in real time', desc: "Driver telemetry updates live — catch issues before they escalate." },
+        { title: 'Geofence alerts', desc: "Set alerts for restricted zones to get notified the moment a boundary is crossed." },
+        { title: '⌘K for instant switching', desc: "Press ⌘K at any time to jump to any surface without clicking tabs." }
+      ],
+      inspector: [
+        { title: 'Inspection dashboard ready', desc: 'All vehicles, certifications, and compliance data are loaded.' },
+        { title: 'Maintenance schedules', desc: "Open Maintenance to see upcoming service dates and overdue items." },
+        { title: 'Compliance certifications', desc: "Track certification renewals and flag items expiring within 30 days." },
+        { title: 'Driver scorecards', desc: "Generate individual driver scorecards for safety and performance reviews." },
+        { title: 'Export compliance reports', desc: "Download full compliance reports as PDF with one click." }
+      ]
+    };
+
+    var steps = stepsMap[role] || stepsMap['owner'];
+    var total = steps.length;
+    var current = 0;
+
+    var uid = (window.uid || function() { return 'v5-' + Math.random().toString(36).slice(2, 9); })();
+
+    function completeTour() {
+      localStorage.setItem('adaptiveai_tour_v5', 'done');
+      var backdrop = document.getElementById('tourBackdrop');
+      var card = document.getElementById('tourCard');
+      if (backdrop) backdrop.remove();
+      if (card) card.remove();
+    }
+
+    function renderStep(index) {
+      var step = steps[index];
+      var isLast = index === total - 1;
+
+      var card = document.getElementById('tourCard');
+      if (!card) return;
+
+      var stepIndicator = card.querySelector('.tour-step-indicator');
+      var titleEl = card.querySelector('.tour-title');
+      var descEl = card.querySelector('.tour-desc');
+      var dotsEl = card.querySelector('.tour-dots');
+      var nextBtn = card.querySelector('.tour-next-btn');
+
+      if (stepIndicator) stepIndicator.textContent = (index + 1) + ' / ' + total;
+      if (titleEl) titleEl.textContent = step.title;
+      if (descEl) descEl.textContent = step.desc;
+      if (nextBtn) nextBtn.textContent = isLast ? 'Get Started' : 'Next';
+
+      if (dotsEl) {
+        dotsEl.innerHTML = '';
+        for (var d = 0; d < total; d++) {
+          var dot = document.createElement('span');
+          dot.style.cssText = [
+            'display:inline-block',
+            'width:8px',
+            'height:8px',
+            'border-radius:50%',
+            'margin:0 3px',
+            'background:' + (d === index ? 'var(--accent, #6c63ff)' : 'var(--border, rgba(255,255,255,0.15))'),
+            'transition:background 0.25s'
+          ].join(';');
+          dotsEl.appendChild(dot);
+        }
+      }
+
+      card.style.opacity = '0';
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          card.style.opacity = '1';
+        });
+      });
+    }
+
+    var backdrop = document.createElement('div');
+    backdrop.id = 'tourBackdrop';
+    backdrop.style.cssText = [
+      'position:fixed',
+      'inset:0',
+      'z-index:9000',
+      'background:rgba(0,0,0,0.4)',
+      'display:flex',
+      'align-items:center',
+      'justify-content:center',
+      'opacity:0',
+      'transition:opacity 0.3s ease'
+    ].join(';');
+
+    var card = document.createElement('div');
+    card.id = 'tourCard';
+    card.style.cssText = [
+      'position:fixed',
+      'top:50%',
+      'left:50%',
+      'transform:translate(-50%,-50%)',
+      'z-index:9001',
+      'width:min(420px,90vw)',
+      'background:var(--glass, rgba(24,24,32,0.97))',
+      'border:1px solid var(--border, rgba(255,255,255,0.12))',
+      'border-radius:16px',
+      'padding:28px 28px 24px',
+      'box-shadow:0 24px 64px rgba(0,0,0,0.5)',
+      'opacity:0',
+      'transition:opacity 0.3s ease',
+      'font-family:inherit',
+      'box-sizing:border-box'
+    ].join(';');
+
+    var headerRow = document.createElement('div');
+    headerRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;';
+
+    var stepIndicator = document.createElement('span');
+    stepIndicator.className = 'tour-step-indicator';
+    stepIndicator.style.cssText = [
+      'font-size:12px',
+      'font-weight:600',
+      'letter-spacing:0.08em',
+      'color:var(--accent, #6c63ff)',
+      'text-transform:uppercase'
+    ].join(';');
+
+    var skipLink = document.createElement('button');
+    skipLink.textContent = 'Skip tour';
+    skipLink.style.cssText = [
+      'background:none',
+      'border:none',
+      'color:var(--muted, rgba(255,255,255,0.45))',
+      'font-size:12px',
+      'cursor:pointer',
+      'padding:0',
+      'text-decoration:underline',
+      'font-family:inherit'
+    ].join(';');
+    skipLink.addEventListener('click', function() { completeTour(); });
+
+    headerRow.appendChild(stepIndicator);
+    headerRow.appendChild(skipLink);
+
+    var titleEl = document.createElement('div');
+    titleEl.className = 'tour-title';
+    titleEl.style.cssText = [
+      'font-size:20px',
+      'font-weight:700',
+      'color:var(--text, #fff)',
+      'margin-bottom:10px',
+      'line-height:1.3'
+    ].join(';');
+
+    var descEl = document.createElement('div');
+    descEl.className = 'tour-desc';
+    descEl.style.cssText = [
+      'font-size:14px',
+      'color:var(--muted, rgba(255,255,255,0.6))',
+      'line-height:1.6',
+      'margin-bottom:24px'
+    ].join(';');
+
+    var dotsEl = document.createElement('div');
+    dotsEl.className = 'tour-dots';
+    dotsEl.style.cssText = 'display:flex;align-items:center;justify-content:center;margin-bottom:24px;';
+
+    var footerRow = document.createElement('div');
+    footerRow.style.cssText = 'display:flex;justify-content:flex-end;';
+
+    var nextBtn = document.createElement('button');
+    nextBtn.className = 'tour-next-btn';
+    nextBtn.style.cssText = [
+      'background:var(--accent, #6c63ff)',
+      'color:#fff',
+      'border:none',
+      'border-radius:10px',
+      'padding:10px 28px',
+      'font-size:14px',
+      'font-weight:600',
+      'cursor:pointer',
+      'font-family:inherit',
+      'transition:opacity 0.2s ease'
+    ].join(';');
+    nextBtn.addEventListener('mouseenter', function() { this.style.opacity = '0.85'; });
+    nextBtn.addEventListener('mouseleave', function() { this.style.opacity = '1'; });
+    nextBtn.addEventListener('click', function() {
+      if (current < total - 1) {
+        current++;
+        renderStep(current);
+      } else {
+        completeTour();
+      }
+    });
+
+    footerRow.appendChild(nextBtn);
+
+    card.appendChild(headerRow);
+    card.appendChild(titleEl);
+    card.appendChild(descEl);
+    card.appendChild(dotsEl);
+    card.appendChild(footerRow);
+
+    document.body.appendChild(backdrop);
+    document.body.appendChild(card);
+
+    renderStep(0);
+
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        backdrop.style.opacity = '1';
+        card.style.opacity = '1';
+      });
+    });
+  }, 4000);
+}
+
+  function initModulesV5() {
+    try { extendKeywordRoutingV5(); } catch(e) { console.warn('[V5] routing', e); }
+    try { initWebSocketSimulation(); } catch(e) { console.warn('[V5] websocket', e); }
+    try { initPWA(); } catch(e) { console.warn('[V5] pwa', e); }
+    try { initAccessibility(); } catch(e) { console.warn('[V5] a11y', e); }
+    try { initPrintExport(); } catch(e) { console.warn('[V5] print', e); }
+    setTimeout(function() {
+      try { initOnboardingTourV5(); } catch(e) { console.warn('[V5] tour', e); }
+    }, 4000);
+    console.log('[AdaptiveAI] Module v5 initialized ✓');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { setTimeout(initModulesV5, 4500); });
+  } else {
+    setTimeout(initModulesV5, 4500);
+  }
+})();
+
+</script>
 </body></html>
