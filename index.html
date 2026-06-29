@@ -9748,4 +9748,2218 @@ function initOnboardingTourV5() {
 })();
 
 </script>
+
+
+
+<script>
+
+(function() {
+  'use strict';
+  const uid = window.uid || (() => 'v6-' + Math.random().toString(36).slice(2,9));
+  const qsa = (s,c) => Array.from((c||document).querySelectorAll(s));
+  const $ = id => document.getElementById(id);
+
+  function extendKeywordRoutingV6() {
+    const prev = window.generateSurface;
+    if (!prev || prev._v6extended) return;
+    const extended = async function(query) {
+      const ql = (query || '').toLowerCase();
+      if (/inventory|stock|parts|spare|warehouse|supply/.test(ql)) return renderInventorySurface(query);
+      else if (/analytics|dashboard|kpi|metrics|performance overview|executive/.test(ql)) return renderAnalyticsSurface(query);
+      else return prev(query);
+    };
+    extended._v6extended = true;
+    window.generateSurface = extended;
+  }
+
+function renderInventorySurface(query) {
+  var surfId = (window.uid || (function() { return 'v6-' + Math.random().toString(36).slice(2, 9); }))();
+  var surfEl = document.createElement('div');
+  surfEl.className = 'gx-surface';
+  surfEl.id = surfId;
+  surfEl.style.cssText = 'padding:24px;overflow-y:auto;height:100%;box-sizing:border-box;';
+
+  var parts = [
+    { name: 'Engine Oil Filter', sku: 'SKU-2031', cat: 'Engine', stock: 24, min: 10, status: 'OK', cost: '€8.50', supplier: 'AutoParts GR' },
+    { name: 'Winter Tyre Set', sku: 'SKU-4892', cat: 'Tyres', stock: 3, min: 8, status: 'LOW', cost: '€220.00', supplier: 'TyreHub EU' },
+    { name: 'Battery 12V 100Ah', sku: 'SKU-1154', cat: 'Electrical', stock: 0, min: 5, status: 'OUT', cost: '€89.00', supplier: 'ElectroParts' },
+    { name: 'Air Filter Panel', sku: 'SKU-3305', cat: 'Engine', stock: 18, min: 6, status: 'OK', cost: '€14.20', supplier: 'AutoParts GR' },
+    { name: 'Brake Pad Set Front', sku: 'SKU-6671', cat: 'Body', stock: 7, min: 10, status: 'LOW', cost: '€42.00', supplier: 'BrakePro DE' },
+    { name: 'Engine Coolant 5L', sku: 'SKU-8801', cat: 'Fluids', stock: 31, min: 12, status: 'OK', cost: '€11.00', supplier: 'FluidZone' },
+    { name: 'Alternator 90A', sku: 'SKU-2278', cat: 'Electrical', stock: 2, min: 4, status: 'LOW', cost: '€165.00', supplier: 'ElectroParts' },
+    { name: 'Windscreen Wiper 650mm', sku: 'SKU-5543', cat: 'Body', stock: 0, min: 8, status: 'OUT', cost: '€18.50', supplier: 'ClearVision' },
+    { name: 'Transmission Fluid 4L', sku: 'SKU-9102', cat: 'Fluids', stock: 15, min: 6, status: 'OK', cost: '€23.00', supplier: 'FluidZone' },
+    { name: 'Summer Tyre 205/55R16', sku: 'SKU-4401', cat: 'Tyres', stock: 12, min: 8, status: 'OK', cost: '€95.00', supplier: 'TyreHub EU' },
+    { name: 'Fuse Box 40A', sku: 'SKU-1987', cat: 'Electrical', stock: 0, min: 3, status: 'OUT', cost: '€6.80', supplier: 'ElectroParts' },
+    { name: 'Timing Belt Kit', sku: 'SKU-3390', cat: 'Engine', stock: 5, min: 4, status: 'OK', cost: '€78.00', supplier: 'AutoParts GR' }
+  ];
+
+  var cats = ['All', 'Engine', 'Tyres', 'Electrical', 'Body', 'Fluids'];
+  var activeFilter = 'All';
+
+  var header = document.createElement('div');
+  header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;';
+
+  var title = document.createElement('h2');
+  title.style.cssText = 'margin:0;font-size:22px;font-weight:700;color:var(--text);';
+  title.textContent = 'Parts Inventory';
+
+  var statsRow = document.createElement('div');
+  statsRow.style.cssText = 'display:flex;gap:16px;flex-wrap:wrap;';
+
+  var statDefs = [
+    { label: 'Total SKUs', value: '1,247', color: 'var(--text)' },
+    { label: 'Low Stock', value: '23', color: 'var(--warn)' },
+    { label: 'Out of Stock', value: '4', color: 'var(--danger)' },
+    { label: 'Inventory Value', value: '€89K', color: 'var(--good)' }
+  ];
+
+  statDefs.forEach(function(s) {
+    var stat = document.createElement('div');
+    stat.style.cssText = 'background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px 16px;text-align:center;min-width:90px;';
+    var val = document.createElement('div');
+    val.style.cssText = 'font-size:18px;font-weight:700;color:' + s.color + ';';
+    val.textContent = s.value;
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'font-size:11px;color:var(--muted);margin-top:2px;';
+    lbl.textContent = s.label;
+    stat.appendChild(val);
+    stat.appendChild(lbl);
+    statsRow.appendChild(stat);
+  });
+
+  header.appendChild(title);
+  header.appendChild(statsRow);
+  surfEl.appendChild(header);
+
+  var filterBar = document.createElement('div');
+  filterBar.style.cssText = 'display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;';
+
+  var filterBtns = {};
+  cats.forEach(function(cat) {
+    var btn = document.createElement('button');
+    btn.style.cssText = 'padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:' + (cat === 'All' ? 'var(--accent)' : 'var(--glass)') + ';color:' + (cat === 'All' ? '#fff' : 'var(--text)') + ';font-size:13px;cursor:pointer;transition:all 0.2s;';
+    btn.textContent = cat;
+    filterBtns[cat] = btn;
+    btn.addEventListener('click', function() {
+      activeFilter = cat;
+      Object.keys(filterBtns).forEach(function(k) {
+        filterBtns[k].style.background = k === cat ? 'var(--accent)' : 'var(--glass)';
+        filterBtns[k].style.color = k === cat ? '#fff' : 'var(--text)';
+      });
+      renderTable(activeFilter);
+    });
+    filterBar.appendChild(btn);
+  });
+  surfEl.appendChild(filterBar);
+
+  var tableWrap = document.createElement('div');
+  tableWrap.style.cssText = 'background:var(--glass);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px;';
+
+  var table = document.createElement('table');
+  table.style.cssText = 'width:100%;border-collapse:collapse;font-size:13px;';
+
+  var thead = document.createElement('thead');
+  var headerRow = document.createElement('tr');
+  headerRow.style.cssText = 'background:var(--surface);';
+  var cols = ['Part Name', 'SKU', 'Category', 'Stock', 'Min Stock', 'Status', 'Unit Cost', 'Supplier'];
+  cols.forEach(function(c) {
+    var th = document.createElement('th');
+    th.style.cssText = 'padding:10px 14px;text-align:left;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;';
+    th.textContent = c;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  var tbody = document.createElement('tbody');
+  tbody.id = surfId + '-tbody';
+  table.appendChild(tbody);
+  tableWrap.appendChild(table);
+  surfEl.appendChild(tableWrap);
+
+  function renderTable(filter) {
+    tbody.innerHTML = '';
+    var filtered = filter === 'All' ? parts : parts.filter(function(p) { return p.cat === filter; });
+    filtered.forEach(function(p, i) {
+      var tr = document.createElement('tr');
+      tr.style.cssText = 'border-top:1px solid var(--border);background:' + (i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)') + ';transition:background 0.15s;';
+      tr.addEventListener('mouseover', function() { tr.style.background = 'rgba(255,255,255,0.05)'; });
+      tr.addEventListener('mouseout', function() { tr.style.background = i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)'; });
+
+      var statusColor = p.status === 'OK' ? 'var(--good)' : p.status === 'LOW' ? 'var(--warn)' : 'var(--danger)';
+      var statusBg = p.status === 'OK' ? 'rgba(34,197,94,0.12)' : p.status === 'LOW' ? 'rgba(251,191,36,0.12)' : 'rgba(239,68,68,0.12)';
+
+      var cells = [
+        '<span style="font-weight:600;color:var(--text);">' + p.name + '</span>',
+        '<span style="color:var(--muted);font-family:monospace;">' + p.sku + '</span>',
+        p.cat,
+        '<span style="font-weight:600;color:' + (p.stock === 0 ? 'var(--danger)' : p.stock < p.min ? 'var(--warn)' : 'var(--text)') + ';">' + p.stock + '</span>',
+        p.min,
+        '<span style="background:' + statusBg + ';color:' + statusColor + ';border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;">' + p.status + '</span>',
+        p.cost,
+        p.supplier
+      ];
+
+      cells.forEach(function(c) {
+        var td = document.createElement('td');
+        td.style.cssText = 'padding:10px 14px;color:var(--text);white-space:nowrap;';
+        td.innerHTML = c;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+  }
+
+  renderTable('All');
+
+  var alertsHeader = document.createElement('h3');
+  alertsHeader.style.cssText = 'font-size:15px;font-weight:700;color:var(--text);margin:0 0 12px 0;';
+  alertsHeader.textContent = 'Reorder Alerts';
+  surfEl.appendChild(alertsHeader);
+
+  var alertsGrid = document.createElement('div');
+  alertsGrid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;';
+
+  var alertParts = parts.filter(function(p) { return p.status === 'LOW' || p.status === 'OUT'; });
+  alertParts.forEach(function(p) {
+    var card = document.createElement('div');
+    var borderColor = p.status === 'LOW' ? 'var(--warn)' : 'var(--danger)';
+    var bgColor = p.status === 'LOW' ? 'rgba(251,191,36,0.08)' : 'rgba(239,68,68,0.08)';
+    card.style.cssText = 'background:' + bgColor + ';border:1px solid ' + borderColor + ';border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;';
+
+    var info = document.createElement('div');
+    var pName = document.createElement('div');
+    pName.style.cssText = 'font-weight:600;color:var(--text);font-size:13px;';
+    pName.textContent = p.name;
+    var pMeta = document.createElement('div');
+    pMeta.style.cssText = 'font-size:11px;color:var(--muted);margin-top:3px;';
+    pMeta.textContent = p.sku + ' · Stock: ' + p.stock + ' / Min: ' + p.min + ' · ' + p.supplier;
+    info.appendChild(pName);
+    info.appendChild(pMeta);
+
+    var poBtn = document.createElement('button');
+    poBtn.style.cssText = 'background:var(--accent);color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;';
+    poBtn.textContent = 'Create PO';
+    poBtn.addEventListener('click', function() {
+      poBtn.textContent = 'PO Created!';
+      poBtn.style.background = 'var(--good)';
+      setTimeout(function() { poBtn.textContent = 'Create PO'; poBtn.style.background = 'var(--accent)'; }, 2500);
+      if (window.announceToSR) window.announceToSR('Purchase order created for ' + p.name);
+    });
+
+    card.appendChild(info);
+    card.appendChild(poBtn);
+    alertsGrid.appendChild(card);
+  });
+
+  surfEl.appendChild(alertsGrid);
+
+  document.querySelectorAll('.gx-surface').forEach(function(s) { s.style.display = 'none'; });
+  document.getElementById('stage').appendChild(surfEl);
+
+  document.querySelectorAll('.gx-tab').forEach(function(t) { t.classList.remove('active'); });
+  var tab = document.createElement('button');
+  tab.className = 'gx-tab active';
+  tab.innerHTML = '<span class="tt">Inventory</span><span class="stype">PARTS</span>';
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.gx-surface').forEach(function(s) { s.style.display = 'none'; });
+    surfEl.style.display = '';
+    document.querySelectorAll('.gx-tab').forEach(function(t) { t.classList.remove('active'); });
+    tab.classList.add('active');
+  });
+  (document.querySelector('.gx-tabs') || document.getElementById('tabs')).appendChild(tab);
+
+  if (window.announceToSR) window.announceToSR('Parts Inventory surface loaded. ' + parts.length + ' parts shown.');
+}
+
+function renderAnalyticsSurface(query) {
+  var surfId = (window.uid || (function() { return 'v6-' + Math.random().toString(36).slice(2, 9); }))();
+  var surfEl = document.createElement('div');
+  surfEl.className = 'gx-surface';
+  surfEl.id = surfId;
+  surfEl.style.cssText = 'padding:24px;overflow-y:auto;height:100%;box-sizing:border-box;';
+
+  var activeRange = 'Week';
+
+  var header = document.createElement('div');
+  header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;';
+
+  var title = document.createElement('h2');
+  title.style.cssText = 'margin:0;font-size:22px;font-weight:700;color:var(--text);';
+  title.textContent = 'Executive Analytics';
+
+  var rangeRow = document.createElement('div');
+  rangeRow.style.cssText = 'display:flex;gap:6px;';
+
+  var ranges = ['Today', 'Week', 'Month', 'Quarter'];
+  var rangeBtns = {};
+  ranges.forEach(function(r) {
+    var btn = document.createElement('button');
+    btn.style.cssText = 'padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:' + (r === 'Week' ? 'var(--accent)' : 'var(--glass)') + ';color:' + (r === 'Week' ? '#fff' : 'var(--text)') + ';font-size:13px;cursor:pointer;transition:all 0.2s;';
+    btn.textContent = r;
+    rangeBtns[r] = btn;
+    btn.addEventListener('click', function() {
+      activeRange = r;
+      Object.keys(rangeBtns).forEach(function(k) {
+        rangeBtns[k].style.background = k === r ? 'var(--accent)' : 'var(--glass)';
+        rangeBtns[k].style.color = k === r ? '#fff' : 'var(--text)';
+      });
+    });
+    rangeRow.appendChild(btn);
+  });
+
+  header.appendChild(title);
+  header.appendChild(rangeRow);
+  surfEl.appendChild(header);
+
+  var kpiDefs = [
+    { icon: '🚛', value: '42/45', label: 'Active Vehicles', delta: '+2', up: true },
+    { icon: '📍', value: '18,420 km', label: 'Total Distance', delta: '+8%', up: true },
+    { icon: '💶', value: '€142K', label: 'Revenue', delta: '+12%', up: true },
+    { icon: '⛽', value: '€12.8K', label: 'Fuel Cost', delta: '+3%', up: false },
+    { icon: '⏱', value: '94%', label: 'On-Time Rate', delta: '+1.2%', up: true },
+    { icon: '👤', value: '87%', label: 'Driver Utilization', delta: '-2%', up: false },
+    { icon: '🔧', value: '€8.2K', label: 'Maintenance Cost', delta: '-5%', up: true },
+    { icon: '⭐', value: '4.7★', label: 'Customer Satisfaction', delta: '+0.1', up: true }
+  ];
+
+  var kpiGrid = document.createElement('div');
+  kpiGrid.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;';
+
+  kpiDefs.forEach(function(k) {
+    var tile = document.createElement('div');
+    tile.style.cssText = 'background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px;transition:transform 0.15s;cursor:default;';
+    tile.addEventListener('mouseover', function() { tile.style.transform = 'translateY(-2px)'; });
+    tile.addEventListener('mouseout', function() { tile.style.transform = 'translateY(0)'; });
+
+    var iconEl = document.createElement('div');
+    iconEl.style.cssText = 'font-size:20px;line-height:1;';
+    iconEl.textContent = k.icon;
+
+    var valEl = document.createElement('div');
+    valEl.style.cssText = 'font-size:20px;font-weight:800;color:var(--text);line-height:1.1;';
+    valEl.textContent = k.value;
+
+    var lblEl = document.createElement('div');
+    lblEl.style.cssText = 'font-size:11px;color:var(--muted);';
+    lblEl.textContent = k.label;
+
+    var deltaEl = document.createElement('div');
+    var deltaColor = k.up ? 'var(--good)' : 'var(--danger)';
+    var arrow = k.up ? '▲' : '▼';
+    deltaEl.style.cssText = 'font-size:11px;font-weight:600;color:' + deltaColor + ';';
+    deltaEl.textContent = arrow + ' ' + k.delta;
+
+    tile.appendChild(iconEl);
+    tile.appendChild(valEl);
+    tile.appendChild(lblEl);
+    tile.appendChild(deltaEl);
+    kpiGrid.appendChild(tile);
+  });
+
+  surfEl.appendChild(kpiGrid);
+
+  var chartsHeader = document.createElement('h3');
+  chartsHeader.style.cssText = 'font-size:15px;font-weight:700;color:var(--text);margin:0 0 14px 0;';
+  chartsHeader.textContent = 'Trends & Efficiency';
+  surfEl.appendChild(chartsHeader);
+
+  var chartsGrid = document.createElement('div');
+  chartsGrid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;';
+
+  // Chart 1: Revenue trend 7-day bar chart
+  var chart1 = document.createElement('div');
+  chart1.style.cssText = 'background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px;';
+
+  var c1title = document.createElement('div');
+  c1title.style.cssText = 'font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;';
+  c1title.textContent = 'Revenue Trend (7-Day)';
+  chart1.appendChild(c1title);
+
+  var revenueData = [18, 22, 19, 27, 24, 31, 28];
+  var revDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  var maxRev = Math.max.apply(null, revenueData);
+
+  var barChart = document.createElement('div');
+  barChart.style.cssText = 'display:flex;align-items:flex-end;gap:6px;height:80px;';
+
+  revenueData.forEach(function(v, i) {
+    var col = document.createElement('div');
+    col.style.cssText = 'flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;';
+    var bar = document.createElement('div');
+    var pct = Math.round((v / maxRev) * 100);
+    bar.style.cssText = 'width:100%;background:var(--accent);border-radius:4px 4px 0 0;transition:height 0.3s;opacity:' + (i === 6 ? '1' : '0.7') + ';';
+    bar.style.height = pct + '%';
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'font-size:9px;color:var(--muted);white-space:nowrap;';
+    lbl.textContent = revDays[i];
+    col.appendChild(bar);
+    col.appendChild(lbl);
+    barChart.appendChild(col);
+  });
+  chart1.appendChild(barChart);
+  chartsGrid.appendChild(chart1);
+
+  // Chart 2: Fleet utilization circular ring
+  var chart2 = document.createElement('div');
+  chart2.style.cssText = 'background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;align-items:center;';
+
+  var c2title = document.createElement('div');
+  c2title.style.cssText = 'font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;width:100%;';
+  c2title.textContent = 'Fleet Utilization';
+  chart2.appendChild(c2title);
+
+  var ringWrap = document.createElement('div');
+  ringWrap.style.cssText = 'position:relative;width:90px;height:90px;margin:0 auto 10px;';
+
+  var utilPct = 87;
+  var ringDeg = Math.round((utilPct / 100) * 360);
+
+  var outerRing = document.createElement('div');
+  outerRing.style.cssText = 'width:90px;height:90px;border-radius:50%;background:conic-gradient(var(--accent) ' + ringDeg + 'deg, var(--border) ' + ringDeg + 'deg);position:absolute;top:0;left:0;';
+
+  var innerRing = document.createElement('div');
+  innerRing.style.cssText = 'width:62px;height:62px;border-radius:50%;background:var(--surface,#1a1a2e);position:absolute;top:14px;left:14px;display:flex;align-items:center;justify-content:center;';
+
+  var ringVal = document.createElement('div');
+  ringVal.style.cssText = 'font-size:17px;font-weight:800;color:var(--text);';
+  ringVal.textContent = utilPct + '%';
+  innerRing.appendChild(ringVal);
+  ringWrap.appendChild(outerRing);
+  ringWrap.appendChild(innerRing);
+  chart2.appendChild(ringWrap);
+
+  var ringLbl = document.createElement('div');
+  ringLbl.style.cssText = 'font-size:11px;color:var(--muted);text-align:center;';
+  ringLbl.textContent = '42 of 45 vehicles active';
+  chart2.appendChild(ringLbl);
+  chartsGrid.appendChild(chart2);
+
+  // Chart 3: Route efficiency horizontal bars
+  var chart3 = document.createElement('div');
+  chart3.style.cssText = 'background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px;';
+
+  var c3title = document.createElement('div');
+  c3title.style.cssText = 'font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;';
+  c3title.textContent = 'Top Route Efficiency';
+  chart3.appendChild(c3title);
+
+  var routes = [
+    { name: 'ATH → THS', pct: 96 },
+    { name: 'ATH → PAT', pct: 91 },
+    { name: 'THS → KAV', pct: 88 },
+    { name: 'ATH → LAR', pct: 82 },
+    { name: 'KAV → ALX', pct: 76 }
+  ];
+
+  var routeBars = document.createElement('div');
+  routeBars.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
+
+  routes.forEach(function(r) {
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;';
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'font-size:11px;color:var(--muted);width:80px;flex-shrink:0;';
+    lbl.textContent = r.name;
+    var track = document.createElement('div');
+    track.style.cssText = 'flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;';
+    var fill = document.createElement('div');
+    var barColor = r.pct >= 90 ? 'var(--good)' : r.pct >= 80 ? 'var(--warn)' : 'var(--danger)';
+    fill.style.cssText = 'height:100%;background:' + barColor + ';border-radius:4px;width:' + r.pct + '%;';
+    track.appendChild(fill);
+    var val = document.createElement('div');
+    val.style.cssText = 'font-size:11px;font-weight:600;color:var(--text);width:32px;text-align:right;flex-shrink:0;';
+    val.textContent = r.pct + '%';
+    row.appendChild(lbl);
+    row.appendChild(track);
+    row.appendChild(val);
+    routeBars.appendChild(row);
+  });
+
+  chart3.appendChild(routeBars);
+  chartsGrid.appendChild(chart3);
+
+  surfEl.appendChild(chartsGrid);
+
+  var footer = document.createElement('div');
+  footer.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--glass);border:1px solid var(--border);border-radius:10px;flex-wrap:wrap;gap:10px;';
+
+  var now = new Date();
+  var ts = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  var tsEl = document.createElement('div');
+  tsEl.style.cssText = 'font-size:12px;color:var(--muted);';
+  tsEl.textContent = 'Last updated: ' + ts;
+
+  var exportBtn = document.createElement('button');
+  exportBtn.style.cssText = 'background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;';
+  exportBtn.textContent = 'Export Report';
+  exportBtn.addEventListener('click', function() {
+    exportBtn.textContent = 'Exporting…';
+    exportBtn.style.opacity = '0.7';
+    setTimeout(function() {
+      exportBtn.textContent = 'Export Report';
+      exportBtn.style.opacity = '1';
+      if (window.announceToSR) window.announceToSR('Report export initiated.');
+    }, 1800);
+  });
+
+  footer.appendChild(tsEl);
+  footer.appendChild(exportBtn);
+  surfEl.appendChild(footer);
+
+  document.querySelectorAll('.gx-surface').forEach(function(s) { s.style.display = 'none'; });
+  document.getElementById('stage').appendChild(surfEl);
+
+  document.querySelectorAll('.gx-tab').forEach(function(t) { t.classList.remove('active'); });
+  var tab = document.createElement('button');
+  tab.className = 'gx-tab active';
+  tab.innerHTML = '<span class="tt">Analytics</span><span class="stype">KPI</span>';
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.gx-surface').forEach(function(s) { s.style.display = 'none'; });
+    surfEl.style.display = '';
+    document.querySelectorAll('.gx-tab').forEach(function(t) { t.classList.remove('active'); });
+    tab.classList.add('active');
+  });
+  (document.querySelector('.gx-tabs') || document.getElementById('tabs')).appendChild(tab);
+
+  if (window.announceToSR) window.announceToSR('Executive Analytics surface loaded.');
+}
+
+function initCommandHistoryPanel() {
+  const STORAGE_KEY = 'adaptiveai_history_v1';
+
+  // --- Helper: load history from localStorage ---
+  function loadHistory() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // --- Helper: format timestamp ---
+  function formatTs(ts) {
+    if (!ts) return '';
+    const d = new Date(ts);
+    const now = new Date();
+    const diff = now - d;
+    if (diff < 60000) return 'Just now';
+    if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+    if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+    if (diff < 604800000) return Math.floor(diff / 86400000) + 'd ago';
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+
+  // --- 1. Add History button to topbar ---
+  const histBtn = document.createElement('button');
+  histBtn.id = 'histBtn';
+  histBtn.title = 'Command History (H)';
+  histBtn.style.cssText = [
+    'display:inline-flex',
+    'align-items:center',
+    'gap:5px',
+    'padding:5px 10px',
+    'background:var(--glass)',
+    'border:1px solid var(--border)',
+    'border-radius:6px',
+    'color:var(--text)',
+    'font-size:13px',
+    'cursor:pointer',
+    'white-space:nowrap',
+  ].join(';');
+  histBtn.innerHTML = '<span style="font-size:15px;line-height:1">🕐</span><span>History</span>';
+
+  const topbarActions = document.querySelector('.topbar-actions') || document.querySelector('.topbar') || document.querySelector('#topbar');
+  if (topbarActions) {
+    topbarActions.appendChild(histBtn);
+  } else {
+    // Fallback: prepend to body so it's always present
+    histBtn.style.cssText += ';position:fixed;top:10px;right:10px;z-index:600';
+    document.body.appendChild(histBtn);
+  }
+
+  // --- 2. Create slide-in panel ---
+  const panel = document.createElement('div');
+  panel.id = 'historyPanel';
+  panel.setAttribute('data-open', 'false');
+  panel.style.cssText = [
+    'position:fixed',
+    'right:0',
+    'top:0',
+    'height:100vh',
+    'width:340px',
+    'background:var(--surface)',
+    'border-left:1px solid var(--border)',
+    'z-index:500',
+    'transform:translateX(100%)',
+    'transition:transform 0.25s ease',
+    'display:flex',
+    'flex-direction:column',
+    'overflow:hidden',
+  ].join(';');
+
+  // Panel header
+  const header = document.createElement('div');
+  header.style.cssText = [
+    'display:flex',
+    'align-items:center',
+    'justify-content:space-between',
+    'padding:14px 16px',
+    'border-bottom:1px solid var(--border)',
+    'flex-shrink:0',
+  ].join(';');
+
+  const title = document.createElement('span');
+  title.textContent = 'Command History';
+  title.style.cssText = 'font-size:15px;font-weight:600;color:var(--text)';
+
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '×';
+  closeBtn.setAttribute('aria-label', 'Close history panel');
+  closeBtn.style.cssText = [
+    'background:none',
+    'border:none',
+    'color:var(--muted)',
+    'font-size:22px',
+    'line-height:1',
+    'cursor:pointer',
+    'padding:0 2px',
+  ].join(';');
+
+  header.appendChild(title);
+  header.appendChild(closeBtn);
+
+  // Search input
+  const searchWrap = document.createElement('div');
+  searchWrap.style.cssText = 'padding:10px 16px;flex-shrink:0;border-bottom:1px solid var(--border)';
+
+  const searchInput = document.createElement('input');
+  searchInput.id = 'histSearch';
+  searchInput.type = 'text';
+  searchInput.placeholder = 'Search history…';
+  searchInput.setAttribute('autocomplete', 'off');
+  searchInput.style.cssText = [
+    'width:100%',
+    'box-sizing:border-box',
+    'padding:7px 10px',
+    'border-radius:6px',
+    'border:1px solid var(--border)',
+    'background:var(--glass)',
+    'color:var(--text)',
+    'font-size:13px',
+    'outline:none',
+  ].join(';');
+  searchWrap.appendChild(searchInput);
+
+  // Scrollable list container
+  const listWrap = document.createElement('div');
+  listWrap.id = 'histList';
+  listWrap.style.cssText = [
+    'flex:1',
+    'overflow-y:auto',
+    'padding:10px 12px',
+    'display:flex',
+    'flex-direction:column',
+    'gap:6px',
+  ].join(';');
+
+  // Footer with Clear button
+  const footer = document.createElement('div');
+  footer.style.cssText = [
+    'padding:10px 16px',
+    'border-top:1px solid var(--border)',
+    'flex-shrink:0',
+  ].join(';');
+
+  const clearBtn = document.createElement('button');
+  clearBtn.textContent = 'Clear History';
+  clearBtn.style.cssText = [
+    'width:100%',
+    'padding:7px 0',
+    'border-radius:6px',
+    'border:1px solid var(--border)',
+    'background:var(--glass)',
+    'color:var(--danger)',
+    'font-size:13px',
+    'cursor:pointer',
+  ].join(';');
+  footer.appendChild(clearBtn);
+
+  // Assemble panel
+  panel.appendChild(header);
+  panel.appendChild(searchWrap);
+  panel.appendChild(listWrap);
+  panel.appendChild(footer);
+  document.body.appendChild(panel);
+
+  // --- 3. Render history items ---
+  function renderHistory(filter) {
+    const history = loadHistory();
+    listWrap.innerHTML = '';
+
+    const query = (filter || '').trim().toLowerCase();
+    const items = query
+      ? history.filter(function(item) { return item.query && item.query.toLowerCase().includes(query); })
+      : history;
+
+    if (!items.length) {
+      const empty = document.createElement('div');
+      empty.style.cssText = [
+        'color:var(--muted)',
+        'font-size:13px',
+        'text-align:center',
+        'padding:32px 16px',
+        'line-height:1.5',
+      ].join(';');
+      empty.textContent = query
+        ? 'No matching history items.'
+        : 'No history yet \u2014 try asking about your fleet';
+      listWrap.appendChild(empty);
+      return;
+    }
+
+    // Show newest first
+    const sorted = items.slice().reverse();
+    sorted.forEach(function(item) {
+      const card = document.createElement('div');
+      card.style.cssText = [
+        'display:flex',
+        'align-items:center',
+        'gap:8px',
+        'padding:9px 10px',
+        'border-radius:7px',
+        'border:1px solid var(--border)',
+        'background:var(--glass)',
+        'cursor:pointer',
+        'transition:border-color 0.15s',
+      ].join(';');
+
+      const textCol = document.createElement('div');
+      textCol.style.cssText = 'flex:1;min-width:0';
+
+      const queryText = document.createElement('div');
+      queryText.textContent = item.query || '';
+      queryText.style.cssText = [
+        'font-size:13px',
+        'color:var(--text)',
+        'white-space:nowrap',
+        'overflow:hidden',
+        'text-overflow:ellipsis',
+      ].join(';');
+
+      const tsText = document.createElement('div');
+      tsText.textContent = formatTs(item.ts);
+      tsText.style.cssText = 'font-size:11px;color:var(--muted);margin-top:2px';
+
+      textCol.appendChild(queryText);
+      textCol.appendChild(tsText);
+
+      const replayBtn = document.createElement('button');
+      replayBtn.textContent = '▶';
+      replayBtn.title = 'Replay';
+      replayBtn.style.cssText = [
+        'flex-shrink:0',
+        'background:none',
+        'border:none',
+        'color:var(--accent)',
+        'font-size:13px',
+        'cursor:pointer',
+        'padding:2px 4px',
+        'border-radius:4px',
+      ].join(';');
+
+      card.appendChild(textCol);
+      card.appendChild(replayBtn);
+
+      function replay(e) {
+        e.stopPropagation();
+        closePanel();
+        if (typeof window.generateSurface === 'function') {
+          window.generateSurface(item.query);
+        }
+      }
+
+      replayBtn.addEventListener('click', replay);
+      card.addEventListener('click', function() {
+        closePanel();
+        if (typeof window.generateSurface === 'function') {
+          window.generateSurface(item.query);
+        }
+      });
+
+      card.addEventListener('mouseenter', function() {
+        card.style.borderColor = 'var(--accent)';
+      });
+      card.addEventListener('mouseleave', function() {
+        card.style.borderColor = 'var(--border)';
+      });
+
+      listWrap.appendChild(card);
+    });
+  }
+
+  // --- 4. Toggle panel open/close ---
+  function openPanel() {
+    panel.setAttribute('data-open', 'true');
+    panel.style.transform = 'translateX(0)';
+    searchInput.value = '';
+    renderHistory('');
+    setTimeout(function() { searchInput.focus(); }, 50);
+    if (typeof window.announceToSR === 'function') {
+      window.announceToSR('Command history panel opened');
+    }
+  }
+
+  function closePanel() {
+    panel.setAttribute('data-open', 'false');
+    panel.style.transform = 'translateX(100%)';
+  }
+
+  function togglePanel() {
+    if (panel.getAttribute('data-open') === 'true') {
+      closePanel();
+    } else {
+      openPanel();
+    }
+  }
+
+  histBtn.addEventListener('click', togglePanel);
+  closeBtn.addEventListener('click', closePanel);
+
+  // H key toggles panel (only when not typing in an input)
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'h' || e.key === 'H') {
+      const tag = document.activeElement && document.activeElement.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (document.activeElement && document.activeElement.isContentEditable) return;
+      e.preventDefault();
+      togglePanel();
+    }
+    // Escape closes panel
+    if (e.key === 'Escape' && panel.getAttribute('data-open') === 'true') {
+      closePanel();
+    }
+  });
+
+  // 5. Search filtering
+  searchInput.addEventListener('input', function() {
+    renderHistory(searchInput.value);
+  });
+
+  // 6. Clear history
+  clearBtn.addEventListener('click', function() {
+    localStorage.removeItem(STORAGE_KEY);
+    renderHistory(searchInput.value);
+    if (typeof window.announceToSR === 'function') {
+      window.announceToSR('Command history cleared');
+    }
+  });
+}
+
+
+function initSmartNotifications() {
+  // --- Constants & State ---
+  const STACK_MAX = 3;
+  const AUTO_DISMISS_MS = 8000;
+  let unreadCount = 0;
+  const activeToasts = [];
+
+  // --- CSS injection ---
+  if (!document.getElementById('snStyle')) {
+    const style = document.createElement('style');
+    style.id = 'snStyle';
+    style.textContent = `
+      #smartNotifStack {
+        position: fixed;
+        bottom: 80px;
+        right: 16px;
+        z-index: 800;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 320px;
+        pointer-events: none;
+      }
+      .sn-toast {
+        background: var(--surface, #1e1e2e);
+        border: 1px solid var(--border, rgba(255,255,255,0.12));
+        border-radius: 12px;
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+        pointer-events: all;
+        animation: snSlideIn 0.28s cubic-bezier(0.34,1.56,0.64,1) forwards;
+        position: relative;
+        overflow: hidden;
+      }
+      .sn-toast::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 3px;
+        border-radius: 12px 0 0 12px;
+      }
+      .sn-toast.type-fuel::before   { background: var(--warn, #f59e0b); }
+      .sn-toast.type-geo::before    { background: var(--danger, #ef4444); }
+      .sn-toast.type-driver::before { background: var(--accent, #6366f1); }
+      .sn-toast.type-maint::before  { background: var(--good, #10b981); }
+      .sn-toast.type-info::before   { background: var(--muted, #64748b); }
+      .sn-toast-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sn-icon {
+        font-size: 16px;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+      .sn-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text, #f1f5f9);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        flex: 1;
+      }
+      .sn-time {
+        font-size: 10px;
+        color: var(--muted, #64748b);
+        white-space: nowrap;
+      }
+      .sn-dismiss {
+        background: none;
+        border: none;
+        color: var(--muted, #64748b);
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 1;
+        padding: 0 0 0 4px;
+        flex-shrink: 0;
+        transition: color 0.15s;
+      }
+      .sn-dismiss:hover { color: var(--text, #f1f5f9); }
+      .sn-message {
+        font-size: 12px;
+        color: var(--muted, #94a3b8);
+        line-height: 1.4;
+        padding-left: 24px;
+      }
+      .sn-action {
+        align-self: flex-start;
+        margin-left: 24px;
+        margin-top: 2px;
+        background: none;
+        border: 1px solid var(--border, rgba(255,255,255,0.12));
+        border-radius: 6px;
+        color: var(--accent, #6366f1);
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 10px;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s;
+      }
+      .sn-action:hover {
+        background: var(--accent, #6366f1);
+        color: #fff;
+      }
+      .sn-toast.sn-leaving {
+        animation: snSlideOut 0.22s ease-in forwards;
+      }
+      @keyframes snSlideIn {
+        from { opacity: 0; transform: translateX(40px) scale(0.95); }
+        to   { opacity: 1; transform: translateX(0) scale(1); }
+      }
+      @keyframes snSlideOut {
+        from { opacity: 1; transform: translateX(0) scale(1); }
+        to   { opacity: 0; transform: translateX(40px) scale(0.95); }
+      }
+      .sn-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: var(--danger, #ef4444);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        border-radius: 999px;
+        min-width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 4px;
+        line-height: 1;
+        pointer-events: none;
+        transition: transform 0.15s;
+      }
+      .sn-badge.hidden { display: none; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // --- Stack container ---
+  let stack = document.getElementById('smartNotifStack');
+  if (!stack) {
+    stack = document.createElement('div');
+    stack.id = 'smartNotifStack';
+    document.body.appendChild(stack);
+  }
+
+  // --- Badge helpers ---
+  function getBell() {
+    return document.getElementById('notifBell') || document.querySelector('.notif-btn');
+  }
+
+  function ensureBadge(bell) {
+    if (!bell) return null;
+    let badge = bell.querySelector('.sn-badge');
+    if (!badge) {
+      const s = bell.style.position;
+      if (!s || s === 'static') bell.style.position = 'relative';
+      badge = document.createElement('span');
+      badge.className = 'sn-badge hidden';
+      bell.appendChild(badge);
+    }
+    return badge;
+  }
+
+  function updateBadge() {
+    const bell = getBell();
+    const badge = ensureBadge(bell);
+    if (!badge) return;
+    if (unreadCount <= 0) {
+      badge.classList.add('hidden');
+    } else {
+      badge.textContent = unreadCount > 99 ? '99+' : String(unreadCount);
+      badge.classList.remove('hidden');
+    }
+  }
+
+  // --- Bell click: reset badge ---
+  (function attachBellReset() {
+    const bell = getBell();
+    if (!bell) return;
+    bell.addEventListener('click', function () {
+      unreadCount = 0;
+      updateBadge();
+    });
+  })();
+
+  // --- Toast dismiss logic ---
+  function removeToast(toastEl, timerId) {
+    clearTimeout(timerId);
+    const idx = activeToasts.indexOf(toastEl);
+    if (idx !== -1) activeToasts.splice(idx, 1);
+    toastEl.classList.add('sn-leaving');
+    toastEl.addEventListener('animationend', function handler() {
+      toastEl.removeEventListener('animationend', handler);
+      if (toastEl.parentNode) toastEl.parentNode.removeChild(toastEl);
+    }, { once: true });
+  }
+
+  // --- Show toast ---
+  function showSmartNotif(opts) {
+    // opts: { type, icon, title, message, actionLabel, actionQuery, timeLabel }
+    // type: 'fuel' | 'geo' | 'driver' | 'maint' | 'info'
+
+    // Evict oldest if at cap
+    while (activeToasts.length >= STACK_MAX) {
+      const oldest = activeToasts[0];
+      if (oldest && oldest._timerId !== undefined) {
+        removeToast(oldest, oldest._timerId);
+      } else {
+        break;
+      }
+    }
+
+    const toast = document.createElement('div');
+    toast.className = 'sn-toast type-' + (opts.type || 'info');
+
+    const header = document.createElement('div');
+    header.className = 'sn-toast-header';
+
+    const icon = document.createElement('span');
+    icon.className = 'sn-icon';
+    icon.textContent = opts.icon || 'ℹ️';
+
+    const title = document.createElement('span');
+    title.className = 'sn-title';
+    title.textContent = opts.title || 'Notification';
+
+    const time = document.createElement('span');
+    time.className = 'sn-time';
+    time.textContent = opts.timeLabel || 'just now';
+
+    const dismissBtn = document.createElement('button');
+    dismissBtn.className = 'sn-dismiss';
+    dismissBtn.innerHTML = '&#x2715;';
+    dismissBtn.setAttribute('aria-label', 'Dismiss notification');
+
+    header.appendChild(icon);
+    header.appendChild(title);
+    header.appendChild(time);
+    header.appendChild(dismissBtn);
+
+    const msg = document.createElement('div');
+    msg.className = 'sn-message';
+    msg.textContent = opts.message || '';
+
+    toast.appendChild(header);
+    toast.appendChild(msg);
+
+    if (opts.actionLabel && opts.actionQuery) {
+      const actionBtn = document.createElement('button');
+      actionBtn.className = 'sn-action';
+      actionBtn.textContent = opts.actionLabel;
+      actionBtn.addEventListener('click', function () {
+        removeToast(toast, toast._timerId);
+        // Route via existing surface generation if available
+        if (typeof window.generateSurface === 'function') {
+          window.generateSurface(opts.actionQuery);
+        } else {
+          // Fallback: simulate keyword in search/input field
+          const inp = document.querySelector('input[type="text"], .gx-input, #searchInput, input');
+          if (inp) {
+            inp.value = opts.actionQuery;
+            inp.dispatchEvent(new Event('input', { bubbles: true }));
+            const form = inp.closest('form');
+            if (form) form.dispatchEvent(new Event('submit', { bubbles: true }));
+          }
+        }
+      });
+      toast.appendChild(actionBtn);
+    }
+
+    const timerId = setTimeout(function () {
+      removeToast(toast, timerId);
+    }, AUTO_DISMISS_MS);
+
+    toast._timerId = timerId;
+
+    dismissBtn.addEventListener('click', function () {
+      removeToast(toast, timerId);
+    });
+
+    activeToasts.push(toast);
+    stack.appendChild(toast);
+
+    unreadCount++;
+    updateBadge();
+
+    if (typeof window.announceToSR === 'function') {
+      window.announceToSR(opts.title + ': ' + opts.message);
+    }
+  }
+
+  // --- Notification type builders ---
+  const NOTIF_TYPES = {
+    fuelLow: function (data) {
+      const vehicle = (data && data.vehicleId) || 'VH-031';
+      const level = (data && data.fuelLevel != null) ? data.fuelLevel : 12;
+      showSmartNotif({
+        type: 'fuel',
+        icon: '⛽',
+        title: 'Fuel Alert',
+        message: vehicle + ' fuel level critical (' + level + '%)',
+        actionLabel: 'View Fuel Surface',
+        actionQuery: 'fuel',
+        timeLabel: 'just now'
+      });
+    },
+    geofence: function (data) {
+      const vehicle = (data && data.vehicleId) || 'VH-018';
+      const zone = (data && data.zone) || 'restricted zone';
+      showSmartNotif({
+        type: 'geo',
+        icon: '📍',
+        title: 'Geofence Breach',
+        message: vehicle + ' entered ' + zone,
+        actionLabel: 'View Geofencing',
+        actionQuery: 'geofence',
+        timeLabel: 'just now'
+      });
+    },
+    maintenance: function (data) {
+      const vehicle = (data && data.vehicleId) || 'VH-007';
+      const overdue = (data && data.overdueKm) || '420km';
+      showSmartNotif({
+        type: 'maint',
+        icon: '🔧',
+        title: 'Maintenance Due',
+        message: vehicle + ' maintenance overdue ' + overdue,
+        actionLabel: 'View Maintenance',
+        actionQuery: 'maintenance',
+        timeLabel: 'just now'
+      });
+    },
+    driverAlert: function (data) {
+      const driver = (data && data.driver) || 'K. Papadopoulos';
+      const reason = (data && data.reason) || 'overtime 45min';
+      showSmartNotif({
+        type: 'driver',
+        icon: '👤',
+        title: 'Driver Alert',
+        message: 'Driver ' + driver + ' ' + reason,
+        actionLabel: 'View Drivers',
+        actionQuery: 'driver',
+        timeLabel: 'just now'
+      });
+    }
+  };
+
+  // --- Fleet socket listener ---
+  window.addEventListener('fleet:telemetry', function (e) {
+    const d = (e && e.detail) || {};
+    const alertType = d.alertType || d.alert || d.type;
+    if (!alertType) return;
+    const lower = String(alertType).toLowerCase();
+
+    if (/fuel.?low|fuel.?critical|low.?fuel/.test(lower)) {
+      NOTIF_TYPES.fuelLow(d);
+    } else if (/geo.?fenc|fence|restricted|zone.?breach|breach/.test(lower)) {
+      NOTIF_TYPES.geofence(d);
+    } else if (/maint|service|overdue/.test(lower)) {
+      NOTIF_TYPES.maintenance(d);
+    } else if (/driver|overtime|operator/.test(lower)) {
+      NOTIF_TYPES.driverAlert(d);
+    }
+  });
+
+  // --- Startup notifications (staggered) ---
+  const startupNotifs = [
+    {
+      delay: 200,
+      opts: {
+        type: 'maint',
+        icon: '🔧',
+        title: 'Maintenance Due',
+        message: 'VH-003 maintenance overdue',
+        actionLabel: 'View Maintenance',
+        actionQuery: 'maintenance',
+        timeLabel: '2h ago'
+      }
+    },
+    {
+      delay: 600,
+      opts: {
+        type: 'info',
+        icon: '✅',
+        title: 'Route Completed',
+        message: 'Route ATH-001 completed on time',
+        actionLabel: 'View Trips',
+        actionQuery: 'trip',
+        timeLabel: '45m ago'
+      }
+    },
+    {
+      delay: 1100,
+      opts: {
+        type: 'driver',
+        icon: '💼',
+        title: 'New Client Inquiry',
+        message: 'New client inquiry: Sunrise Retail Group',
+        actionLabel: 'View Clients',
+        actionQuery: 'client',
+        timeLabel: '12m ago'
+      }
+    }
+  ];
+
+  startupNotifs.forEach(function (sn) {
+    setTimeout(function () {
+      showSmartNotif(sn.opts);
+    }, sn.delay);
+  });
+
+  // --- Expose API for external use ---
+  window.smartNotifications = {
+    show: showSmartNotif,
+    fuelAlert: NOTIF_TYPES.fuelLow,
+    geofenceAlert: NOTIF_TYPES.geofence,
+    maintenanceAlert: NOTIF_TYPES.maintenance,
+    driverAlert: NOTIF_TYPES.driverAlert,
+    getUnreadCount: function () { return unreadCount; },
+    resetBadge: function () { unreadCount = 0; updateBadge(); }
+  };
+}
+
+function initRealTimeKPIs() {
+  // KPI state
+  var kpiState = {
+    activeVehicles: 42,
+    totalVehicles: 45,
+    fleetDistance: 18420,
+    revenueToday: 8240,
+    fuelConsumed: 1840,
+    onTimeRate: 94,
+    alerts: 3
+  };
+
+  // Create KPI bar
+  var kpiBar = document.getElementById('kpiBar');
+  if (kpiBar) kpiBar.remove();
+  kpiBar = document.createElement('div');
+  kpiBar.id = 'kpiBar';
+  kpiBar.style.cssText = [
+    'position:sticky',
+    'top:0',
+    'background:var(--glass)',
+    'border-bottom:1px solid var(--border)',
+    'padding:8px 20px',
+    'display:flex',
+    'gap:24px',
+    'overflow-x:auto',
+    'z-index:10',
+    'align-items:center',
+    'flex-shrink:0',
+    '-webkit-overflow-scrolling:touch',
+    'scrollbar-width:none'
+  ].join(';');
+
+  // Inject pulse keyframe if not already present
+  if (!document.getElementById('kpi-styles')) {
+    var styleEl = document.createElement('style');
+    styleEl.id = 'kpi-styles';
+    styleEl.textContent = [
+      '@keyframes kpiPulse {',
+      '  0%   { background: transparent; }',
+      '  30%  { background: var(--accent); }',
+      '  100% { background: transparent; }',
+      '}',
+      '#kpiBar::-webkit-scrollbar { display: none; }',
+      '.kpi-tile {',
+      '  display:flex; flex-direction:column; align-items:flex-start;',
+      '  min-width:90px; padding:4px 8px; border-radius:8px;',
+      '  transition: background 0.6s ease; flex-shrink:0; cursor:default;',
+      '}',
+      '.kpi-tile.flash {',
+      '  animation: kpiPulse 0.8s ease forwards;',
+      '}',
+      '.kpi-label {',
+      '  color:var(--muted); font-size:10px; line-height:1.2;',
+      '  white-space:nowrap; user-select:none;',
+      '}',
+      '.kpi-value {',
+      '  color:var(--text); font-size:14px; font-weight:700;',
+      '  line-height:1.4; white-space:nowrap;',
+      '}'
+    ].join('\n');
+    document.head.appendChild(styleEl);
+  }
+
+  // KPI tile definitions
+  var tiles = [
+    { id: 'kpi-active',    label: 'Active Vehicles', icon: '🚗',  key: 'activeVehicles',  format: function(s) { return s.activeVehicles + '/' + s.totalVehicles; } },
+    { id: 'kpi-distance',  label: 'Fleet Distance',  icon: '📍', key: 'fleetDistance',   format: function(s) { return s.fleetDistance.toLocaleString() + ' km'; } },
+    { id: 'kpi-revenue',   label: 'Revenue Today',   icon: '💰', key: 'revenueToday',    format: function(s) { return '€' + s.revenueToday.toLocaleString(); } },
+    { id: 'kpi-fuel',      label: 'Fuel Consumed',   icon: '⛽', key: 'fuelConsumed',    format: function(s) { return s.fuelConsumed.toLocaleString() + ' L'; } },
+    { id: 'kpi-ontime',    label: 'On-Time Rate',    icon: '✅', key: 'onTimeRate',      format: function(s) { return s.onTimeRate + '%'; } },
+    { id: 'kpi-alerts',    label: 'Alerts',          icon: '🔔', key: 'alerts',          format: function(s) { return String(s.alerts); } }
+  ];
+
+  // Build tiles
+  tiles.forEach(function(tile) {
+    var tileEl = document.createElement('div');
+    tileEl.className = 'kpi-tile';
+    tileEl.id = tile.id;
+
+    var labelEl = document.createElement('span');
+    labelEl.className = 'kpi-label';
+    labelEl.textContent = tile.label;
+
+    var valueEl = document.createElement('span');
+    valueEl.className = 'kpi-value';
+    valueEl.id = tile.id + '-val';
+    valueEl.textContent = tile.format(kpiState) + ' ' + tile.icon;
+
+    tileEl.appendChild(labelEl);
+    tileEl.appendChild(valueEl);
+    kpiBar.appendChild(tileEl);
+  });
+
+  // Prepend to #stage
+  var stage = document.getElementById('stage');
+  if (stage) {
+    stage.insertBefore(kpiBar, stage.firstChild);
+  }
+
+  // Helper: flash a tile
+  function flashTile(tileId) {
+    var el = document.getElementById(tileId);
+    if (!el) return;
+    el.classList.remove('flash');
+    void el.offsetWidth; // reflow to restart animation
+    el.classList.add('flash');
+    el.addEventListener('animationend', function handler() {
+      el.classList.remove('flash');
+      el.removeEventListener('animationend', handler);
+    });
+  }
+
+  // Helper: random int between min and max inclusive
+  function rnd(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  // Update function
+  function updateKPIs() {
+    var prev = JSON.parse(JSON.stringify(kpiState));
+    var changed = [];
+
+    // Active Vehicles ±1 (clamp 0–totalVehicles)
+    var avDelta = rnd(-1, 1);
+    kpiState.activeVehicles = Math.max(0, Math.min(kpiState.totalVehicles, kpiState.activeVehicles + avDelta));
+    if (kpiState.activeVehicles !== prev.activeVehicles) changed.push('kpi-active');
+
+    // Distance +10–50
+    kpiState.fleetDistance += rnd(10, 50);
+    changed.push('kpi-distance');
+
+    // Revenue +20–120
+    kpiState.revenueToday += rnd(20, 120);
+    changed.push('kpi-revenue');
+
+    // Fuel +2–8
+    kpiState.fuelConsumed += rnd(2, 8);
+    changed.push('kpi-fuel');
+
+    // On-Time Rate: small drift ±1, clamp 80–100
+    var otDelta = rnd(-1, 1);
+    kpiState.onTimeRate = Math.max(80, Math.min(100, kpiState.onTimeRate + otDelta));
+    if (kpiState.onTimeRate !== prev.onTimeRate) changed.push('kpi-ontime');
+
+    // Alerts: random 0–5
+    kpiState.alerts = rnd(0, 5);
+    if (kpiState.alerts !== prev.alerts) changed.push('kpi-alerts');
+
+    // Update DOM and flash changed tiles
+    tiles.forEach(function(tile) {
+      var valEl = document.getElementById(tile.id + '-val');
+      if (valEl) {
+        valEl.textContent = tile.format(kpiState) + ' ' + tile.icon;
+      }
+      if (changed.indexOf(tile.id) !== -1) {
+        flashTile(tile.id);
+      }
+    });
+
+    // Dispatch custom event
+    var event;
+    try {
+      event = new CustomEvent('kpi:updated', { detail: JSON.parse(JSON.stringify(kpiState)), bubbles: true });
+    } catch(e) {
+      event = document.createEvent('CustomEvent');
+      event.initCustomEvent('kpi:updated', true, false, JSON.parse(JSON.stringify(kpiState)));
+    }
+    window.dispatchEvent(event);
+
+    // Update fleetSocket telemetry if available
+    if (window.fleetSocket && typeof window.fleetSocket._injectKPI === 'function') {
+      window.fleetSocket._injectKPI(kpiState);
+    } else if (window.fleetSocket) {
+      window.fleetSocket._lastKPI = JSON.parse(JSON.stringify(kpiState));
+    }
+
+    // Announce to screen readers (only if alerts changed)
+    if (kpiState.alerts !== prev.alerts && typeof window.announceToSR === 'function') {
+      window.announceToSR('Fleet alerts updated: ' + kpiState.alerts + ' active alert' + (kpiState.alerts !== 1 ? 's' : ''));
+    }
+  }
+
+  // Kick off periodic updates
+  var kpiInterval = setInterval(updateKPIs, 12000);
+
+  // Store interval handle for cleanup
+  window._kpiBarInterval = kpiInterval;
+
+  // Expose state accessor
+  window.getKPIState = function() { return JSON.parse(JSON.stringify(kpiState)); };
+
+  // Patch fleetSocket to emit kpi data in telemetry messages
+  if (window.fleetSocket) {
+    var origSend = window.fleetSocket.send ? window.fleetSocket.send.bind(window.fleetSocket) : null;
+    if (origSend && !window.fleetSocket._kpiPatched) {
+      window.fleetSocket._kpiPatched = true;
+      window.fleetSocket.send = function(data) {
+        var payload;
+        try {
+          payload = typeof data === 'string' ? JSON.parse(data) : data;
+        } catch(e) {
+          payload = { raw: data };
+        }
+        if (payload && payload.type === 'telemetry') {
+          payload.kpi = JSON.parse(JSON.stringify(kpiState));
+          data = JSON.stringify(payload);
+        }
+        return origSend(data);
+      };
+
+      // Intercept incoming messages to inject kpi into telemetry events
+      var origOnMessage = window.fleetSocket.onmessage;
+      window.fleetSocket._injectKPI = function(newKPI) {
+        if (window.fleetSocket.onmessage) {
+          var syntheticEvent = {
+            data: JSON.stringify({ type: 'telemetry', kpi: newKPI, ts: Date.now() }),
+            isTrusted: false
+          };
+          try { window.fleetSocket.onmessage(syntheticEvent); } catch(e) {}
+        }
+      };
+    }
+  }
+}
+
+function initSurfacePinning() {
+  const PINNED_KEY = 'adaptiveai_pinned_v1';
+
+  function getPinned() {
+    try { return JSON.parse(localStorage.getItem(PINNED_KEY) || '[]'); } catch(e) { return []; }
+  }
+
+  function setPinned(arr) {
+    localStorage.setItem(PINNED_KEY, JSON.stringify(arr));
+  }
+
+  function getSurfaceTitle(surfEl) {
+    const sh = surfEl.querySelector('.gx-sh') || surfEl.firstElementChild;
+    if (!sh) return surfEl.id;
+    const h = sh.querySelector('h1,h2,h3,h4,span,strong');
+    return h ? h.textContent.trim() : sh.textContent.trim().slice(0, 40);
+  }
+
+  function getSurfaceQuery(surfEl) {
+    return surfEl.dataset.query || surfEl.id;
+  }
+
+  function isSurfacePinned(surfId) {
+    return getPinned().some(p => p.surfId === surfId);
+  }
+
+  function pinSurface(surfId, query, title) {
+    const arr = getPinned().filter(p => p.surfId !== surfId);
+    arr.push({ surfId, query, title });
+    setPinned(arr);
+  }
+
+  function unpinSurface(surfId) {
+    setPinned(getPinned().filter(p => p.surfId !== surfId));
+  }
+
+  function updateTabPinIndicator(tab, pinned) {
+    let ind = tab.querySelector('.gx-pin-ind');
+    if (pinned) {
+      if (!ind) {
+        ind = document.createElement('span');
+        ind.className = 'gx-pin-ind';
+        ind.textContent = '📌';
+        ind.style.cssText = 'font-size:10px;margin-left:4px;opacity:0.8;vertical-align:middle;';
+        tab.appendChild(ind);
+      }
+      tab.style.borderBottom = '2px solid var(--accent)';
+    } else {
+      if (ind) ind.remove();
+      tab.style.borderBottom = '';
+    }
+  }
+
+  function findTabForSurface(surfId) {
+    const tabs = document.querySelectorAll('.gx-tab');
+    for (const tab of tabs) {
+      if (tab.dataset.surfId === surfId) return tab;
+    }
+    return null;
+  }
+
+  function addPinButton(surfEl) {
+    if (surfEl.querySelector('.gx-pin-btn')) return;
+    const header = surfEl.querySelector('.gx-sh') || surfEl.firstElementChild;
+    if (!header) return;
+
+    header.style.position = 'relative';
+
+    const btn = document.createElement('button');
+    btn.className = 'gx-pin-btn';
+    btn.title = 'Pin this surface';
+    const pinned = isSurfacePinned(surfEl.id);
+    btn.textContent = '📌';
+    btn.style.cssText = [
+      'position:absolute',
+      'top:6px',
+      'right:8px',
+      'background:none',
+      'border:none',
+      'cursor:pointer',
+      'font-size:14px',
+      'opacity:' + (pinned ? '1' : '0'),
+      'transition:opacity 0.15s',
+      'z-index:10',
+      'padding:2px 4px',
+      'border-radius:4px',
+      pinned ? 'filter:none' : 'filter:grayscale(1)'
+    ].join(';');
+
+    surfEl.addEventListener('mouseenter', () => { btn.style.opacity = '1'; });
+    surfEl.addEventListener('mouseleave', () => {
+      if (!isSurfacePinned(surfEl.id)) btn.style.opacity = '0';
+    });
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const surfId = surfEl.id;
+      const wasPinned = isSurfacePinned(surfId);
+      if (wasPinned) {
+        unpinSurface(surfId);
+        btn.style.filter = 'grayscale(1)';
+        btn.style.opacity = '0';
+      } else {
+        const title = getSurfaceTitle(surfEl);
+        const query = getSurfaceQuery(surfEl);
+        pinSurface(surfId, query, title);
+        btn.style.filter = 'none';
+        btn.style.opacity = '1';
+      }
+      const tab = findTabForSurface(surfId);
+      if (tab) updateTabPinIndicator(tab, !wasPinned);
+      if (window.announceToSR) window.announceToSR(!wasPinned ? 'Surface pinned' : 'Surface unpinned');
+    });
+
+    header.appendChild(btn);
+  }
+
+  function decorateExistingSurfaces() {
+    document.querySelectorAll('.gx-surface').forEach(surfEl => {
+      addPinButton(surfEl);
+      const tab = findTabForSurface(surfEl.id);
+      if (tab) updateTabPinIndicator(tab, isSurfacePinned(surfEl.id));
+    });
+  }
+
+  const _origGenerate = window.generateSurface;
+  if (typeof _origGenerate === 'function') {
+    window.generateSurface = function(query, opts) {
+      const result = _origGenerate.call(this, query, opts);
+      setTimeout(() => {
+        const surfs = document.querySelectorAll('.gx-surface');
+        const last = surfs[surfs.length - 1];
+        if (last) {
+          if (query) last.dataset.query = query;
+          addPinButton(last);
+          const tab = findTabForSurface(last.id);
+          if (tab) updateTabPinIndicator(tab, isSurfacePinned(last.id));
+          checkTabScroll();
+        }
+      }, 80);
+      return result;
+    };
+  }
+
+  const _observer = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      for (const node of m.addedNodes) {
+        if (node.nodeType === 1 && node.classList && node.classList.contains('gx-surface')) {
+          setTimeout(() => {
+            addPinButton(node);
+            const tab = findTabForSurface(node.id);
+            if (tab) updateTabPinIndicator(tab, isSurfacePinned(node.id));
+            checkTabScroll();
+          }, 60);
+        }
+        if (node.nodeType === 1 && node.classList && node.classList.contains('gx-tab')) {
+          setTimeout(() => checkTabScroll(), 60);
+        }
+      }
+    }
+  });
+  const stage = document.getElementById('stage');
+  if (stage) _observer.observe(stage, { childList: true, subtree: false });
+  const tabsContainer = document.querySelector('.gx-tabs') || document.getElementById('tabs');
+  if (tabsContainer) _observer.observe(tabsContainer, { childList: true, subtree: false });
+
+  function restorePinned() {
+    const pinned = getPinned();
+    if (!pinned.length) return;
+    pinned.forEach((item, i) => {
+      setTimeout(() => {
+        if (typeof window.generateSurface === 'function') {
+          window.generateSurface(item.query);
+        }
+      }, i * 300);
+    });
+  }
+
+  function closeTab(tab) {
+    if (!tab) return;
+    const surfId = tab.dataset.surfId;
+    const tabBar = tab.parentElement;
+    const allTabs = Array.from(tabBar ? tabBar.querySelectorAll('.gx-tab') : []);
+    const idx = allTabs.indexOf(tab);
+
+    if (surfId) {
+      const surfEl = document.getElementById(surfId);
+      if (surfEl) surfEl.remove();
+      unpinSurface(surfId);
+    }
+    tab.remove();
+
+    const remaining = tabBar ? Array.from(tabBar.querySelectorAll('.gx-tab')) : [];
+    if (remaining.length > 0) {
+      const nextTab = remaining[Math.max(0, idx - 1)];
+      if (nextTab) {
+        nextTab.classList.add('active');
+        const nextSurfId = nextTab.dataset.surfId;
+        if (nextSurfId) {
+          document.querySelectorAll('.gx-surface').forEach(s => s.style.display = 'none');
+          const nextSurf = document.getElementById(nextSurfId);
+          if (nextSurf) nextSurf.style.display = '';
+        }
+      }
+    }
+    checkTabScroll();
+  }
+
+  let _ctxMenu = null;
+  function removeContextMenu() {
+    if (_ctxMenu) { _ctxMenu.remove(); _ctxMenu = null; }
+  }
+
+  function showContextMenu(tab, x, y) {
+    removeContextMenu();
+    const surfId = tab.dataset.surfId;
+    const pinned = surfId ? isSurfacePinned(surfId) : false;
+
+    const menu = document.createElement('div');
+    menu.id = 'gx-tab-ctx-menu';
+    menu.style.cssText = [
+      'position:fixed',
+      'left:' + x + 'px',
+      'top:' + y + 'px',
+      'z-index:2000',
+      'background:var(--surface,#1e1e2e)',
+      'border:1px solid var(--border,#333)',
+      'border-radius:8px',
+      'padding:4px 0',
+      'min-width:180px',
+      'box-shadow:0 8px 24px rgba(0,0,0,0.5)',
+      'font-size:13px',
+      'color:var(--text,#cdd6f4)'
+    ].join(';');
+
+    const items = [
+      { label: pinned ? '📌 Unpin this surface' : '📌 Pin this surface', action: 'pin' },
+      { label: '✕ Close tab', action: 'close' },
+      { label: '✕ Close other tabs', action: 'closeOthers' }
+    ];
+
+    items.forEach(item => {
+      const el = document.createElement('button');
+      el.textContent = item.label;
+      el.style.cssText = [
+        'display:block',
+        'width:100%',
+        'background:none',
+        'border:none',
+        'color:inherit',
+        'text-align:left',
+        'padding:8px 14px',
+        'cursor:pointer',
+        'font-size:13px',
+        'border-radius:0'
+      ].join(';');
+      el.addEventListener('mouseenter', () => el.style.background = 'var(--glass,rgba(255,255,255,0.06))');
+      el.addEventListener('mouseleave', () => el.style.background = 'none');
+
+      el.addEventListener('click', () => {
+        removeContextMenu();
+        if (item.action === 'pin') {
+          const surf = surfId ? document.getElementById(surfId) : null;
+          if (surfId) {
+            if (pinned) {
+              unpinSurface(surfId);
+              updateTabPinIndicator(tab, false);
+            } else {
+              const title = surf ? getSurfaceTitle(surf) : surfId;
+              const query = surf ? getSurfaceQuery(surf) : surfId;
+              pinSurface(surfId, query, title);
+              updateTabPinIndicator(tab, true);
+            }
+          }
+        } else if (item.action === 'close') {
+          closeTab(tab);
+        } else if (item.action === 'closeOthers') {
+          const tabBar = tab.parentElement;
+          if (tabBar) {
+            const others = Array.from(tabBar.querySelectorAll('.gx-tab')).filter(t => t !== tab);
+            others.forEach(t => closeTab(t));
+          }
+          tab.classList.add('active');
+          if (surfId) {
+            document.querySelectorAll('.gx-surface').forEach(s => s.style.display = 'none');
+            const surf = document.getElementById(surfId);
+            if (surf) surf.style.display = '';
+          }
+        }
+      });
+      menu.appendChild(el);
+    });
+
+    document.body.appendChild(menu);
+    _ctxMenu = menu;
+
+    const rect = menu.getBoundingClientRect();
+    if (rect.right > window.innerWidth) menu.style.left = (window.innerWidth - rect.width - 8) + 'px';
+    if (rect.bottom > window.innerHeight) menu.style.top = (y - rect.height) + 'px';
+  }
+
+  function bindTabContextMenu(tab) {
+    if (tab.dataset.ctxBound) return;
+    tab.dataset.ctxBound = '1';
+    tab.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      showContextMenu(tab, e.clientX, e.clientY);
+    });
+  }
+
+  function decorateExistingTabs() {
+    document.querySelectorAll('.gx-tab').forEach(tab => {
+      bindTabContextMenu(tab);
+      if (!tab.dataset.surfId) {
+        const surfs = document.querySelectorAll('.gx-surface');
+        const tabs = document.querySelectorAll('.gx-tab');
+        const tabArr = Array.from(tabs);
+        const idx = tabArr.indexOf(tab);
+        if (surfs[idx]) tab.dataset.surfId = surfs[idx].id;
+      }
+    });
+  }
+
+  const tabObserver = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      for (const node of m.addedNodes) {
+        if (node.nodeType === 1 && node.classList && node.classList.contains('gx-tab')) {
+          setTimeout(() => {
+            bindTabContextMenu(node);
+            checkTabScroll();
+          }, 30);
+        }
+      }
+    }
+  });
+  if (tabsContainer) tabObserver.observe(tabsContainer, { childList: true });
+
+  document.addEventListener('click', (e) => {
+    if (_ctxMenu && !_ctxMenu.contains(e.target)) removeContextMenu();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') removeContextMenu();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const isCmd = e.metaKey || e.ctrlKey;
+    if (isCmd && e.key === 'w') {
+      e.preventDefault();
+      const activeTab = document.querySelector('.gx-tab.active');
+      if (activeTab) closeTab(activeTab);
+    }
+  });
+
+  let _scrollLeftBtn = null;
+  let _scrollRightBtn = null;
+
+  function checkTabScroll() {
+    const tabBar = document.querySelector('.gx-tabs') || document.getElementById('tabs');
+    if (!tabBar) return;
+    const tabs = tabBar.querySelectorAll('.gx-tab');
+    const parent = tabBar.parentElement;
+    if (!parent) return;
+
+    if (tabs.length > 5) {
+      if (!_scrollLeftBtn) {
+        _scrollLeftBtn = document.createElement('button');
+        _scrollLeftBtn.id = 'tabScrollLeft';
+        _scrollLeftBtn.textContent = '‹';
+        _scrollLeftBtn.style.cssText = [
+          'background:var(--surface,#1e1e2e)',
+          'border:1px solid var(--border,#333)',
+          'color:var(--text,#cdd6f4)',
+          'border-radius:4px',
+          'padding:2px 8px',
+          'cursor:pointer',
+          'font-size:16px',
+          'line-height:1',
+          'flex-shrink:0',
+          'align-self:center',
+          'z-index:10'
+        ].join(';');
+        _scrollLeftBtn.addEventListener('click', () => { tabBar.scrollBy({ left: -200, behavior: 'smooth' }); });
+        parent.insertBefore(_scrollLeftBtn, tabBar);
+      }
+      if (!_scrollRightBtn) {
+        _scrollRightBtn = document.createElement('button');
+        _scrollRightBtn.id = 'tabScrollRight';
+        _scrollRightBtn.textContent = '›';
+        _scrollRightBtn.style.cssText = [
+          'background:var(--surface,#1e1e2e)',
+          'border:1px solid var(--border,#333)',
+          'color:var(--text,#cdd6f4)',
+          'border-radius:4px',
+          'padding:2px 8px',
+          'cursor:pointer',
+          'font-size:16px',
+          'line-height:1',
+          'flex-shrink:0',
+          'align-self:center',
+          'z-index:10'
+        ].join(';');
+        _scrollRightBtn.addEventListener('click', () => { tabBar.scrollBy({ left: 200, behavior: 'smooth' }); });
+        parent.appendChild(_scrollRightBtn);
+      }
+      tabBar.style.overflowX = 'auto';
+      tabBar.style.scrollbarWidth = 'none';
+      tabBar.style.msOverflowStyle = 'none';
+      if (!document.getElementById('gx-tab-scroll-hide')) {
+        const st = document.createElement('style');
+        st.id = 'gx-tab-scroll-hide';
+        st.textContent = '.gx-tabs::-webkit-scrollbar,#tabs::-webkit-scrollbar{display:none}';
+        document.head.appendChild(st);
+      }
+    } else {
+      if (_scrollLeftBtn) { _scrollLeftBtn.remove(); _scrollLeftBtn = null; }
+      if (_scrollRightBtn) { _scrollRightBtn.remove(); _scrollRightBtn = null; }
+    }
+  }
+
+  decorateExistingSurfaces();
+  decorateExistingTabs();
+  checkTabScroll();
+  restorePinned();
+}
+
+function initMicroInteractions() {
+  // ─── 1. ANIMATED COUNTERS ───────────────────────────────────────────────────
+  const isPlainNumber = el => {
+    if (!el || el.children.length > 0) return false;
+    const text = el.textContent.trim();
+    if (!/^-?\d+(\.\d+)?$/.test(text)) return false;
+    // Skip if parent contains currency symbols
+    const parentText = el.parentElement ? el.parentElement.textContent : '';
+    if (/[$€£¥₹]/.test(parentText)) return false;
+    return true;
+  };
+
+  const animateCounter = el => {
+    const target = parseFloat(el.textContent.trim());
+    if (isNaN(target)) return;
+    const isDecimal = el.textContent.includes('.');
+    const decimals = isDecimal ? (el.textContent.split('.')[1] || '').length : 0;
+    const duration = 800;
+    const start = performance.now();
+    el.dataset.animating = '1';
+    const tick = now => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const current = target * ease;
+      el.textContent = isDecimal ? current.toFixed(decimals) : Math.round(current).toString();
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        el.textContent = isDecimal ? target.toFixed(decimals) : target.toString();
+        delete el.dataset.animating;
+      }
+    };
+    requestAnimationFrame(tick);
+  };
+
+  const scanAndAnimateCounters = surface => {
+    const walker = document.createTreeWalker(surface, NodeFilter.SHOW_ELEMENT);
+    let node;
+    while ((node = walker.nextNode())) {
+      if (node.children.length === 0 && !node.dataset.animating && isPlainNumber(node)) {
+        animateCounter(node);
+      }
+    }
+  };
+
+  const stageEl = document.getElementById('stage');
+  if (stageEl) {
+    const counterObserver = new MutationObserver(mutations => {
+      mutations.forEach(m => {
+        m.addedNodes.forEach(n => {
+          if (n.nodeType === 1 && n.classList && n.classList.contains('gx-surface')) {
+            setTimeout(() => scanAndAnimateCounters(n), 50);
+          }
+        });
+      });
+    });
+    counterObserver.observe(stageEl, { childList: true });
+  }
+
+  // ─── 2. HOVER SHIMMER ON INACTIVE TABS ──────────────────────────────────────
+  const shimmerStyleId = 'gx-shimmer-keyframes';
+  if (!document.getElementById(shimmerStyleId)) {
+    const style = document.createElement('style');
+    style.id = shimmerStyleId;
+    style.textContent = `
+      @keyframes gx-shimmer-sweep {
+        0%   { background-position: -200% center; }
+        100% { background-position: 200% center; }
+      }
+      .gx-tab-shimmer {
+        background-image: linear-gradient(
+          105deg,
+          transparent 40%,
+          rgba(255,255,255,0.18) 50%,
+          transparent 60%
+        ) !important;
+        background-size: 200% 100% !important;
+        animation: gx-shimmer-sweep 0.6s linear forwards !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  const applyTabShimmer = tab => {
+    if (tab.classList.contains('active')) return;
+    tab.classList.add('gx-tab-shimmer');
+  };
+  const removeTabShimmer = tab => {
+    tab.classList.remove('gx-tab-shimmer');
+  };
+
+  const attachTabShimmer = tab => {
+    if (tab._shimmerBound) return;
+    tab._shimmerBound = true;
+    tab.addEventListener('mouseenter', () => applyTabShimmer(tab));
+    tab.addEventListener('mouseleave', () => removeTabShimmer(tab));
+  };
+
+  const tabsContainer = document.querySelector('.gx-tabs') || document.getElementById('tabs');
+  if (tabsContainer) {
+    tabsContainer.querySelectorAll('.gx-tab').forEach(attachTabShimmer);
+    const tabObserver = new MutationObserver(mutations => {
+      mutations.forEach(m => {
+        m.addedNodes.forEach(n => {
+          if (n.nodeType === 1) {
+            if (n.classList && n.classList.contains('gx-tab')) attachTabShimmer(n);
+            n.querySelectorAll && n.querySelectorAll('.gx-tab').forEach(attachTabShimmer);
+          }
+        });
+      });
+    });
+    tabObserver.observe(tabsContainer, { childList: true, subtree: true });
+  }
+
+  // ─── 3. TYPEWRITER EFFECT FOR #statusbar ────────────────────────────────────
+  const statusbar = document.getElementById('statusbar');
+  if (statusbar) {
+    let twTimer = null;
+    let twIndex = 0;
+    let twTarget = '';
+
+    const runTypewriter = text => {
+      if (twTimer) { clearTimeout(twTimer); twTimer = null; }
+      twTarget = text;
+      twIndex = 0;
+      statusbar._typewriterPending = true;
+
+      const tick = () => {
+        if (twTarget !== text) return; // superseded
+        statusbar._skipObserver = true;
+        statusbar.textContent = text.slice(0, twIndex);
+        statusbar._skipObserver = false;
+        twIndex++;
+        if (twIndex <= text.length) {
+          twTimer = setTimeout(tick, 20);
+        } else {
+          twTimer = null;
+          statusbar._typewriterPending = false;
+        }
+      };
+      tick();
+    };
+
+    const sbObserver = new MutationObserver(() => {
+      if (statusbar._skipObserver) return;
+      const full = statusbar.textContent;
+      if (full && full !== twTarget) {
+        runTypewriter(full);
+      }
+    });
+    sbObserver.observe(statusbar, { childList: true, characterData: true, subtree: true });
+  }
+
+  // ─── 4. SURFACE FADE-OUT WHEN SWITCHING TABS ────────────────────────────────
+  // Inject transition style for .gx-surface
+  const fadeStyleId = 'gx-surface-fade-style';
+  if (!document.getElementById(fadeStyleId)) {
+    const style = document.createElement('style');
+    style.id = fadeStyleId;
+    style.textContent = `.gx-surface { transition: opacity 150ms ease; }`;
+    document.head.appendChild(style);
+  }
+
+  const patchTabClickForFade = tab => {
+    if (tab._fadePatchBound) return;
+    tab._fadePatchBound = true;
+    tab.addEventListener('click', e => {
+      // Find the surface this tab is supposed to show
+      const allTabs = Array.from(document.querySelectorAll('.gx-tab'));
+      const allSurfaces = Array.from(document.querySelectorAll('.gx-surface'));
+      const clickedIndex = allTabs.indexOf(tab);
+
+      // Fade out currently visible surface
+      const currentSurface = allSurfaces.find(s => s.style.display !== 'none' && s.style.opacity !== '0');
+      if (currentSurface) {
+        currentSurface.style.opacity = '0';
+        setTimeout(() => {
+          currentSurface.style.display = 'none';
+          // Show target surface
+          const targetSurface = allSurfaces[clickedIndex] || allSurfaces[allSurfaces.length - 1];
+          if (targetSurface) {
+            targetSurface.style.opacity = '0';
+            targetSurface.style.display = '';
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                targetSurface.style.opacity = '1';
+              });
+            });
+          }
+        }, 150);
+      }
+    }, true); // capture phase — runs before existing handlers
+  };
+
+  if (tabsContainer) {
+    tabsContainer.querySelectorAll('.gx-tab').forEach(patchTabClickForFade);
+    const fadePatchObserver = new MutationObserver(mutations => {
+      mutations.forEach(m => {
+        m.addedNodes.forEach(n => {
+          if (n.nodeType === 1) {
+            if (n.classList && n.classList.contains('gx-tab')) patchTabClickForFade(n);
+            n.querySelectorAll && n.querySelectorAll('.gx-tab').forEach(patchTabClickForFade);
+          }
+        });
+      });
+    });
+    fadePatchObserver.observe(tabsContainer, { childList: true, subtree: true });
+  }
+
+  // ─── 5. LOADING SKELETON FOR SLOW SURFACES ──────────────────────────────────
+  const skeletonStyleId = 'gx-skeleton-style';
+  if (!document.getElementById(skeletonStyleId)) {
+    const style = document.createElement('style');
+    style.id = skeletonStyleId;
+    style.textContent = `
+      @keyframes gx-skel-pulse {
+        0%   { background-position: -400px 0; }
+        100% { background-position: 400px 0; }
+      }
+      .gx-skeleton-wrap {
+        position: absolute;
+        inset: 0;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        pointer-events: none;
+        z-index: 10;
+        background: var(--surface, #1a1a2e);
+        border-radius: 12px;
+      }
+      .gx-skel-bar {
+        height: 18px;
+        border-radius: 6px;
+        background: linear-gradient(
+          90deg,
+          var(--border, rgba(255,255,255,0.08)) 25%,
+          rgba(255,255,255,0.12) 50%,
+          var(--border, rgba(255,255,255,0.08)) 75%
+        );
+        background-size: 800px 100%;
+        animation: gx-skel-pulse 1.4s ease-in-out infinite;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  let skelTimer = null;
+  let skelEl = null;
+  let skelObserver = null;
+
+  const removeSkeleton = () => {
+    if (skelTimer) { clearTimeout(skelTimer); skelTimer = null; }
+    if (skelObserver) { skelObserver.disconnect(); skelObserver = null; }
+    if (skelEl && skelEl.parentNode) {
+      skelEl.style.opacity = '0';
+      skelEl.style.transition = 'opacity 200ms ease';
+      setTimeout(() => { if (skelEl && skelEl.parentNode) skelEl.parentNode.removeChild(skelEl); skelEl = null; }, 200);
+    }
+  };
+
+  const showSkeleton = () => {
+    if (!stageEl) return;
+    removeSkeleton();
+    const wrap = document.createElement('div');
+    wrap.className = 'gx-skeleton-wrap';
+    const widths = ['75%', '55%', '88%'];
+    widths.forEach(w => {
+      const bar = document.createElement('div');
+      bar.className = 'gx-skel-bar';
+      bar.style.width = w;
+      wrap.appendChild(bar);
+    });
+    // Position relative to stage
+    if (getComputedStyle(stageEl).position === 'static') {
+      stageEl.style.position = 'relative';
+    }
+    skelEl = wrap;
+    stageEl.appendChild(wrap);
+
+    // Watch for a new .gx-surface to remove skeleton
+    skelObserver = new MutationObserver(mutations => {
+      for (const m of mutations) {
+        for (const n of m.addedNodes) {
+          if (n.nodeType === 1 && n.classList && n.classList.contains('gx-surface')) {
+            removeSkeleton();
+            return;
+          }
+        }
+      }
+    });
+    skelObserver.observe(stageEl, { childList: true });
+  };
+
+  // Patch window.generateSurface to trigger skeleton
+  if (typeof window.generateSurface === 'function') {
+    const origGenerate = window.generateSurface;
+    window.generateSurface = function(...args) {
+      // Show skeleton after 200ms delay (avoid flash for fast renders)
+      skelTimer = setTimeout(showSkeleton, 200);
+      return origGenerate.apply(this, args);
+    };
+  }
+}
+
+  function initModulesV6() {
+    try { extendKeywordRoutingV6(); } catch(e) { console.warn('[V6] routing', e); }
+    try { initCommandHistoryPanel(); } catch(e) { console.warn('[V6] history', e); }
+    try { initSmartNotifications(); } catch(e) { console.warn('[V6] notifications', e); }
+    try { initRealTimeKPIs(); } catch(e) { console.warn('[V6] kpi', e); }
+    try { initSurfacePinning(); } catch(e) { console.warn('[V6] pinning', e); }
+    try { initMicroInteractions(); } catch(e) { console.warn('[V6] micro', e); }
+    console.log('[AdaptiveAI] Module v6 initialized ✓');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { setTimeout(initModulesV6, 5500); });
+  } else {
+    setTimeout(initModulesV6, 5500);
+  }
+})();
+
+</script>
 </body></html>
