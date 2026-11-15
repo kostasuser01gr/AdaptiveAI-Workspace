@@ -33,6 +33,19 @@ Existing 600 KB+ static index.html remains the shell. New functionality is isola
 
 **No live connectors are configured.** The original fleet datasets are illustrative, not authoritative operations records. The Cloud Console requires a dedicated database. Real external-action agents, OAuth connectors, multi-tenant teams and durable job queues are future integrations.
 
+## Data Intelligence v4 — user-owned, real-data dashboards
+
+Open **Enterprise → Data Intelligence** or press **Ctrl/Cmd + Shift + D**.
+
+- Import CSV/TSV via picker, drag/drop or paste; browser-only parsing with strict resource bounds and malformed-row diagnostics.
+- IndexedDB dataset library, column profiling, completeness, missing-value and potentially sensitive-column warnings.
+- Grouped analysis: count, sum, average, median, min and max, with explicit EU/US number formats.
+- Paged explorer, text filters, JSON exports and formula-hardened CSV downloads.
+- **Dashboard** creates a genuine, dataset-derived surface in existing AdaptiveAI workspace tabs using the safe UI renderer, with **LOCAL DATA · USER-PROVIDED · UNVERIFIED** provenance.
+- No uploaded content is sent to an external service or AI provider. Local IndexedDB is not encrypted or cross-device synchronized.
+
+See [Data Intelligence v4 Architecture & Privacy](docs/DATA_INTELLIGENCE_V4.md). Node and Chromium tests run in CI.
+
 ## Try Agent Studio
 
 Open **Enterprise → Agent Studio** in the sidebar or press **Ctrl/Cmd + Shift + G**.
