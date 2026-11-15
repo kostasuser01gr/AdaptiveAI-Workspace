@@ -30,7 +30,7 @@
     var stage=document.getElementById('stage'),tabs=document.getElementById('tabs');
     if(!stage||!tabs)return;
     if(!studio){
-      studio=node('section','gx-surface as-studio');studio.id='adaptive-agent-studio';studio.setAttribute('aria-label','Agent Studio');
+      studio=node('section','gx-surface as-studio');studio.id='adaptive-agent-studio';studio.setAttribute('aria-label','Agent Studio');studio.setAttribute('tabindex','-1');
       var wrap=node('div','as-wrap'),head=node('div','as-head'),intro=node('div','');
       add(intro,node('div','as-eyebrow','ADAPTIVEAI / INTELLIGENCE LAYER'),node('h1','','Agent Studio'),p('Agent configuration, dependency-aware workflow design and approval-first previews. Built into your existing command center.'));
       var actions=node('div','as-actions');
@@ -54,7 +54,7 @@
   function render(){
     if(!studio)return;
     var navbar=document.getElementById('as-view-tabs');navbar.replaceChildren();
-    [['overview','Overview'],['workflows','Workflow Graph'],['memory','Memory Vault'],['tools','Tool Registry'],['audit','Audit Trail']].forEach(function(item){
+    [['overview','Overview'],['workflows','Workflow Graph'],['memory','Memory Vault'],['tools','Tool Registry'],['cloud','Cloud Sync'],['audit','Audit Trail']].forEach(function(item){
       var b=node('button','as-subtab',item[1]);b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',String(view===item[0]));
       b.addEventListener('click',function(){view=item[0];render();});navbar.appendChild(b);
     });
@@ -63,6 +63,7 @@
     else if(view==='workflows')renderWorkflows();
     else if(view==='memory')renderMemory();
     else if(view==='tools')renderTools();
+    else if(view==='cloud') { if(window.AdaptiveCloudConsole) window.AdaptiveCloudConsole.render(content); else content.textContent='Cloud module unavailable'; }
     else renderAudit();
   }
   function renderOverview(){
@@ -280,7 +281,15 @@
     document.addEventListener('keydown',function(e){
       if((e.metaKey||e.ctrlKey)&&e.shiftKey&&e.key.toLowerCase()==='g'){e.preventDefault();open();}
     });
-    window.AdaptiveAgentStudio={open:open,version:'1.0.0',mode:'local-preview'};
+    window.AdaptiveAgentStudio={
+      open:open,version:'2.0.0',mode:'local-preview',
+      exportState:function(){return JSON.parse(JSON.stringify(state));},
+      replaceState:function(candidate){
+        var next=core.safeState(candidate);
+        if(!next.workflows.length)throw Error('No valid cloud workflows');
+        state=next;selected=state.workflows[0].id;lastRun=null;save();render();
+      }
+    };
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);
   else mount();
