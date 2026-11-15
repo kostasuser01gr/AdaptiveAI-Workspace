@@ -1,8 +1,8 @@
 'use strict';
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const contract=require('../api/_lib/surface-contract');
-const backend=require('../api/_lib/backend');
+const contract=require('../server/surface-contract');
+const backend=require('../server/backend');
 const generate=require('../api/generate');
 const auth=require('../api/auth');
 const workspace=require('../api/workspace');
