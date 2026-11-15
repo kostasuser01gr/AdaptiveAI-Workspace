@@ -89,3 +89,6 @@
 @media(max-width:1050px){.as-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.as-two{grid-template-columns:1fr}}
 @media(max-width:650px){.as-wrap{padding:22px 14px 70px}.as-head{align-items:flex-start;flex-direction:column}.as-actions{justify-content:flex-start}.as-grid,.as-memory-grid{grid-template-columns:1fr}.as-subtab{min-width:115px}.as-card{padding:17px}.as-kpi{padding:15px}.as-flow-board{padding:15px 11px}}
 @media(prefers-reduced-motion:reduce){.as-studio *{transition:none!important;animation:none!important}}
+
+.as-studio [hidden]{display:none!important}
+.as-studio[tabindex="-1"]:focus{outline:none}
