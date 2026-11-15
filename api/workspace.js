@@ -1,5 +1,5 @@
 'use strict';
-const B=require('./_lib/backend');
+const B=require('../server/backend');
 const core=require('../modules/agent-core.js');
 /**
  * Authenticated, RLS-scoped cloud persistence. No service-role privileges on data requests.
