@@ -23,7 +23,7 @@
 5. **Composable UX**: maintain one familiar sidebar and one canvas/tabs framework; avoid introducing another competing application inside the application.
 6. **Accessible by default**: focus states, ARIA labels, readable contrast, reduced motion, mobile layout.
 
-## 3. Delivered in this branch: Agent Studio v1
+## 3. Delivered in this branch: Agent Studio v3
 
 | Feature | Implementation | Runtime guarantee |
 |---|---|---|
@@ -83,9 +83,9 @@ The startup sample workflow is an example of what the UI can preview, not eviden
 - Connector secrets in server-side secret stores; never browser localStorage or client bundles.
 
 ### E. Security and operational maturity
-- **P0** `api/generate.js` returns model-generated HTML; the current browser renderer assigns it directly through `innerHTML`. Replace with a strict, validated declarative widget schema, or sanitize output with a proven allowlist while migrating.
-- **P0** The Anthropic route uses wildcard CORS and currently has no authentication or durable rate limiter. Before enabling paid model calls to public users, add identity/session authorization, provider quotas and robust abuse protection.
-- **P0** Separate the simulated connection pill/status bar/agent states from measured network data.
+- **P0 [FIXED IN FEATURE BRANCH]** `api/generate.js` now returns schema-validated declarative widgets, and `modules/safe-surface.js` renders untrusted strings only as DOM text. Legacy inline markup elsewhere remains technical debt.
+- **P0 [IMPLEMENTED, NOT CONFIGURED]** The AI route now requires verified Supabase identity and atomic per-user quota before a provider call. Same-origin checks replace wildcard CORS. The project has no cloud credentials yet, so AI calls remain disabled.
+- **P0 [FIXED IN FEATURE BRANCH]** Demo connection, SLA and latency indicators no longer pretend to be live; simulated KPIs and the demo WebSocket feed are clearly labeled.
 - **P1** CSP rollout needs a planned refactor: the current monolith uses inline scripts/styles and inline event handlers.
 - **P1** Introduce request and response schema validation, systematic error reporting, structured audit events and a real accessibility test suite.
 - **P2** Break the monolith into feature modules, keeping a compatibility bridge until tests cover existing navigation and surfaces.
@@ -144,3 +144,24 @@ node --check modules/agent-core.js
 node --check modules/agent-studio.js
 node --test tests/agent-core.test.cjs
 ```
+
+
+## 10. 2026-11-15 implementation extension: API, cloud persistence and browser QA
+
+**Implemented in source / preview mode**
+- Verified-session login, refresh and sign-out through HTTP-only, Secure, SameSite=Strict cookies.
+- Browser-origin enforcement for API mutations and bounded input validation.
+- Dedicated owner-scoped RLS SQL schema (ready for installation, not applied).
+- Cloud workspace save/restore and persisted, idempotent server-side workflow previews with approval conflict guards.
+- Safe declarative AI schema, DOM-only model renderer and server-only generation quotas (15/day, 12-second cooldown).
+- Cloud/connection capability detection and honest simulated status indicators.
+- Chromium regression testing in GitHub Actions (legacy shell, local workflows, reload persistence, inert HTML, mobile UX).
+
+**Not yet provisioned or operational**
+- A dedicated Supabase database, identity provider configuration and AI keys.
+- Real email/fleet/Microsoft/Google/OAuth connectors; external side-effect agents, background queues and timers.
+- User organizations and cross-team RBAC; production-scale telemetry and independent penetration testing.
+
+The production site remains separate from this feature branch until the release gates pass. See DEPLOYMENT_RUNBOOK.md for exact cloud variables, RLS SQL review, rollback, costs and verification.
+
+Do not describe server-side **workflow previews** as autonomously executing cloud agents. The server persists deterministic state transitions but invokes no external business tools.
