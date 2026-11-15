@@ -45,20 +45,26 @@ revoke all on function public.adaptive_touch_workspace() from public,anon,authen
 create table if not exists public.adaptive_agent_runs (
   id uuid primary key default gen_random_uuid(),
   owner_id uuid not null references auth.users(id) on delete cascade,
+  request_key uuid not null default gen_random_uuid(),
   workflow_id text not null check (length(workflow_id) between 1 and 90),
   status text not null check (status in ('awaiting_approval','completed','rejected','blocked')),
   detail jsonb not null default '{}'::jsonb check (jsonb_typeof(detail) = 'object'),
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  unique(owner_id,request_key)
 );
 create index if not exists adaptive_runs_owner_created_idx on public.adaptive_agent_runs(owner_id,created_at desc);
 alter table public.adaptive_agent_runs enable row level security;
 revoke all on public.adaptive_agent_runs from public, anon;
-grant select,insert on public.adaptive_agent_runs to authenticated;
+grant select,insert,update on public.adaptive_agent_runs to authenticated;
 drop policy if exists adaptive_runs_select on public.adaptive_agent_runs;
 drop policy if exists adaptive_runs_insert on public.adaptive_agent_runs;
+drop policy if exists adaptive_runs_update on public.adaptive_agent_runs;
 create policy adaptive_runs_select on public.adaptive_agent_runs for select to authenticated
   using ((select auth.uid()) = owner_id);
 create policy adaptive_runs_insert on public.adaptive_agent_runs for insert to authenticated
+  with check ((select auth.uid()) = owner_id);
+create policy adaptive_runs_update on public.adaptive_agent_runs for update to authenticated
+  using ((select auth.uid()) = owner_id)
   with check ((select auth.uid()) = owner_id);
 
 -- Server-only daily quota counter; the browser must not be able to reset its quota.
