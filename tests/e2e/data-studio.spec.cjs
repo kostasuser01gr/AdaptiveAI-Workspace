@@ -57,3 +57,16 @@ test('small-screen shortcut opens Data Intelligence and still shows Agent Studio
   await expect(page.locator('#adaptive-data-studio')).toBeVisible();
   await expect(page.locator('#navStudio')).toBeAttached();
 });
+
+test('a real-data dashboard opens in original tabs with truthful provenance',async({page})=>{
+  await page.locator('#navDataStudio').click();
+  await page.locator('#adi-paste').fill('Station;Revenue\nHeraklion;12,5\nChania;3,5');
+  await page.getByRole('button',{name:'Import pasted data'}).click();
+  await page.getByRole('button',{name:'Dashboard'}).click();
+  const stage=page.locator('[id^="data-dashboard-"]');
+  await expect(stage).toBeVisible();
+  await expect(stage).toContainText('LOCAL DATA · USER-PROVIDED · UNVERIFIED');
+  await expect(stage).toContainText('Imported rows');
+  await expect(stage).toContainText('Heraklion');
+  await expect(page.locator('#tabs .gx-tab.active')).toContainText('Untitled dataset');
+});
