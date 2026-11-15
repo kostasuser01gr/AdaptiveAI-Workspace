@@ -114,7 +114,7 @@
     list.forEach(function(d){
       var row=E('div','adi-source-row'),info=E('div'),actions=E('div','adi-actions');
       A(info,E('div','adi-source-name',d.name),E('div','adi-source-meta',d.rows.length+' rows · '+d.headers.length+' columns · '+new Date(d.createdAt).toLocaleDateString()));
-      A(actions,B('Analyze',function(){current=d;page='profile';draw();},'primary'),B('Delete',function(){remove(d.id);},'danger'));
+      A(actions,B('Analyze',function(){current=d;page='profile';draw();},'primary'),B('Dashboard',function(){current=d;showDashboard();}),B('Delete',function(){remove(d.id);},'danger'));
       A(row,info,actions);right.appendChild(row);
     });
     A(split,left,right);canvas.appendChild(split);
@@ -224,6 +224,53 @@
     else if(page==='analysis')analysis();
     else explore();
   }
+  function showDashboard(){
+    if(!current)return note('Select a dataset to build its dashboard.',true);
+    if(!window.AdaptiveSafeUI||typeof window.AdaptiveSafeUI.render!=='function')return note('Safe renderer unavailable.',true);
+    var stage=document.getElementById('stage'),tabs=document.getElementById('tabs');
+    if(!stage||!tabs)return;
+    var details=core.profile(current,locale),metricItems=[
+      {label:'Imported rows',value:String(details.rows),detail:'CSV records'},
+      {label:'Columns',value:String(details.columnCount),detail:'User schema'},
+      {label:'Completeness',value:details.completeness+'%',detail:'Nonempty cells'},
+      {label:'Rejected rows',value:String(details.skipped),detail:'Import diagnostics'}
+    ];
+    var widgets=[
+      {type:'metrics',title:'Verified computations from local input',items:metricItems},
+      {type:'table',title:'First 12 imported records',columns:current.headers.slice(0,7),rows:current.rows.slice(0,12).map(function(row){return row.slice(0,7);})},
+      {type:'insight',title:'Provenance and privacy',body:'These numbers are computed from a file you provided. Data was not verified against external records and was not sent to AI services. Review sensitive headers before sharing.'}
+    ];
+    var group=details.columns.find(function(c){return !c.numeric;});
+    if(group){
+      var counts=core.aggregate(current,{groupBy:group.name,operation:'count'});
+      if(counts.groups.length){
+        var max=Math.max.apply(null,counts.groups.map(function(g){return g.count;}));
+        widgets.splice(1,0,{type:'bars',title:'Distribution by '+group.name,items:counts.groups.map(function(g){return{label:g.label,value:max?100*g.count/max:0,display:String(g.count)+' records'};})});
+      }
+    }
+    var source={title:current.name,tag:'LOCAL CSV',source:'user_dataset',
+      subtitle:'User-provided data · '+details.rows+' records · Not independently verified',widgets:widgets};
+    var holder=E('div','gx-surface');holder.id='data-dashboard-'+Date.now();
+    holder.style.cssText='padding:22px;height:100%;overflow-y:auto';
+    window.AdaptiveSafeUI.render(holder,source);
+    stage.querySelectorAll('.gx-surface').forEach(function(x){x.style.display='none';});
+    stage.appendChild(holder);
+    tabs.querySelectorAll('.gx-tab').forEach(function(x){x.classList.remove('active');});
+    var newTab=E('button','gx-tab active');newTab.type='button';newTab.dataset.target=holder.id;
+    newTab.appendChild(E('span','tt',current.name.slice(0,26)));
+    var close=E('span','tc','×');close.title='Close dashboard';
+    newTab.appendChild(close);
+    newTab.addEventListener('click',function(e){
+      if(e.target===close){
+        holder.remove();newTab.remove();open();return;
+      }
+      tabs.querySelectorAll('.gx-tab').forEach(function(x){x.classList.remove('active');});
+      newTab.classList.add('active');
+      stage.querySelectorAll('.gx-surface').forEach(function(x){x.style.display=x===holder?'':'none';});
+    });
+    tabs.appendChild(newTab);
+    if(typeof window._toast==='function')window._toast('Local data dashboard created: '+current.name);
+  }
   function open(){
     var stage=document.getElementById('stage'),tabs=document.getElementById('tabs');if(!stage||!tabs)return;
     if(!root){
@@ -263,7 +310,7 @@
         e.preventDefault();open();
       }
     });
-    window.AdaptiveDataStudio={open:open,mode:'local-real-data',version:'4.0',list:function(){return list.map(function(x){return{id:x.id,name:x.name};});}};
+    window.AdaptiveDataStudio={open:open,showDashboard:showDashboard,mode:'local-real-data',version:'4.1',list:function(){return list.map(function(x){return{id:x.id,name:x.name};});}};
     load().then(function(){if(root)draw();});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);
