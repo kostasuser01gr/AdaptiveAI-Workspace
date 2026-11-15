@@ -1,5 +1,5 @@
 'use strict';
-const B=require('./_lib/backend');
+const B=require('../server/backend');
 function validEmail(value){return typeof value==='string'&&value.length<=254&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);}
 function validPassword(value){return typeof value==='string'&&value.length>=10&&value.length<=128;}
 module.exports=async function handler(req,res){
