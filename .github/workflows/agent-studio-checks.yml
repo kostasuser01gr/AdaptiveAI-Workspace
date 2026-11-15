@@ -16,7 +16,6 @@ on:
       - "modules/**"
       - "server/**"
       - "api/**"
-      - "server/**"
       - "db/**"
       - "tests/**"
       - "index.html"
@@ -38,6 +37,7 @@ jobs:
           node --check modules/agent-studio.js
           node --check modules/safe-surface.js
           node --check modules/cloud-console.js
+          node --check modules/runtime-badge.js
           for file in api/*.js server/*.js; do node --check "$file"; done
       - name: Run unit tests
         run: node --test tests/*.test.cjs
