@@ -1,5 +1,5 @@
 'use strict';
-const B=require('./_lib/backend');
+const B=require('../server/backend');
 module.exports=function handler(req,res){
   if(req.method!=='GET')return B.json(res,405,{error:'Method not allowed'});
   const cfg=B.config();
