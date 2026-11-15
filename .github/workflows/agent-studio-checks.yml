@@ -3,10 +3,10 @@ on:
   pull_request:
     paths:
       - "modules/**"
+      - "server/**"
       - "api/**"
       - "db/**"
       - "tests/**"
-      - "tests/agent-core.test.cjs"
       - "index.html"
       - ".github/workflows/agent-studio-checks.yml"
   push:
@@ -14,7 +14,11 @@ on:
       - "feat/agent-studio-ultra-premium"
     paths:
       - "modules/**"
-      - "tests/agent-core.test.cjs"
+      - "server/**"
+      - "api/**"
+      - "server/**"
+      - "db/**"
+      - "tests/**"
       - "index.html"
       - ".github/workflows/agent-studio-checks.yml"
 permissions:
@@ -34,6 +38,6 @@ jobs:
           node --check modules/agent-studio.js
           node --check modules/safe-surface.js
           node --check modules/cloud-console.js
-          for file in api/*.js api/_lib/*.js; do node --check "$file"; done
+          for file in api/*.js server/*.js; do node --check "$file"; done
       - name: Run unit tests
         run: node --test tests/*.test.cjs
