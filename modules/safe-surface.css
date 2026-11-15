@@ -23,3 +23,5 @@
 .asu-insight p{color:var(--text,#fff);font-size:13px;line-height:1.75;white-space:pre-line;margin:0}
 @media(max-width:620px){.asu-panel{padding:14px}.asu-head h2{font-size:19px}.asu-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.asu-bar-fill{transition:none!important}}
+
+#kpiBar[data-source="simulated"]::before{content:"DEMO";color:#fdba74;flex:none;border:1px solid rgba(249,115,22,.3);background:rgba(249,115,22,.07);padding:5px 8px;border-radius:6px;font:650 10px "JetBrains Mono",monospace;letter-spacing:.06em}
