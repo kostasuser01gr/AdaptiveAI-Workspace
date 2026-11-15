@@ -3,6 +3,9 @@ on:
   pull_request:
     paths:
       - "modules/**"
+      - "api/**"
+      - "db/**"
+      - "tests/**"
       - "tests/agent-core.test.cjs"
       - "index.html"
       - ".github/workflows/agent-studio-checks.yml"
@@ -29,5 +32,8 @@ jobs:
         run: |
           node --check modules/agent-core.js
           node --check modules/agent-studio.js
+          node --check modules/safe-surface.js
+          node --check modules/cloud-console.js
+          for file in api/*.js api/_lib/*.js; do node --check "$file"; done
       - name: Run unit tests
-        run: node --test tests/agent-core.test.cjs
+        run: node --test tests/*.test.cjs
