@@ -48,7 +48,7 @@ function guardPost(req,res,maxBytes) {
   return true;
 }
 function accessToken(req){return cookieMap(req).ad_access||'';}
-async function supabase(path,{method='GET',body,token,admin=false}={}){
+async function supabase(path,{method='GET',body,token,admin=false,prefer}={}){
   const cfg=config();
   if(!cfg.url||!cfg.key)throw Error('Cloud authentication is not configured');
   if(admin&&!cfg.service)throw Error('Server quota key is not configured');
@@ -56,6 +56,7 @@ async function supabase(path,{method='GET',body,token,admin=false}={}){
   const key=admin?cfg.service:cfg.key;
   const headers={apikey:key,Authorization:'Bearer '+(admin?key:(token||key)),Accept:'application/json'};
   if(body!==undefined)headers['Content-Type']='application/json';
+  if(prefer && ['resolution=merge-duplicates,return=representation','return=representation','return=minimal'].includes(prefer))headers.Prefer=prefer;
   const result=await fetch(cfg.url+path,{
     method,headers,body:body===undefined?undefined:JSON.stringify(body),
     signal:AbortSignal.timeout(9000),redirect:'error'
