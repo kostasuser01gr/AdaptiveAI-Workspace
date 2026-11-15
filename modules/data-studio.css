@@ -1,0 +1,79 @@
+/* AdaptiveAI Data Intelligence Studio · scoped v4 premium operations design */
+#navDataStudio .adi-nav-symbol{display:inline-grid;place-items:center;width:16px;height:16px;font-weight:800;color:#88d3ff}
+.adi-root{height:100%;overflow:auto!important;padding:0!important;background:radial-gradient(ellipse at 80% -9%,rgba(79,160,252,.095),transparent 48%),radial-gradient(ellipse at -10% 72%,rgba(249,115,22,.055),transparent 50%),#07080b;color:#f4f4f6;--adi-edge:rgba(255,255,255,.09);--adi-muted:#9ca0aa;--adi-blue:#71c5ff;--adi-orange:var(--accent,#f97316);font-family:Inter,system-ui,sans-serif}
+.adi-root *{box-sizing:border-box}
+.adi-root [hidden]{display:none!important}
+.adi-root:focus{outline:none}
+.adi-container{max-width:1450px;margin:auto;padding:34px clamp(15px,3vw,48px) 65px}
+.adi-eyebrow{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.18em;color:var(--adi-blue);text-transform:uppercase}
+.adi-hero{display:flex;align-items:center;justify-content:space-between;gap:22px;margin-bottom:25px}
+.adi-hero h1{font-size:clamp(27px,3.5vw,43px);line-height:1.1;letter-spacing:-.052em;margin:9px 0 10px;font-weight:760}
+.adi-hero p{font-size:13px;color:var(--adi-muted);line-height:1.6;max-width:600px;margin:0}
+.adi-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.adi-btn{background:rgba(255,255,255,.043);border:1px solid var(--adi-edge);color:#e6e6eb;border-radius:9px;padding:9px 13px;min-height:37px;font-size:12px;font-weight:650;cursor:pointer;transition:all .16s;text-align:center}
+.adi-btn:hover{background:rgba(255,255,255,.095);border-color:rgba(255,255,255,.2)}
+.adi-btn:focus-visible,.adi-root :is(input,select,textarea):focus-visible{outline:2px solid var(--adi-blue);outline-offset:2px}
+.adi-btn.primary{background:#b3e4ff;color:#04111c;border-color:#b3e4ff;font-weight:780}
+.adi-btn.primary:hover{background:#d2efff}
+.adi-btn.danger{border-color:rgba(239,68,68,.25);color:#fecaca}
+.adi-btn:disabled{opacity:.45;cursor:not-allowed}
+.adi-indicator{display:inline-flex;align-items:center;gap:7px;font:650 10px 'JetBrains Mono',monospace;letter-spacing:.08em;color:#9ad5ff;border:1px solid rgba(113,197,255,.2);background:rgba(113,197,255,.07);border-radius:999px;padding:7px 11px;white-space:nowrap}
+.adi-indicator:before{content:'';width:6px;height:6px;border-radius:50%;background:#71c5ff}
+.adi-note{padding:12px 15px;border-radius:11px;border:1px solid rgba(113,197,255,.16);background:rgba(113,197,255,.045);color:#b8c2cf;font-size:11px;line-height:1.6;margin-bottom:18px}
+.adi-note.warn{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.065);color:#f7d8a4}
+.adi-tabs{display:flex;gap:5px;border:1px solid var(--adi-edge);border-radius:13px;padding:5px;background:rgba(255,255,255,.02);overflow-x:auto;margin-bottom:20px}
+.adi-tab{flex:1;min-width:110px;border:1px solid transparent;background:transparent;color:var(--adi-muted);font-size:12px;font-weight:700;padding:11px;border-radius:9px;cursor:pointer}
+.adi-tab[aria-selected=true]{border-color:rgba(113,197,255,.19);background:rgba(113,197,255,.11);color:#c0e8ff}
+.adi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:16px 0}
+.adi-kpi{background:linear-gradient(138deg,#191c22,#101116);border:1px solid var(--adi-edge);border-radius:14px;padding:19px}
+.adi-kpi small{display:block;font:600 10px 'JetBrains Mono',monospace;color:var(--adi-muted);text-transform:uppercase;letter-spacing:.06em}
+.adi-kpi strong{display:block;font-weight:780;font-size:28px;letter-spacing:-.04em;margin:10px 0 5px}
+.adi-kpi em{display:block;font-style:normal;color:var(--adi-muted);font-size:11px}
+.adi-panel{background:rgba(18,20,25,.84);border:1px solid var(--adi-edge);border-radius:15px;padding:20px;min-width:0}
+.adi-panel h2{font-size:15px;font-weight:750;letter-spacing:-.02em;margin:0 0 9px}
+.adi-panel p{font-size:12px;line-height:1.65;color:var(--adi-muted);margin:0}
+.adi-panel-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.adi-panel-header h2{margin:0}
+.adi-split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(255px,.8fr);gap:15px;align-items:start}
+.adi-section-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:24px 0 12px;font-size:15px;font-weight:750}
+.adi-section-title span{color:var(--adi-muted);font-size:11px;font-weight:500}
+.adi-empty{border:1px dashed rgba(255,255,255,.18);border-radius:12px;padding:34px 17px;color:var(--adi-muted);font-size:12px;line-height:1.7;text-align:center}
+.adi-drop{border:1px dashed rgba(113,197,255,.35);background:linear-gradient(130deg,rgba(113,197,255,.065),rgba(249,115,22,.02));padding:37px 20px;border-radius:14px;text-align:center;position:relative}
+.adi-drop.drag{border-color:#b3e4ff;background:rgba(113,197,255,.14)}
+.adi-drop strong{display:block;font-size:15px;margin:10px 0}
+.adi-drop p{max-width:450px;margin:0 auto 16px}
+.adi-input,.adi-select,.adi-textarea{background:#0c0e12;color:#f6f6f7;border:1px solid rgba(255,255,255,.13);border-radius:9px;min-height:38px;width:100%;padding:9px 11px;font:12px Inter,system-ui,sans-serif}
+.adi-textarea{height:108px;resize:vertical;line-height:1.5}
+.adi-form{display:grid;gap:11px}
+.adi-form label{display:grid;gap:6px;font-size:11px;color:var(--adi-muted);font-weight:650}
+.adi-flex{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.adi-source-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-top:1px solid var(--adi-edge)}
+.adi-source-row:first-of-type{border-top:0}
+.adi-source-name{font-size:12px;font-weight:700;word-break:break-word}
+.adi-source-meta{color:var(--adi-muted);font-size:10.5px;margin-top:5px}
+.adi-badge{display:inline-block;border-radius:6px;font:600 10px 'JetBrains Mono',monospace;color:#c5dff0;background:rgba(113,197,255,.08);border:1px solid rgba(113,197,255,.14);padding:5px 7px}
+.adi-badge.amber{color:#f6c989;border-color:rgba(245,158,11,.27);background:rgba(245,158,11,.075)}
+.adi-badge.green{color:#9de8b7;border-color:rgba(34,197,94,.22);background:rgba(34,197,94,.055)}
+.adi-table-wrap{overflow:auto;max-height:570px;border:1px solid var(--adi-edge);border-radius:11px}
+.adi-table{border-collapse:collapse;width:100%;font-size:11.5px;min-width:450px}
+.adi-table th{position:sticky;top:0;background:#242831;text-align:left;z-index:1;padding:12px;color:#b9c4cf;font:600 10px 'JetBrains Mono',monospace;white-space:nowrap}
+.adi-table td{padding:11px 12px;border-top:1px solid rgba(255,255,255,.055);max-width:300px;overflow-wrap:anywhere;vertical-align:top;color:#e1e3e7}
+.adi-table tbody tr:hover{background:rgba(113,197,255,.035)}
+.adi-meter{height:6px;width:100%;background:rgba(255,255,255,.09);border-radius:9px;overflow:hidden;margin-top:8px}
+.adi-meter span{display:block;height:100%;background:linear-gradient(90deg,#67b4ee,#ad7ff2);border-radius:inherit}
+.adi-chart{display:grid;gap:13px;padding:11px 0}
+.adi-bar{display:grid;gap:6px}
+.adi-bar-top{display:flex;justify-content:space-between;gap:15px;font-size:11px}
+.adi-bar-top strong{font-weight:680}
+.adi-bar-top span{color:var(--adi-muted);font-family:'JetBrains Mono',monospace}
+.adi-bar-track{height:13px;border-radius:5px;background:rgba(255,255,255,.055);overflow:hidden}
+.adi-bar-fill{height:100%;min-width:0;background:linear-gradient(90deg,#4e9dce,#9fdcff);border-radius:inherit;transition:width .2s}
+.adi-issue{padding:10px 13px;margin-top:9px;background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.16);border-radius:9px;color:#dfbd8f;font-size:11px;line-height:1.5}
+.adi-tagrow{display:flex;gap:6px;flex-wrap:wrap}
+.adi-status{font-size:11px;color:#9de8b7;margin-top:10px}
+.adi-status.error{color:#ffb4aa}
+.adi-toggle{display:inline-flex;gap:7px;align-items:center;font-size:11px}
+.adi-toggle input{accent-color:#71c5ff}
+@media(max-width:1100px){.adi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.adi-split{grid-template-columns:1fr}}
+@media(max-width:640px){.adi-container{padding:20px 13px 60px}.adi-hero{flex-direction:column;align-items:flex-start}.adi-grid{gap:9px}.adi-kpi{padding:14px}.adi-kpi strong{font-size:24px}.adi-panel{padding:15px}.adi-btn{font-size:11px}.adi-source-row{align-items:flex-start;flex-direction:column}.adi-chart{gap:15px}}
+@media(prefers-reduced-motion:reduce){.adi-root *{transition:none!important;animation:none!important}}
