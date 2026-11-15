@@ -4,7 +4,7 @@
  * No external connectors or model requests. The execution boundary is intentionally read-only.
  */
 const {randomUUID}=require('node:crypto');
-const B=require('./_lib/backend');
+const B=require('../server/backend');
 const core=require('../modules/agent-core.js');
 function identifier(s){return typeof s==='string'&&/^[a-zA-Z0-9_-]{1,90}$/.test(s);}
 function uuid(s){return typeof s==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s);}
