@@ -4,7 +4,6 @@
  * Fails CLOSED to built-in demo templates if credentials, quotas or schema are missing.
  * Never emits untrusted HTML, CSS or executable JavaScript.
  */
-const Anthropic=require('@anthropic-ai/sdk');
 const B=require('./_lib/backend');
 const C=require('./_lib/surface-contract');
 const SYSTEM=[
@@ -40,6 +39,7 @@ module.exports=async function handler(req,res){
     });
     if(!claim.ok)return B.json(res,200,{fallback:true,reason:'quota_unavailable'});
     if(claim.data!==true)return B.json(res,200,{fallback:true,reason:'rate_limited'});
+    const Anthropic=require('@anthropic-ai/sdk');
     const client=new Anthropic({apiKey:process.env.ANTHROPIC_API_KEY,timeout:17000,maxRetries:0});
     const model=process.env.ANTHROPIC_MODEL||'claude-sonnet-4-6';
     const response=await client.messages.create({
