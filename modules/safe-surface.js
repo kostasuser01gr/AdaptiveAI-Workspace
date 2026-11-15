@@ -68,7 +68,7 @@
     if(!container||!surface||typeof surface!=='object')return false;
     container.replaceChildren();
     var hero=el('header','asu-head'),titleWrap=el('div');
-    append(titleWrap,el('div','asu-eyebrow','GENERATIVE UI · AI-DRAFT · UNVERIFIED'),
+    append(titleWrap,el('div','asu-eyebrow',surface.source==='user_dataset'?'LOCAL DATA · USER-PROVIDED · UNVERIFIED':'GENERATIVE UI · AI-DRAFT · UNVERIFIED'),
       el('h2','',text(surface.title||originalQuery||'Generated view',78)),
       el('p','',text(surface.subtitle||'AI-generated analysis. Connect verified data sources for live operational values.',250)));
     append(hero,titleWrap,el('span','asu-tag',text(surface.tag||'AI DRAFT',18)));
