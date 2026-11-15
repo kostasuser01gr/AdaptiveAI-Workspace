@@ -38,12 +38,19 @@
       request.onsuccess=function(){resolve(request.result);};
       request.onerror=function(){reject(request.error);};
       connection.onversionchange=function(){connection.close();};
-      setTimeout(function(){connection.close();},100);
+      request.transaction.oncomplete=function(){connection.close();};
+      request.transaction.onabort=function(){connection.close();};
     });
   }
   async function load(){
-    try{list=await operate('readonly','getAll');persist=true;}
-    catch(e){list=Array.from(fallback.values());persist=false;}
+    try{
+      list=await operate('readonly','getAll');
+      persist=fallback.size===0;
+      if(fallback.size){
+        var ids=new Set(list.map(function(d){return d.id;}));
+        fallback.forEach(function(value,key){if(!ids.has(key))list.push(value);});
+      }
+    }catch(e){list=Array.from(fallback.values());persist=false;}
     list.sort(function(a,b){return b.createdAt.localeCompare(a.createdAt);});
     if(current&&!list.some(function(d){return d.id===current.id;}))current=null;
     if(current)current=list.find(function(d){return d.id===current.id;});
@@ -57,7 +64,8 @@
   }
   async function remove(id){
     if(!window.confirm('Delete this local dataset?'))return;
-    try{await operate('readwrite','delete',id);}catch(e){fallback.delete(id);}
+    try{await operate('readwrite','delete',id);}catch(e){}
+    fallback.delete(id);
     if(current&&current.id===id)current=null;
     await load();draw();
   }
