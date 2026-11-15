@@ -1,0 +1,43 @@
+name: Browser regression — AdaptiveAI
+on:
+  pull_request:
+    paths:
+      - "index.html"
+      - "modules/**"
+      - "tests/e2e/**"
+      - "playwright.config.cjs"
+      - ".github/workflows/browser-e2e.yml"
+  push:
+    branches: ["feat/agent-studio-ultra-premium"]
+    paths:
+      - "index.html"
+      - "modules/**"
+      - "tests/e2e/**"
+      - "playwright.config.cjs"
+      - ".github/workflows/browser-e2e.yml"
+permissions:
+  contents: read
+jobs:
+  chromium-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install pinned browser test runner (CI only)
+        run: npm install --no-save --package-lock=false @playwright/test@1.65.1
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Validate original shell and Agent Studio interactions
+        run: npx playwright test --config=playwright.config.cjs
+      - name: Publish screenshots / trace on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adaptiveai-browser-evidence
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 3

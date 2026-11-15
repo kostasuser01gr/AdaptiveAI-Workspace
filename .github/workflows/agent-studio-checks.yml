@@ -1,0 +1,43 @@
+name: Agent Studio checks
+on:
+  pull_request:
+    paths:
+      - "modules/**"
+      - "server/**"
+      - "api/**"
+      - "db/**"
+      - "tests/**"
+      - "index.html"
+      - ".github/workflows/agent-studio-checks.yml"
+  push:
+    branches:
+      - "feat/agent-studio-ultra-premium"
+    paths:
+      - "modules/**"
+      - "server/**"
+      - "api/**"
+      - "db/**"
+      - "tests/**"
+      - "index.html"
+      - ".github/workflows/agent-studio-checks.yml"
+permissions:
+  contents: read
+jobs:
+  validate-agent-studio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check JavaScript syntax
+        run: |
+          node --check modules/agent-core.js
+          node --check modules/agent-studio.js
+          node --check modules/safe-surface.js
+          node --check modules/cloud-console.js
+          node --check modules/runtime-badge.js
+          for file in api/*.js server/*.js; do node --check "$file"; done
+      - name: Run unit tests
+        run: node --test tests/*.test.cjs

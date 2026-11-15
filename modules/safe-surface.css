@@ -1,0 +1,27 @@
+/* Scoped adaptive generative components; data always rendered as text. */
+.asu-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px;flex-wrap:wrap}
+.asu-eyebrow{font:650 10px/1.5 "JetBrains Mono",monospace;letter-spacing:.12em;color:#fdba74}
+.asu-head h2{margin:8px 0 7px;font-size:24px;letter-spacing:-.04em}
+.asu-head p{margin:0;color:var(--muted,#a1a1aa);font-size:12px;line-height:1.7}
+.asu-tag{display:inline-block;border:1px solid rgba(249,115,22,.24);border-radius:6px;padding:6px 9px;color:#fdba74;font:600 10px monospace;background:rgba(249,115,22,.07)}
+.asu-panel{padding:20px;margin:0 0 15px;border:1px solid var(--border,rgba(255,255,255,.1));border-radius:14px;background:var(--surface,rgba(20,20,22,.85));overflow:hidden}
+.asu-panel-title{font-size:13px;font-weight:750;letter-spacing:-.01em;margin:0 0 15px}
+.asu-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px}
+.asu-metric{background:rgba(255,255,255,.025);border:1px solid var(--border,rgba(255,255,255,.09));border-radius:10px;padding:16px}
+.asu-metric small{display:block;color:var(--muted,#aaa);font-size:11px}
+.asu-metric strong{display:block;font-size:24px;letter-spacing:-.045em;margin:8px 0}
+.asu-metric span{font-size:11px;color:var(--muted,#aaa)}
+.asu-table-scroll{overflow-x:auto}
+.asu-table{border-collapse:collapse;width:100%;font-size:12px}
+.asu-table th,.asu-table td{text-align:left;padding:12px;border-bottom:1px solid var(--border,rgba(255,255,255,.1));overflow-wrap:anywhere}
+.asu-table th{color:var(--muted,#aaa);font-size:10px;letter-spacing:.05em;text-transform:uppercase}
+.asu-bars{display:grid;gap:15px}
+.asu-bar-caption{display:flex;justify-content:space-between;margin-bottom:7px;font-size:12px;gap:10px}
+.asu-bar-caption b{font-family:"JetBrains Mono",monospace;font-size:11px}
+.asu-bar-track{height:8px;background:rgba(255,255,255,.07);border-radius:5px;overflow:hidden}
+.asu-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent,#f97316),#fbbf24)}
+.asu-insight p{color:var(--text,#fff);font-size:13px;line-height:1.75;white-space:pre-line;margin:0}
+@media(max-width:620px){.asu-panel{padding:14px}.asu-head h2{font-size:19px}.asu-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.asu-bar-fill{transition:none!important}}
+
+#kpiBar[data-source="simulated"]::before{content:"DEMO";color:#fdba74;flex:none;border:1px solid rgba(249,115,22,.3);background:rgba(249,115,22,.07);padding:5px 8px;border-radius:6px;font:650 10px "JetBrains Mono",monospace;letter-spacing:.06em}

@@ -1156,6 +1156,8 @@ table.data tr:last-child td{border-bottom:0}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <!-- CDN: Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="/modules/agent-studio.css">
+<link rel="stylesheet" href="/modules/safe-surface.css">
 </head>
 <body>
 
@@ -1172,8 +1174,8 @@ table.data tr:last-child td{border-bottom:0}
   <!-- Sidebar -->
   <aside class="sidebar" style="background:#080808">
     <div class="brand">
-      <div class="brand-logo">M</div>
-      <div class="brand-text">Open Claw AI<small>Moirakis</small></div>
+      <div class="brand-logo">A</div>
+      <div class="brand-text">AdaptiveAI<small>Moirakis Workspace</small></div>
     </div>
     <div class="section-label">Workspace</div>
     <nav>
@@ -1228,7 +1230,7 @@ table.data tr:last-child td{border-bottom:0}
           </div>
           <div class="gsearch-drop" id="gsearchDrop"></div>
         </div>
-        <span class="conn-pill" id="connPill"><span class="cd"></span><span id="connText" data-i18n="synced">Synced</span></span>
+        <span class="conn-pill" id="connPill"><span class="cd"></span><span id="connText">Demo · local</span></span>
         <button class="tb-btn" id="cmdkBtn">✦ <span data-i18n="ask">Ask</span> <kbd>⌘K</kbd></button>
         <button class="tb-icon" id="pulseBtn" aria-label="Live Pulse — real-time operations" title="Live Pulse (live ops feed)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
@@ -1316,14 +1318,14 @@ table.data tr:last-child td{border-bottom:0}
     </div>
     <!-- live system-health status bar -->
     <div class="statusbar" id="statusbar" role="status" aria-live="polite">
-      <div class="si"><span class="lbl">Agent</span><span class="v good" id="sbAgent">● online</span></div>
-      <div class="si hide-xs"><span class="lbl">Latency</span><span class="v" id="sbLatency">142ms</span></div>
-      <div class="si hide-sm"><span class="lbl">Sync queue</span><span class="v good" id="sbQueue">0</span></div>
-      <div class="si hide-sm"><span class="lbl">Errors 24h</span><span class="v good" id="sbErrors">0.02%</span></div>
+      <div class="si"><span class="lbl">Agent</span><span class="v good" id="sbAgent">● demo</span></div>
+      <div class="si hide-xs"><span class="lbl">Latency</span><span class="v" id="sbLatency">N/A</span></div>
+      <div class="si hide-sm"><span class="lbl">Sync queue</span><span class="v good" id="sbQueue">N/A</span></div>
+      <div class="si hide-sm"><span class="lbl">Errors 24h</span><span class="v good" id="sbErrors">N/A</span></div>
       <div class="spacer"></div>
-      <div class="si right hide-xs"><span class="lbl">Region</span><span class="v">eu-west-1</span></div>
-      <div class="si right hide-sm"><span class="lbl">Build</span><span class="v">v2.4.1</span></div>
-      <div class="si right"><span class="lbl">SLA</span><span class="v good" id="sbSla">99.98%</span></div>
+      <div class="si right hide-xs"><span class="lbl">Mode</span><span class="v">Demo</span></div>
+      <div class="si right hide-sm"><span class="lbl">Build</span><span class="v">v3 · preview</span></div>
+      <div class="si right"><span class="lbl">SLA</span><span class="v good" id="sbSla">N/A</span></div>
     </div>
   </main>
 
@@ -2646,30 +2648,22 @@ function wirePrompt() {
    STATUS BAR
    ============================================================ */
 function updateStatusBar(query) {
-  const latency = Math.floor(Math.random()*80+90);
   const agent = $('sbAgent');
   const lat = $('sbLatency');
-  if (agent) agent.textContent = '● generating…';
-  if (lat) lat.textContent = latency + 'ms';
-
+  if (agent) agent.textContent = '● demo surface';
+  if (lat) lat.textContent = 'N/A';
   setTimeout(() => {
-    if (agent) agent.textContent = '● online';
-    const q = $('sbQueue');
-    if (q) q.textContent = '0';
-    toast('Surface ready: ' + query.substring(0,40) + (query.length>40?'…':''));
-  }, 800);
+    if (agent) agent.textContent = '● demo';
+    toast('Demo surface ready: ' + query.substring(0,40) + (query.length>40?'…':''));
+  }, 250);
 }
 
-// Animate status bar values periodically
+// Never generate synthetic latency, queue, SLA or error telemetry.
 function startStatusBarAnimation() {
-  setInterval(() => {
-    const lat = $('sbLatency');
-    if (lat && !lat.textContent.includes('generating')) {
-      lat.textContent = Math.floor(Math.random()*60+110) + 'ms';
-    }
-    const sla = $('sbSla');
-    if (sla) { const v = (99.95 + Math.random()*0.04); sla.textContent = v.toFixed(2) + '%'; }
-  }, 8000);
+  ['sbLatency','sbQueue','sbErrors','sbSla'].forEach(id => {
+    const item = $(id);
+    if (item) item.textContent = 'N/A';
+  });
 }
 
 /* ============================================================
@@ -3279,8 +3273,8 @@ function init() {
   // Animate status bar on load
   const agent = $('sbAgent');
   if (agent) {
-    agent.textContent = '● connecting…';
-    setTimeout(() => { agent.textContent = '● online'; toast('AdaptiveAI connected — Moirakis Rentals'); }, 1200);
+    agent.textContent = '● demo';
+    setTimeout(() => { agent.textContent = '● demo'; toast('AdaptiveAI local demo workspace ready'); }, 1200);
   }
 
   // Hide offline banner
@@ -3291,7 +3285,7 @@ function init() {
   const connPill = $('connPill');
   const connText = $('connText');
   if (connPill && connText) {
-    setTimeout(() => { connText.textContent = 'Synced'; }, 1500);
+    setTimeout(() => { connText.textContent = 'Demo · local'; }, 1500);
   }
 
   console.log('[AdaptiveAI] Interaction layer initialized — Moirakis Rentals');
@@ -3705,7 +3699,8 @@ function initApiIntegration() {
       loadTab = document.createElement('button');
       loadTab.className = 'gx-tab active';
       loadTab.id = 'tab-' + loadId;
-      loadTab.innerHTML = `<span class="tt">${query.substring(0,26)}${query.length>26?'…':''}</span><span style="font-size:9.5px;opacity:0.6;font-family:'JetBrains Mono',monospace;margin-left:6px;animation:skeletonPulse 1s infinite">generating</span>`;
+      loadTab.innerHTML = '<span class="tt"></span><span style="font-size:9.5px;opacity:0.6;font-family:JetBrains Mono,monospace;margin-left:6px;animation:skeletonPulse 1s infinite">generating</span>';
+      loadTab.querySelector('.tt').textContent = query.substring(0,26) + (query.length > 26 ? '…' : '');
       tabs.appendChild(loadTab);
       loadTab.addEventListener('click', () => {
         qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
@@ -3769,15 +3764,11 @@ function initApiIntegration() {
     surfEl.id = surfId;
     surfEl.className = 'gx-surface';
     surfEl.style.cssText = 'padding:24px;height:100%;overflow-y:auto;';
-    surfEl.innerHTML = result.html || `
-      <div class="gx-sh">
-        <div class="gx-sh-left">
-          <span class="gx-sh-title">${result.title || query}</span>
-          <span class="gx-sh-tag">${result.tag || 'AI'}</span>
-        </div>
-      </div>
-      <p style="color:var(--muted);font-size:13px;line-height:1.6">${result.body || 'Surface generated by Claude.'}</p>
-    `;
+    if (window.AdaptiveSafeUI && window.AdaptiveSafeUI.render) {
+      window.AdaptiveSafeUI.render(surfEl, result, query);
+    } else {
+      surfEl.textContent = String(result.title || 'AI surface unavailable');
+    }
     if (stage) { qsa('.gx-surface', stage).forEach(s => s.style.display = 'none'); stage.appendChild(surfEl); }
 
     if (tabs) {
@@ -3785,7 +3776,8 @@ function initApiIntegration() {
       const tab = document.createElement('button');
       tab.className = 'gx-tab active';
       tab.dataset.target = surfId;
-      tab.innerHTML = `<span class="tt">${(result.title || query).substring(0,26)}</span>`;
+      tab.innerHTML = '<span class="tt"></span>';
+      tab.querySelector('.tt').textContent = String(result.title || query).substring(0,26);
       tab.addEventListener('click', () => {
         qsa('.gx-tab', tabs).forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
@@ -8858,7 +8850,7 @@ function initWebSocketSimulation() {
 
   function renderIndicator() {
     var dot = '<span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;animation:wsPulse 1.4s ease-in-out infinite;"></span>';
-    ind.innerHTML = dot + '<span>WebSocket LIVE</span><span style="color:#94a3b8;">·</span><span style="color:#94a3b8;">' + window.fleetSocket.messageCount + ' msg</span>';
+    ind.innerHTML = dot + '<span>SIMULATED FEED</span><span style="color:#94a3b8;">·</span><span style="color:#94a3b8;">' + window.fleetSocket.messageCount + ' msg</span>';
   }
   renderIndicator();
 
@@ -11004,6 +10996,8 @@ function initRealTimeKPIs() {
   if (kpiBar) kpiBar.remove();
   kpiBar = document.createElement('div');
   kpiBar.id = 'kpiBar';
+  kpiBar.dataset.source = 'simulated';
+  kpiBar.setAttribute('aria-label','Simulated demo KPI metrics');
   kpiBar.style.cssText = [
     'position:sticky',
     'top:0',
@@ -11019,6 +11013,12 @@ function initRealTimeKPIs() {
     '-webkit-overflow-scrolling:touch',
     'scrollbar-width:none'
   ].join(';');
+
+  // Permanently identify illustrative KPI values as demo data.
+  const demoTag = document.createElement('span');
+  demoTag.textContent = 'DEMO METRICS';
+  demoTag.style.cssText = 'color:#fdba74;border:1px solid rgba(249,115,22,.22);padding:4px 8px;border-radius:7px;font:600 10px JetBrains Mono,monospace;white-space:nowrap';
+  kpiBar.prepend(demoTag);
 
   // Inject pulse keyframe if not already present
   if (!document.getElementById('kpi-styles')) {
@@ -11962,4 +11962,9 @@ function initMicroInteractions() {
 })();
 
 </script>
+<script src="/modules/safe-surface.js"></script>
+<script src="/modules/agent-core.js"></script>
+<script src="/modules/agent-studio.js"></script>
+<script src="/modules/cloud-console.js"></script>
+<script src="/modules/runtime-badge.js"></script>
 </body></html>
