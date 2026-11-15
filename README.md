@@ -1,42 +1,69 @@
-# AdaptiveAI Workspace — Generative UI Command Center
+# AdaptiveAI Workspace v3 — Generative Operations & Agent Studio
 
-> Multi-model AI command center with generative UI — dynamic interface generation, model routing, and conversational workspace.
+A premium generative-UI command center for fleet and operational workspaces. AdaptiveAI is the **primary product**. GenOS v2 concepts have been integrated as a separate, modular Agent Studio rather than replacing the original AdaptiveAI application.
 
-## Features
+## Current capabilities
 
-- Generative UI: panels generated on-demand by the AI layer
-- Multi-model router: switch between providers and models
-- Command center: unified input for queries, tasks, and workflow triggers
-- Persistent conversation threads with memory and branching
-- Extensible tool palette: code, search, analysis
+- Original AdaptiveAI command shell: workspace tabs, on-demand demo surfaces, command palette, fleet/map/analytics examples, reports and local history.
+- Ultra-premium **Agent Studio**: agent roles, editable workflow graphs, dependency validation, human approval gates, simulation previews and local audit history.
+- Scoped **Memory Vault**: local notes, search, editing, deletion and configuration export.
+- **Tool Registry** with honest connected/offline status; no false tool-execution claims.
+- **Cloud Sync Console**: email/password authentication, save/restore workspace and persisted server-side workflow previews when a dedicated Supabase project is configured.
+- **Safe generative UI**: AI response contract supports metrics, tables, percentage bars and explanatory insights, rendered through inert DOM nodes, never raw model HTML.
+- **Authenticated AI**: requires identity verification, atomic quota checking and an optional provider key; otherwise defaults to a functioning demo without provider calls.
+- **Truthful status**: synthetic fleet KPIs and WebSocket demonstrations are explicitly marked SIMULATED/DEMO, with no fabricated uptime or latency claims.
 
-## Tech
+## Architecture
 
-Single-file HTML — zero dependencies, zero build step.
+Existing 600 KB+ static index.html remains the shell. New functionality is isolated in modules/, server/, api/, db/ and tests/.
 
-## Author
+| Component | Description |
+|---|---|
+| modules/agent-core.js | Pure DAG validation, preview planning and approval state machine |
+| modules/agent-studio.js | Six Agent Studio screens including Cloud Sync |
+| modules/safe-surface.js | DOM-only declarative generative UI renderer |
+| modules/cloud-console.js | Browser auth/sync and persisted preview controls |
+| server/backend.js | Same-origin guard, verified sessions and RLS-aware provider requests |
+| server/surface-contract.js | Output validation and deterministic size limits |
+| api/auth.js | Authentication, refresh and session lifecycle |
+| api/workspace.js | User-owned state sync |
+| api/run.js | Persisted server-side previews and approval consistency |
+| api/generate.js | Authenticated and quota-gated Anthropic surface generation |
+| db/adaptiveai.sql | Prepared owner-scoped PostgreSQL schema (not yet installed) |
 
-**Konstantinos Foskolakis** — Full-stack engineer, Heraklion Crete  
-[github.com/kostasuser01gr](https://github.com/kostasuser01gr)
+**No live connectors are configured.** The original fleet datasets are illustrative, not authoritative operations records. The Cloud Console requires a dedicated database. Real external-action agents, OAuth connectors, multi-tenant teams and durable job queues are future integrations.
 
-## Agent Studio (GenOS-inspired, separate feature branch)
+## Try Agent Studio
 
-The **Agent Studio** integrates into the original AdaptiveAI command center without replacing its shell. Open it from the **Enterprise → Agent Studio** sidebar entry, or use **Ctrl/Cmd + Shift + G**.
+Open **Enterprise → Agent Studio** in the sidebar or press **Ctrl/Cmd + Shift + G**.
 
-The new studio includes agent-role configuration, editable DAG workflows, a dependency graph, approval-gated dry runs, scoped local notes, a tool registry, configuration export and a local audit trail.
+The workflow editor, memory notes, export and local previews work without a cloud connection. With a configured backend and authenticated session, Cloud Sync can persist configuration and record server-validated preview runs; these are **not** live business-system mutations.
 
-**Execution boundary:** This is a browser-local workflow planning and validation environment, **not** a cloud agent runner. The connectors are not authenticated or live. Workflow previews do not perform remote operations. Do not store credentials or sensitive customer data in local notes.
+## Verify
 
-### Developer validation
+Run from the repository root:
 
-```bash
-node --check modules/agent-core.js
-node --check modules/agent-studio.js
-node --test tests/agent-core.test.cjs
-```
+    node --check modules/agent-core.js
+    node --check modules/agent-studio.js
+    node --check modules/safe-surface.js
+    node --check modules/cloud-console.js
+    for file in api/*.js server/*.js; do node --check "$file"; done
+    node --test tests/*.test.cjs
 
-See [Ultra-Premium Architecture & Roadmap](docs/ARCHITECTURE_ULTRA_PREMIUM.md) for the verified baseline, design direction, P0 security issues and future integration plan.
+GitHub Actions additionally runs Chromium Playwright regression tests on a local static server.
+
+## Release and security
+
+- [Ultra-Premium Architecture & Roadmap](docs/ARCHITECTURE_ULTRA_PREMIUM.md)
+- [Deployment, Auth and RLS Runbook](docs/DEPLOYMENT_RUNBOOK.md)
+- The committed feature is delivered via a separate reviewable GitHub PR. Production release should follow CI + browser checks.
+- No provider keys, database service credentials or customer records are committed to this repository.
+
+## Maintainer
+
+Konstantinos Foskolakis — Full-stack Engineer, Greece  
+https://github.com/kostasuser01gr
 
 ---
 
-*AdaptiveAI remains the primary product. Real agent backends and external connections are future phases.*
+**Product rule:** Prefer functional, verifiable capabilities over simulated "connected" labels. Local previews, cloud services and production integrations must always be distinguished explicitly.
