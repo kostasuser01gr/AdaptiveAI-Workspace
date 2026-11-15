@@ -4,8 +4,8 @@
  * Fails CLOSED to built-in demo templates if credentials, quotas or schema are missing.
  * Never emits untrusted HTML, CSS or executable JavaScript.
  */
-const B=require('./_lib/backend');
-const C=require('./_lib/surface-contract');
+const B=require('../server/backend');
+const C=require('../server/surface-contract');
 const SYSTEM=[
   'You are the AdaptiveAI Workspace declarative surface planner.',
   'You have NO access to private fleet systems or real-time operational metrics.',
