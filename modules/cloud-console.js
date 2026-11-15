@@ -97,6 +97,61 @@
           catch(err){feedback(err.message);}
         }));
         left.appendChild(actions);
+        left.appendChild(el('div','as-section-title','Server-validated workflow runs'));
+        left.appendChild(el('p','','These runs are persisted and approval-gated, but execute NO external tool calls.'));
+        var runs=el('div','as-run-list');
+        runs.style.marginTop='14px';
+        left.appendChild(runs);
+        async function showRun(entry){
+          runs.replaceChildren();
+          if(!entry){runs.textContent='No run selected';return;}
+          var title=el('div','as-run-row');
+          add(title,el('span','',entry.workflowId+' · '+entry.status),el('span','as-chip','SERVER PREVIEW'));
+          runs.appendChild(title);
+          var last=entry.snapshot?.messages?.slice(-1)[0];
+          if(last)runs.appendChild(el('p','',last));
+          if(entry.status==='awaiting_approval'){
+            var row=el('div','as-run-actions');
+            ['approve','reject'].forEach(function(action){
+              row.appendChild(button(action==='approve'?'Approve next gate':'Reject gate',async function(){
+                try{
+                  feedback('Recording server-side '+action+'…');
+                  var r=await authRetry('/api/run',{action:action,runId:entry.id});
+                  feedback('Run updated: '+r.run.status);
+                  showRun(r.run);
+                }catch(error){feedback(error.message);}
+              },action==='approve'));
+            });
+            runs.appendChild(row);
+          }
+        }
+        var runner=el('div','as-run-actions');
+        runner.appendChild(button('Run selected workflow (server)',async function(){
+          try{
+            var studio=root.AdaptiveAgentStudio;
+            if(!studio||!studio.selectedWorkflowId)throw Error('Agent Studio is unavailable');
+            var workflowId=studio.selectedWorkflowId();
+            feedback('Saving approved configuration before server-side preview…');
+            await authRetry('/api/workspace',{action:'save',state:studio.exportState()});
+            var response=await authRetry('/api/run',{action:'start',workflowId:workflowId});
+            feedback('Server validation completed: '+response.run.status);
+            showRun(response.run);
+          }catch(error){feedback(error.message);}
+        },true));
+        runner.appendChild(button('Recent runs',async function(){
+          try{
+            var result=await authRetry('/api/run',{action:'list'});
+            runs.replaceChildren();
+            if(!result.runs.length)runs.appendChild(el('div','as-empty','No server-side runs yet.'));
+            result.runs.forEach(function(r){
+              var row=el('div','as-run-row');
+              add(row,el('span','',r.workflowId),button(r.status+' · Details',function(){showRun(r);}));
+              runs.appendChild(row);
+            });
+            feedback('Loaded '+result.runs.length+' persisted runs.');
+          }catch(error){feedback(error.message);}
+        }));
+        left.appendChild(runner);
       }catch(err){status.textContent='Cloud authentication unavailable';feedback(err.message);}
     }
     refresh();
