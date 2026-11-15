@@ -284,6 +284,7 @@
     window.AdaptiveAgentStudio={
       open:open,version:'2.0.0',mode:'local-preview',
       exportState:function(){return JSON.parse(JSON.stringify(state));},
+      selectedWorkflowId:function(){return selected;},
       replaceState:function(candidate){
         var next=core.safeState(candidate);
         if(!next.workflows.length)throw Error('No valid cloud workflows');
