@@ -51,6 +51,7 @@ See [Data Intelligence v4 Architecture & Privacy](docs/DATA_INTELLIGENCE_V4.md).
 Open **Enterprise → Workspace OS** or press **Ctrl/Cmd + Shift + O**.
 
 - A responsive, visually unified premium Workspace OS within the original AdaptiveAI navigation and tabs.
+- Product-wide premium styling across the original dark-theme sidebar, tab strip, composer and launch experience; light theme behavior is preserved.
 - Configurable boards, real editable tasks/notes/shortcuts, drag reordering, arrow controls, in-app module routing and local activity.
 - Deterministic slash commands: /agents, /data, /cloud, /chat, /task NAME, /note NAME, /board NAME, /export.
 - Bounded undo/redo, validated JSON import/export, comfortable/compact density and mobile interaction.
