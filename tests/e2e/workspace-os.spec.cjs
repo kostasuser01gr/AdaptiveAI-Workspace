@@ -60,7 +60,7 @@ test('note markup is inert, no HTML execution in Workspace OS',async({page})=>{
   await page.locator('#navWorkspaceOS').click();
   await page.locator('#aw5-command').fill('/note <img src=x onerror=alert(1)>');
   await page.getByRole('button',{name:'Execute ↗'}).click();
-  await expect(page.locator('.aw5-card')).toContainText('<img src=x onerror=alert(1)>');
+  await expect(page.locator('.aw5-card').filter({hasText:'<img src=x onerror=alert(1)>'})).toHaveCount(1);
   await expect(page.locator('#adaptive-workspace-os img')).toHaveCount(0);
 });
 test('responsive phone view uses keyboard shortcut and card grid fits width',async({page})=>{
