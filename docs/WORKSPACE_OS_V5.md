@@ -11,7 +11,8 @@ The original AdaptiveAI shell, Vercel project, tabs, prompt, Agent Studio and Da
 | --- | --- |
 | modules/workspace-core.js | Pure state machine, validated board/card mutation, deterministic local command parser, portable JSON |
 | modules/workspace-os.js | Premium DOM-only command center, navigable boards, tasks, notes, shortcuts, drag reorder, undo/redo, import/export |
-| modules/workspace-os.css | Dark layered design, responsive canvas, mobile rail, accessibility, reduced motion, compact density |
+| modules/workspace-os.css | Dark layered design, responsive canvas, mobile rail, accessibility, reduced motion, compact density
+| modules/premium-shell-v5.css | Product-wide dark-shell refinement of the existing sidebar, tabs, composer, launch canvas and active-state styling |
 | tests/workspace-core.test.cjs | Unit tests for schema, state transitions, bad imports, command grammar and limits |
 | tests/e2e/workspace-os.spec.cjs | Chromium tests for navigation, persistence, tasks, keyboard, mobile and XSS safety |
 
@@ -47,7 +48,7 @@ New Workspace OS cards are real browser-local state, not simulated network actio
 
 ## Validation and release
 
-Run Node syntax and the complete native test suite, then Chromium Playwright for legacy plus new modules. Confirm Vercel preview READY on the exact PR SHA before merging. The source of truth remains GitHub main. Reverting the PR or removing the three module asset links provides code rollback; browser local user state remains.
+Run Node syntax and the complete native test suite, then Chromium Playwright for legacy plus new modules. Confirm Vercel preview READY on the exact PR SHA before merging. The source of truth remains GitHub main. Reverting the PR or removing the four module asset links provides code rollback; browser local user state remains.
 
 ## Remaining enterprise work — explicitly not delivered in v5
 
