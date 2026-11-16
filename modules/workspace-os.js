@@ -213,8 +213,7 @@
   function drawRail(){
     rail.replaceChildren();
     var boardPanel=panel(),header=E('div','aw5-panel-title'),list=E('div','aw5-board-list');
-    A(header,E('span','','Your workspaces'),B('+','',null));
-    header.lastChild.remove();header.appendChild(B('+',addBoardDialog,'square'));
+    A(header,E('span','','Your workspaces'),B('+',addBoardDialog,'square'));
     boardPanel.appendChild(header);
     state.boards.forEach(function(b,index){
       var item=E('button','aw5-board-item');item.type='button';item.setAttribute('aria-current',String(b.id===state.activeBoard));
