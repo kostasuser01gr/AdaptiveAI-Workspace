@@ -1,4 +1,4 @@
-# AdaptiveAI Workspace v3 — Generative Operations & Agent Studio
+# AdaptiveAI Workspace v5 — Generative Operations & Agent Studio
 
 A premium generative-UI command center for fleet and operational workspaces. AdaptiveAI is the **primary product**. GenOS v2 concepts have been integrated as a separate, modular Agent Studio rather than replacing the original AdaptiveAI application.
 
@@ -45,6 +45,22 @@ Open **Enterprise → Data Intelligence** or press **Ctrl/Cmd + Shift + D**.
 - No uploaded content is sent to an external service or AI provider. Local IndexedDB is not encrypted or cross-device synchronized.
 
 See [Data Intelligence v4 Architecture & Privacy](docs/DATA_INTELLIGENCE_V4.md). Node and Chromium tests run in CI.
+
+## Workspace OS v5 — Ultra-Premium Command Deck
+
+Open **Enterprise → Workspace OS** or press **Ctrl/Cmd + Shift + O**.
+
+- A responsive, visually unified premium Workspace OS within the original AdaptiveAI navigation and tabs.
+- Product-wide premium styling across the original dark-theme sidebar, tab strip, composer and launch experience; light theme behavior is preserved.
+- Configurable boards, real editable tasks/notes/shortcuts, drag reordering, arrow controls, in-app module routing and local activity.
+- Deterministic slash commands: /agents, /data, /cloud, /chat, /task NAME, /note NAME, /board NAME, /export.
+- Bounded undo/redo, validated JSON import/export, comfortable/compact density and mobile interaction.
+- True on-device module counts and cloud configuration state; no fabricated agent execution or live fleet metrics.
+- Zero new npm dependencies and no billable AI calls for Workspace OS actions.
+
+**Data is browser-local and not encrypted.** Avoid credentials and customer records in personal boards on shared devices.
+
+See [Workspace OS v5 Architecture](docs/WORKSPACE_OS_V5.md).
 
 ## Try Agent Studio
 

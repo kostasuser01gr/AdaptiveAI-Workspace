@@ -11,7 +11,7 @@ on:
       - ".github/workflows/agent-studio-checks.yml"
   push:
     branches:
-      - "feat/data-intelligence-v4"
+      - "feat/workspace-os-v5-premium"
     paths:
       - "modules/**"
       - "server/**"
@@ -33,6 +33,8 @@ jobs:
           node-version: "22"
       - name: Check JavaScript syntax
         run: |
+          node --check modules/workspace-core.js
+          node --check modules/workspace-os.js
           node --check modules/data-core.js
           node --check modules/data-studio.js
           node --check modules/agent-core.js

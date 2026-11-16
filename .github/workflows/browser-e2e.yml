@@ -8,7 +8,7 @@ on:
       - "playwright.config.cjs"
       - ".github/workflows/browser-e2e.yml"
   push:
-    branches: ["feat/data-intelligence-v4"]
+    branches: ["feat/workspace-os-v5-premium"]
     paths:
       - "index.html"
       - "modules/**"
@@ -30,7 +30,7 @@ jobs:
         run: npm install --no-save --package-lock=false @playwright/test@1.65.1
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Validate legacy shell, Agent Studio and Data Intelligence workflows
+      - name: Validate legacy shell, Agent Studio, Data Intelligence and Workspace OS v5
         run: npx playwright test --config=playwright.config.cjs
       - name: Publish screenshots / trace on failure
         if: failure()
